@@ -5,6 +5,7 @@ from discord.ext import commands
 from keep_alive import keep_alive
 
 bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 
 import youtube_dl
 
@@ -58,7 +59,7 @@ class Music(commands.Cog):
     self._last_member = None
 
   @commands.command()
-  async def join(self, ctx):
+  async def goeen(self, ctx):
     try:
       channel = ctx.message.author.voice.channel
     except AttributeError:
@@ -73,8 +74,8 @@ class Music(commands.Cog):
     await channel.connect()
 
   @commands.command()
-  async def play(self, ctx, *, url):
-    await ctx.invoke(self.bot.get_command('join'))
+  async def plonk(self, ctx, *, url):
+    await ctx.invoke(self.bot.get_command('goeen'))
 
     """Streams from a url (same as yt, but doesn't predownload)"""
 

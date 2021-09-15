@@ -1,0 +1,4 @@
+- Play queue
+- Skip function
+- Help function (shows commands)
+- Loop function
