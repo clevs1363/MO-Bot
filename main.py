@@ -1,12 +1,13 @@
 import asyncio
 import discord
 import os
+import queue
+import time
 from discord.ext import commands
 from keep_alive import keep_alive
-from discord.utils import get
 
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 
 import youtube_dl
 
@@ -60,6 +61,9 @@ class Music(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+  
+  q = queue.Queue()
+  song_playing = False
 
   @commands.command()
   async def goeen(self, ctx):
@@ -84,9 +88,39 @@ class Music(commands.Cog):
 
     async with ctx.typing():
       player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-      ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
+      # self.q.put(player)
+
+      ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
       await ctx.send(f'Now playing: {player.title}')
+
+      # while self.song_playing == False:
+
+      #   print("Queue empty")
+      #   # self.start_playing(ctx.voice_client, player)
+      #   # voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
+      #   ctx.voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
+      #   await ctx.send(f'Now playing: {player.title}')
+      #   time.sleep(player.duration)
+      #   self.song_playing = True
+
+      # else:
+
+      #   print("Queue not empty")
+      #   self.q.put(player)
+      #   await ctx.send(f'Song queued: {player.title}')
+
+
+  # def start_playing(self, voice_client, player):
+
+  #   i = 0
+  #   while i < self.q.qsize():
+  #     try:
+  #       voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
+
+  #     except:
+  #       pass
+  #     i += 1
 
 class Text(commands.Cog):
   # random commands associated with text channels
@@ -96,6 +130,7 @@ class Text(commands.Cog):
 
   @bot.event
   async def on_message(message):
+    await bot.process_commands(message)
     # print(message)
     if message.author == bot.user:
       return
@@ -117,7 +152,7 @@ async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
