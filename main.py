@@ -3,6 +3,7 @@ import discord
 import os
 from discord.ext import commands
 from keep_alive import keep_alive
+from discord.utils import get
 
 # bot_token = os.environ['bot_token']
 bot_token = os.environ['dbot_token'] # dev bot token
@@ -10,7 +11,6 @@ bot_token = os.environ['dbot_token'] # dev bot token
 import youtube_dl
 
 youtube_dl.utils.bug_reports_message = lambda: ''
-
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -31,6 +31,9 @@ ffmpeg_options = {
 }
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
+                   description='Relatively simple music bot example')
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -85,8 +88,28 @@ class Music(commands.Cog):
 
       await ctx.send(f'Now playing: {player.title}')
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
-                   description='Relatively simple music bot example')
+class Text(commands.Cog):
+  # random commands associated with text channels
+  def __init__(self, bot):
+    self.bot = bot
+    self._last_member = None
+
+  @bot.event
+  async def on_message(message):
+    # print(message)
+    if message.author == bot.user:
+      return
+
+    if message.content.endswith('er') or message.content.endswith('er?'):
+      await message.channel.send("I 'ardly knew 'er!")
+
+  @bot.event
+  async def on_message_edit(before, after):
+    # add edit emoji to edited messages
+    for emoji in bot.emojis:
+      if emoji.name == "edited":
+          await after.add_reaction(emoji)
+    return # exit if not found
 
 @bot.event
 async def on_ready():
@@ -96,4 +119,5 @@ async def on_ready():
 # keep_alive() 
 
 bot.add_cog(Music(bot))
+bot.add_cog(Text(bot))
 bot.run(bot_token)
