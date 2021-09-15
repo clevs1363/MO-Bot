@@ -5,8 +5,8 @@ from discord.ext import commands
 from keep_alive import keep_alive
 from discord.utils import get
 
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
+bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 
 import youtube_dl
 
@@ -101,7 +101,8 @@ class Text(commands.Cog):
       return
 
     if message.content.endswith('er') or message.content.endswith('er?'):
-      await message.channel.send("I 'ardly knew 'er!")
+      last = (message.content.split()[-1]).replace("?", "")
+      await message.channel.send(last + "? I 'ardly knew 'er!")
 
   @bot.event
   async def on_message_edit(before, after):
@@ -116,7 +117,7 @@ async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
