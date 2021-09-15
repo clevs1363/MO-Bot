@@ -4,8 +4,8 @@ import os
 from discord.ext import commands
 from keep_alive import keep_alive
 
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 
 import youtube_dl
 
@@ -93,7 +93,7 @@ async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
 
-keep_alive()
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.run(bot_token)

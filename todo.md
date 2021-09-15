@@ -2,3 +2,5 @@
 - Skip function
 - Help function (shows commands)
 - Loop function
+- Word counter
+- Dice roller
