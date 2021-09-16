@@ -1,6 +1,11 @@
 - Play queue
-- Skip function
+  - Skip function
 - Help function (shows commands)
 - Loop function
 - Word counter
 - Dice roller
+- Random commands
+  - !37
+  - !die 
+  - !kill
+  - !biglaff: laugh at most recent image sent by user

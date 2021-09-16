@@ -2,7 +2,8 @@ import asyncio
 import discord
 import os
 import queue
-import time
+import requests
+import random
 from discord.ext import commands
 from keep_alive import keep_alive
 
@@ -66,7 +67,7 @@ class Music(commands.Cog):
   song_playing = False
 
   @commands.command()
-  async def goeen(self, ctx):
+  async def join(self, ctx):
     try:
       channel = ctx.message.author.voice.channel
     except AttributeError:
@@ -81,8 +82,8 @@ class Music(commands.Cog):
     await channel.connect()
 
   @commands.command()
-  async def plonk(self, ctx, *, url):
-    await ctx.invoke(self.bot.get_command('goeen'))
+  async def play(self, ctx, *, url):
+    await ctx.invoke(self.bot.get_command('join'))
 
     """Streams from a url (same as yt, but doesn't predownload)"""
 
@@ -94,33 +95,9 @@ class Music(commands.Cog):
 
       await ctx.send(f'Now playing: {player.title}')
 
-      # while self.song_playing == False:
+  def dequeue(self, vc):
+    vc.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
 
-      #   print("Queue empty")
-      #   # self.start_playing(ctx.voice_client, player)
-      #   # voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
-      #   ctx.voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
-      #   await ctx.send(f'Now playing: {player.title}')
-      #   time.sleep(player.duration)
-      #   self.song_playing = True
-
-      # else:
-
-      #   print("Queue not empty")
-      #   self.q.put(player)
-      #   await ctx.send(f'Song queued: {player.title}')
-
-
-  # def start_playing(self, voice_client, player):
-
-  #   i = 0
-  #   while i < self.q.qsize():
-  #     try:
-  #       voice_client.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
-
-  #     except:
-  #       pass
-  #     i += 1
 
 class Text(commands.Cog):
   # random commands associated with text channels
@@ -129,23 +106,62 @@ class Text(commands.Cog):
     self._last_member = None
 
   @bot.event
-  async def on_message(message):
+  async def on_message(self, message):
     await bot.process_commands(message)
     # print(message)
     if message.author == bot.user:
       return
 
-    if message.content.endswith('er') or message.content.endswith('er?'):
+    # hardly knew her
+    if message.content.endswith('er') or message.content.endswith('er?') and not message.content.startswith('http'):
       last = (message.content.split()[-1]).replace("?", "")
       await message.channel.send(last + "? I 'ardly knew 'er!")
+
+    # random autism fact
+    if message.content.contains('37') and not message.content.startswith('http'):
+      self.random_autism(message)
 
   @bot.event
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
-    for emoji in bot.emojis:
-      if emoji.name == "edited":
-          await after.add_reaction(emoji)
+    if not before.content.startswith('http'):
+      for emoji in bot.emojis:
+        if emoji.name == "edited":
+            await after.add_reaction(emoji)
     return # exit if not found
+
+  @commands.command()
+  async def die(self, ctx):
+    # !die command
+    async with ctx.typing():
+      await ctx.send("I'd rather die standing than live kneeling")
+      await ctx.send("And I don't even have knees")
+
+  @commands.command()
+  async def _37(self, ctx):
+    self.random_autism(ctx.message)
+
+  @commands.command()
+  async def help(self, ctx):
+    async with ctx.typing():
+      await ctx.send("""
+      !play <url>: plays YouTube video from given url. Must be in a voice chat.\n
+      !play <query>: searches and plays video with given query. Must be in a voice chat\n
+      !join: have a friend join you in voice chat\n
+      !ses: Gives the time, date, and location of the next ses.\n
+      !help: Show this message 
+      """)
+
+  @commands.command()
+  async def ses(self, ctx):
+    async with ctx.typing():
+      await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
+
+  def random_autism(message):
+    random_decorator = ["trivia", "math", "date", "year"]
+    response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, 3)] + '?json').json()['text']
+    await message.channel.send(response)
+    await message.channel.send("Aren't numbers so neat?")
 
 @bot.event
 async def on_ready():
