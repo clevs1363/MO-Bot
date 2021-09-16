@@ -115,9 +115,10 @@ class Text(commands.Cog):
       return
 
     # hardly knew her, ignores links and commands
-    if message.content.endswith('er') or message.content.endswith('er?') and not message.content.startswith('http') and not message.content.startswith('!'):
-      last = (message.content.split()[-1]).replace("?", "")
-      await message.channel.send(last + "? I 'ardly knew 'er!")
+    if message.content.endswith('er') or message.content.endswith('er?'):
+      if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
+        last = (message.content.split()[-1]).replace("?", "")
+        await message.channel.send(last + "? I 'ardly knew 'er!")
 
     # random autism fact
     if '37' in message.content and not message.content.startswith('http'):
