@@ -1,6 +1,7 @@
 - Play queue
   - Skip function
 - Help function (shows commands)
+  - Pretty print
 - Loop function
 - Word counter
 - Dice roller

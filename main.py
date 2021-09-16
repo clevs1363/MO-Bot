@@ -36,6 +36,7 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
                    description='Relatively simple music bot example')
+bot.remove_command('help')
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -106,7 +107,7 @@ class Text(commands.Cog):
     self._last_member = None
 
   @bot.event
-  async def on_message(self, message):
+  async def on_message(message):
     await bot.process_commands(message)
     # print(message)
     if message.author == bot.user:
@@ -118,8 +119,8 @@ class Text(commands.Cog):
       await message.channel.send(last + "? I 'ardly knew 'er!")
 
     # random autism fact
-    if message.content.contains('37') and not message.content.startswith('http'):
-      self.random_autism(message)
+    if '37' in message.content and not message.content.startswith('http') and not message.content == "!_37":
+      await random_autism(message)
 
   @bot.event
   async def on_message_edit(before, after):
@@ -135,33 +136,31 @@ class Text(commands.Cog):
     # !die command
     async with ctx.typing():
       await ctx.send("I'd rather die standing than live kneeling")
-      await ctx.send("And I don't even have knees")
+      await ctx.send("And I don't even have legs")
 
   @commands.command()
   async def _37(self, ctx):
-    self.random_autism(ctx.message)
+    await random_autism(ctx.message)
 
   @commands.command()
   async def help(self, ctx):
-    async with ctx.typing():
-      await ctx.send("""
-      !play <url>: plays YouTube video from given url. Must be in a voice chat.\n
-      !play <query>: searches and plays video with given query. Must be in a voice chat\n
-      !join: have a friend join you in voice chat\n
-      !ses: Gives the time, date, and location of the next ses.\n
-      !help: Show this message 
-      """)
+    await ctx.send(
+      """`!play <url>: plays YouTube video from given url. Must be in a voice chat.
+!play <query>: searches and plays video with given query. Must be in a voice chat
+!join: have a friend join you in voice chat
+!ses: Gives the time, date, and location of the next ses.
+!help: Show this message`""")
 
   @commands.command()
   async def ses(self, ctx):
     async with ctx.typing():
       await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
 
-  def random_autism(message):
-    random_decorator = ["trivia", "math", "date", "year"]
-    response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, 3)] + '?json').json()['text']
-    await message.channel.send(response)
-    await message.channel.send("Aren't numbers so neat?")
+async def random_autism(message):
+  random_decorator = ["trivia", "math", "date", "year"]
+  response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, 3)] + '?json').json()['text']
+  await message.channel.send(response)
+  await message.channel.send("Aren't numbers so neat?")
 
 @bot.event
 async def on_ready():
