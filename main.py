@@ -4,15 +4,14 @@ import os
 import queue
 import requests
 import random
+import youtube_dl
 from discord.ext import commands
 from keep_alive import keep_alive
-from pprint import pprint
+from replit import db
 
 # bot_token = os.environ['bot_token']
 bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
-
-import youtube_dl
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -137,9 +136,7 @@ class Text(commands.Cog):
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
     if not before.content.startswith('http'):
-      for emoji in bot.emojis:
-        if emoji.name == "edited":
-            await after.add_reaction(emoji)
+      await add_emoji(after, 'ses')
     return # exit if not found
 
   @commands.command()
@@ -162,10 +159,7 @@ class Text(commands.Cog):
   @commands.command()
   async def ses(self, ctx):
     async with ctx.typing():
-      message = ctx.message
-      for emoji in bot.emojis:
-        if emoji.name == "ses":
-            await message.add_reaction(emoji)
+      await add_emoji(ctx.message, 'ses')
       await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
   
   @commands.command()
@@ -174,8 +168,17 @@ class Text(commands.Cog):
     await ctx.send(image)
 
   @commands.command()
-  async def abyses(self, ctx):
-    await ctx.send("Next OotA ses is...")
+  async def abyses(self, ctx, *msg):
+    await add_emoji(ctx.message, 'ses')
+    if msg: # check if arguments passed
+      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.name == "CerealGuy69":
+        output = " ".join(msg)
+        await update_abyses(output)
+        await ctx.send('--SESSION CHANGED--')
+      else:
+        await ctx.send("Nice try, scrub")
+        return
+    await ctx.send(db['abyses'])
 
 async def random_autism(message):
   random_decorator = ["trivia", "math", "date", "year"]
@@ -183,6 +186,14 @@ async def random_autism(message):
   await message.channel.send(response)
   random_adjective = ['tidy', 'nifty', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'swell', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'interesting', 'beautiful', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'trig', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'resourceful', 'unadulterated', 'orderly', 'own', 'super', 'formidable', 'trim', 'net', 'unmixed', 'dry', 'extra', 'bandbox', 'near', 'rigorous', 'sec', 'belle', 'sect', 'sce', 'esa', 'owl', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'ces', 'delightful', 'poggers', 'epic', 'fabulous', 'presentable', 'splendid']
   await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
+
+async def update_abyses(update_message):
+  db['abyses'] = update_message
+
+async def add_emoji(message, emoji_name):
+  for emoji in bot.emojis:
+    if emoji.name == emoji_name:
+      await message.add_reaction(emoji)
 
 @bot.event
 async def on_ready():
