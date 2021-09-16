@@ -6,6 +6,7 @@ import requests
 import random
 from discord.ext import commands
 from keep_alive import keep_alive
+from pprint import pprint
 
 # bot_token = os.environ['bot_token']
 bot_token = os.environ['dbot_token'] # dev bot token
@@ -96,6 +97,9 @@ class Music(commands.Cog):
       ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
       await ctx.send(f'Now playing: {player.title}')
+      if not url.startswith('http'):
+        # if the query was not a url, send the url
+        await ctx.send(player.data['webpage_url'])
 
   def dequeue(self, vc):
     vc.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
