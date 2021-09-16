@@ -114,8 +114,8 @@ class Text(commands.Cog):
     if message.author == bot.user:
       return
 
-    # hardly knew her
-    if message.content.endswith('er') or message.content.endswith('er?') and not message.content.startswith('http'):
+    # hardly knew her, ignores links and commands
+    if message.content.endswith('er') or message.content.endswith('er?') and not message.content.startswith('http') and not message.content.startswith('!'):
       last = (message.content.split()[-1]).replace("?", "")
       await message.channel.send(last + "? I 'ardly knew 'er!")
 
