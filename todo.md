@@ -10,3 +10,4 @@
   - !die 
   - !kill
   - !biglaff: laugh at most recent image sent by user
+  - !fall: send a random image of fall

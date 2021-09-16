@@ -9,6 +9,7 @@ from keep_alive import keep_alive
 
 # bot_token = os.environ['bot_token']
 bot_token = os.environ['dbot_token'] # dev bot token
+unsplash_token = os.environ['unsplash_key']
 
 import youtube_dl
 
@@ -141,22 +142,32 @@ class Text(commands.Cog):
   @commands.command()
   async def help(self, ctx):
     await ctx.send(
-      """`!play <url>: plays YouTube video from given url. Must be in a voice chat.
-!play <query>: searches and plays video with given query. Must be in a voice chat
+      """```!play <url>: plays YouTube video from given url. Must be in a voice chat
+!play <query>: searches and plays YouTube audio with given query. Must be in a voice chat
 !join: have a friend join you in voice chat
-!ses: Gives the time, date, and location of the next ses.
-!help: Show this message`""")
+!ses: Gives the time, date, and location of the next ses
+!fall: Do it Tom
+!help: Show this message```""")
 
   @commands.command()
   async def ses(self, ctx):
     async with ctx.typing():
+      message = ctx.message
+      for emoji in bot.emojis:
+        if emoji.name == "ses":
+            await message.add_reaction(emoji)
       await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
+  
+  @commands.command()
+  async def fall(self, ctx):
+    image = requests.get(f'https://api.unsplash.com/photos/random?query=fall&client_id=' + unsplash_token).json()['urls']['full']
+    await ctx.send(image)
 
 async def random_autism(message):
   random_decorator = ["trivia", "math", "date", "year"]
   response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, len(random_decorator) - 1)] + '?json').json()['text']
   await message.channel.send(response)
-  random_adjective = ['neat', 'nifty', 'cool', 'swag', 'poggers']
+  random_adjective = ['tidy', 'nifty', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'swell', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'interesting', 'beautiful', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'trig', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'resourceful', 'unadulterated', 'orderly', 'own', 'super', 'formidable', 'trim', 'net', 'unmixed', 'dry', 'extra', 'bandbox', 'near', 'rigorous', 'sec', 'belle', 'sect', 'sce', 'esa', 'owl', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'ces', 'delightful', 'poggers', 'epic', 'fabulous', 'presentable', 'splendid']
   await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
 
 @bot.event
