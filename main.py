@@ -119,7 +119,7 @@ class Text(commands.Cog):
       await message.channel.send(last + "? I 'ardly knew 'er!")
 
     # random autism fact
-    if '37' in message.content and not message.content.startswith('http') and not message.content == "!_37":
+    if '37' in message.content and not message.content.startswith('http'):
       await random_autism(message)
 
   @bot.event
@@ -139,10 +139,6 @@ class Text(commands.Cog):
       await ctx.send("And I don't even have legs")
 
   @commands.command()
-  async def _37(self, ctx):
-    await random_autism(ctx.message)
-
-  @commands.command()
   async def help(self, ctx):
     await ctx.send(
       """`!play <url>: plays YouTube video from given url. Must be in a voice chat.
@@ -158,9 +154,10 @@ class Text(commands.Cog):
 
 async def random_autism(message):
   random_decorator = ["trivia", "math", "date", "year"]
-  response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, 3)] + '?json').json()['text']
+  response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, len(random_decorator) - 1)] + '?json').json()['text']
   await message.channel.send(response)
-  await message.channel.send("Aren't numbers so neat?")
+  random_adjective = ['neat', 'nifty', 'cool', 'swag', 'poggers']
+  await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
 
 @bot.event
 async def on_ready():
