@@ -1,13 +1,13 @@
 - Play queue
   - Skip function
-- Help function (shows commands)
-  - Pretty print
 - Loop function
-- Word counter
 - Dice roller
 - Random commands
-  - !37
-  - !die 
   - !kill
   - !biglaff: laugh at most recent image sent by user
-  - !fall: send a random image of fall
+  - !abyses: ses data for OotA
+- Database storage
+  - Feature request list
+  - Word counter
+  - Drew ses time
+- Different commands for different servers

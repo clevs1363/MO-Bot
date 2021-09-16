@@ -114,18 +114,23 @@ class Text(commands.Cog):
   @bot.event
   async def on_message(message):
     await bot.process_commands(message)
-    # print(message)
+    # print(message.content)
     if message.author == bot.user:
       return
 
     # hardly knew her, ignores links and commands
-    if message.content.endswith('er') or message.content.endswith('er?'):
-      if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
+    if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
+      if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
         await message.channel.send(last + "? I 'ardly knew 'er!")
+      if message.content.endswith('er?'):
+        await message.channel.send("I \'ardly knew \'er!")
 
     # random autism fact
     if '37' in message.content and not message.content.startswith('http'):
+      # ignore emotes
+      if message.content[0] == '<' and message.content[-1] == '>':
+        return
       await random_autism(message)
 
   @bot.event
@@ -167,6 +172,10 @@ class Text(commands.Cog):
   async def nature(self, ctx, *, query):
     image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['full']
     await ctx.send(image)
+
+  @commands.command()
+  async def abyses(self, ctx):
+    await ctx.send("Next OotA ses is...")
 
 async def random_autism(message):
   random_decorator = ["trivia", "math", "date", "year"]
