@@ -146,7 +146,7 @@ class Text(commands.Cog):
 !play <query>: searches and plays YouTube audio with given query. Must be in a voice chat
 !join: have a friend join you in voice chat
 !ses: Gives the time, date, and location of the next ses
-!fall: Do it Tom
+!nature <query>: fetches image related to query
 !help: Show this message```""")
 
   @commands.command()
@@ -159,8 +159,8 @@ class Text(commands.Cog):
       await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
   
   @commands.command()
-  async def fall(self, ctx):
-    image = requests.get(f'https://api.unsplash.com/photos/random?query=fall&client_id=' + unsplash_token).json()['urls']['full']
+  async def nature(self, ctx, *, query):
+    image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['full']
     await ctx.send(image)
 
 async def random_autism(message):
