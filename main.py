@@ -109,6 +109,8 @@ class Text(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    if 'requests' in db.keys():
+      del db['requests']
 
   @bot.event
   async def on_message(message):
@@ -149,36 +151,94 @@ class Text(commands.Cog):
   @commands.command()
   async def help(self, ctx):
     await ctx.send(
-      """```!play <url>: plays YouTube video from given url. Must be in a voice chat
+      """```
+--MUSIC--
+!play <url>: plays YouTube video from given url. Must be in a voice chat
 !play <query>: searches and plays YouTube audio with given query. Must be in a voice chat
 !join: have a friend join you in voice chat
+--REQUESTS--
+!request <text>: add a feature request to a queue, up to 15
+!request: use without arguments to show the numbered list of requests
+!delete_request <number>: deletes request of given number
+--MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
 !help: Show this message```""")
 
-  @commands.command()
-  async def ses(self, ctx):
-    async with ctx.typing():
-      await add_emoji(ctx.message, 'ses')
-      await ctx.send("Next Eberron ses is at 6:30pm on September 16th, held online")
-  
   @commands.command()
   async def nature(self, ctx, *, query):
     image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['full']
     await ctx.send(image)
 
   @commands.command()
+  async def request(self, ctx, *req):
+    if 'requests' in db.keys() and len(db['requests']) > 15:
+      await ctx.send('Too many features. Delete one or tell my dev to move his ass.')
+      return
+    if req:
+      # add request to dictionary
+      if 'requests' in db.keys():
+        db['requests'][" ".join(req)] = ctx.message.author.name
+      else:
+        db['requests'] = {" ".join(req): ctx.message.author.name}
+      await ctx.send("Let me be clear. We will work incredibly hard, together, to pass this feature for the good of all our people.")
+    else:
+      # list requests
+      ret_string = ""
+      counter = 1
+      for item in db['requests'].keys():
+        ret_string += str(counter) + '. ' + item + '\n'
+        counter += 1
+      await ctx.send(ret_string)
+  
+  @commands.command()
+  async def delete_request(self, ctx, num):
+    counter = 1
+    for request in db['requests'].keys():
+      if counter == int(num):
+        if ctx.message.author.name == db['requests'][request]:
+          db['requests'].pop(request)
+          await ctx.send("yoink")
+        else:
+          await ctx.send("Not very cash money of you to try and delete someone else's request. Now I'm deleting your requests off and you'll have to work your own birthday.")
+      counter += 1
+
+  @commands.command()
+  async def ses(self, ctx, *msg):
+    async with ctx.typing():
+      await add_emoji(ctx.message, 'ses')
+      if msg: # check if arguments passed
+        if ctx.author.name == "CerealGuy69":
+          output = " ".join(msg)
+          await ctx.message.channel.edit(topic = output)
+          await update_ses('ses', output)
+          await ctx.send('--SESSION CHANGED--')
+        else:
+          await ctx.send("Nice try, scrub")
+          return
+      await ctx.send(db['ses'])
+  
+  @commands.command()
   async def abyses(self, ctx, *msg):
     await add_emoji(ctx.message, 'ses')
     if msg: # check if arguments passed
       if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.name == "CerealGuy69":
         output = " ".join(msg)
-        await update_abyses(output)
+        await ctx.message.channel.edit(topic = output)
+        await update_ses('abyses', output)
         await ctx.send('--SESSION CHANGED--')
       else:
         await ctx.send("Nice try, scrub")
         return
     await ctx.send(db['abyses'])
+
+  @commands.command()
+  async def release(self, ctx):
+    if ctx.message.author.name == "CerealGuy69":
+      async with ctx.typing():
+        await ctx.send("""
+          My fellow Americans. We have worked very hard, to fight for each and every one of you. I am happy to announce that we have now passed the Feature Request legislation. With this historic enactment, the voice of the people can be heard more than ever. Because that is democracy. Because that is America. See !help to be perfectly clear.
+        """)
 
 async def random_autism(message):
   random_decorator = ["trivia", "math", "date", "year"]
@@ -187,8 +247,8 @@ async def random_autism(message):
   random_adjective = ['tidy', 'nifty', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'swell', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'interesting', 'beautiful', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'trig', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'resourceful', 'unadulterated', 'orderly', 'own', 'super', 'formidable', 'trim', 'net', 'unmixed', 'dry', 'extra', 'bandbox', 'near', 'rigorous', 'sec', 'belle', 'sect', 'sce', 'esa', 'owl', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'ces', 'delightful', 'poggers', 'epic', 'fabulous', 'presentable', 'splendid']
   await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
 
-async def update_abyses(update_message):
-  db['abyses'] = update_message
+async def update_ses(entry, update_message):
+  db[entry] = update_message
 
 async def add_emoji(message, emoji_name):
   for emoji in bot.emojis:
