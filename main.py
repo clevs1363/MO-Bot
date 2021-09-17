@@ -130,7 +130,7 @@ class Text(commands.Cog):
     # random autism fact
     if '37' in message.content and not message.content.startswith('http'):
       # ignore emotes
-      if message.content[0] == '<' and message.content[-1] == '>':
+      if '<' in message.content and '>' in message.content:
         return
       await random_autism(message)
 
