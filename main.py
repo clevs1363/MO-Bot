@@ -103,14 +103,13 @@ class Music(commands.Cog):
   def dequeue(self, vc):
     vc.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
 
-
 class Text(commands.Cog):
   # random commands associated with text channels
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
-    if 'requests' in db.keys():
-      del db['requests']
+    # if 'requests' in db.keys():
+    #   del db['requests']
 
   @bot.event
   async def on_message(message):
@@ -138,7 +137,7 @@ class Text(commands.Cog):
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
     if not before.content.startswith('http'):
-      await add_emoji(after, 'ses')
+      await add_emoji(after, 'edited')
     return # exit if not found
 
   @commands.command()
@@ -189,7 +188,11 @@ class Text(commands.Cog):
       for item in db['requests'].keys():
         ret_string += str(counter) + '. ' + item + '\n'
         counter += 1
-      await ctx.send(ret_string)
+      if counter == 1:
+        # requests are empty
+        await ctx.send("No features requested yet")
+      else:
+        await ctx.send(ret_string)
   
   @commands.command()
   async def delete_request(self, ctx, num):
