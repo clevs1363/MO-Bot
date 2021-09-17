@@ -123,8 +123,10 @@ class Text(commands.Cog):
       if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
         await message.channel.send(last + "? I 'ardly knew 'er!")
-      if message.content.endswith('er?'):
+      elif message.content.endswith('er?') or message.content.endswith('*r?'):
         await message.channel.send("I \'ardly knew \'er!")
+      elif message.content.endswith('*r'):
+        await message.channel.send("Censor? I 'ardly knew 'er!")
 
     # random autism fact
     if '37' in message.content and not message.content.startswith('http'):
@@ -132,6 +134,10 @@ class Text(commands.Cog):
       if '<' in message.content and '>' in message.content:
         return
       await random_autism(message)
+    
+    if 'goblin' in message.content:
+      await add_emoji(message, 'biglaff')
+      await message.channel.send('goblin these nuts lmao')
 
   @bot.event
   async def on_message_edit(before, after):
