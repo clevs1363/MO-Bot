@@ -128,7 +128,7 @@ class Text(commands.Cog):
       elif message.content.endswith('*r'):
         await message.channel.send("Censor? I 'ardly knew 'er!")
 
-    # random autism fact
+    # random fact
     if '37' in message.content and not message.content.startswith('http'):
       # ignore emotes
       if '<' in message.content and '>' in message.content:
@@ -145,6 +145,16 @@ class Text(commands.Cog):
     if not before.content.startswith('http'):
       await add_emoji(after, 'edited')
     return # exit if not found
+
+  @bot.event
+  async def on_member_update(self, before, after):
+    activity_type = after.activity.type
+    if activity_type is discord.ActivityType.Streaming:
+      # Do X if he is streaming
+      channel = discord.get_channel(604834176645988354)
+      await channel.send(after.display_name + 'is LIVE!' + '\n' + after.activity.name + '\n' + after.activity.url)
+    else:
+      pass
 
   @commands.command()
   async def die(self, ctx):
@@ -268,6 +278,7 @@ async def add_emoji(message, emoji_name):
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
 # keep_alive() 
 
