@@ -1,7 +1,6 @@
 import asyncio
 import discord
 import os
-import queue
 import requests
 import random
 import youtube_dl
@@ -64,9 +63,21 @@ class Music(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
-  
-  q = queue.Queue()
-  song_playing = False
+    bot.loop.create_task(self.audio_player_task())
+
+  songs = asyncio.Queue()
+  play_next_song = asyncio.Event()
+
+  async def audio_player_task(self):
+    while True:
+      self.play_next_song.clear()
+      current = await self.songs.get()
+      # current.start()
+      current[1].voice_client.play(current[0], after=self.toggle_next)
+      await self.play_next_song.wait()
+
+  def toggle_next(self, err):
+    bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
   @commands.command()
   async def join(self, ctx):
@@ -83,22 +94,20 @@ class Music(commands.Cog):
 
     await channel.connect()
 
-  @commands.command()
+  @commands.command(pass_context=True)
   async def play(self, ctx, *, url):
     await ctx.invoke(self.bot.get_command('join'))
 
     """Streams from a url (same as yt, but doesn't predownload)"""
 
     async with ctx.typing():
-      player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-      # self.q.put(player)
+      p = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
+      await self.songs.put((p, ctx))
 
-      ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
-
-      await ctx.send(f'Now playing: {player.title}')
+      await ctx.send(f'Now playing: {p.title}')
       if not url.startswith('http'):
         # if the query was not a url, send the url
-        await ctx.send(player.data['webpage_url'])
+        await ctx.send(p.data['webpage_url'])
 
   def dequeue(self, vc):
     vc.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
@@ -152,7 +161,7 @@ class Text(commands.Cog):
     if activity_type is discord.ActivityType.Streaming:
       # Do X if he is streaming
       channel = discord.get_channel(604834176645988354)
-      await channel.send(after.display_name + 'is LIVE!' + '\n' + after.activity.name + '\n' + after.activity.url)
+      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
     else:
       pass
 
