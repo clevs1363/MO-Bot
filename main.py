@@ -12,6 +12,7 @@ from replit import db
 # bot_token = os.environ['bot_token']
 bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
+rapid_api = os.environ['rapidapi_key']
 
 youtube_dl.utils.bug_reports_message = lambda: ''
 
@@ -188,10 +189,12 @@ class Text(commands.Cog):
 !request <text>: add a feature request to a queue, up to 15
 !request: use without arguments to show the numbered list of requests
 !delete_request <number>: deletes request of given number
+--MEMES--
+!pun: sends a random pun
+!lenny: send 1 or more lennies
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
-!lenny: send 1 or more lennies
 !hug: send hugs
 !help: Show this message```""")
 
@@ -226,6 +229,24 @@ class Text(commands.Cog):
           total_lennies += l['face']
         await ctx.send(total_lennies)
         await ctx.message.delete()
+
+  @commands.command()
+  async def pun(self, ctx):
+    # get random
+    pun = requests.get("https://dad-jokes.p.rapidapi.com/random/joke?rapidapi-key=%s" % (rapid_api)).json()
+    print(pun)
+    if pun['success']:
+      async with ctx.typing():
+        pun = pun['body'][0]
+        channel = ctx.channel
+        await ctx.send(pun['setup'])
+
+        def check(m):
+          return m.channel == channel
+
+        await bot.wait_for('message', check=check)
+        await channel.send(pun['punchline'])
+
 
   @commands.command()
   async def request(self, ctx, *req):
