@@ -5,6 +5,7 @@ import requests
 import random
 import youtube_dl
 import json
+import math
 from discord.ext import commands
 from keep_alive import keep_alive
 from replit import db
@@ -227,8 +228,9 @@ class Text(commands.Cog):
         total_lennies = ""
         for l in lenny:
           total_lennies += l['face']
-        await ctx.send(total_lennies)
-        await ctx.message.delete()
+        print(len(total_lennies)/4000)
+        for x in range(math.floor(len(total_lennies)/2000)):
+          await ctx.send(total_lennies[x*2000:(x+1)*2000])
 
   @commands.command()
   async def pun(self, ctx):
