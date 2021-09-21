@@ -73,11 +73,11 @@ class Music(commands.Cog):
   async def audio_player_task(self):
     while True:
       self.play_next_song.clear()
-      current = await self.songs.get()
-      # current.start()
+      current = await self.songs.get() # dequeue
       current[1].voice_client.play(current[0], after=self.toggle_next)
       await self.play_next_song.wait()
 
+  # called if a song is already playing
   def toggle_next(self, err):
     bot.loop.call_soon_threadsafe(self.play_next_song.set)
 
@@ -104,15 +104,12 @@ class Music(commands.Cog):
 
     async with ctx.typing():
       p = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-      await self.songs.put((p, ctx))
+      await self.songs.put((p, ctx)) # add to queue
 
-      await ctx.send(f'Now playing: {p.title}')
+      await ctx.send(f'Added to queue: {p.title}')
       if not url.startswith('http'):
         # if the query was not a url, send the url
         await ctx.send(p.data['webpage_url'])
-
-  def dequeue(self, vc):
-    vc.play(self.q.get(), after=lambda e: print('Player error: %s' % e) if e else None)
 
 class Text(commands.Cog):
   # random commands associated with text channels
@@ -121,6 +118,10 @@ class Text(commands.Cog):
     self._last_member = None
     # if 'requests' in db.keys():
     #   del db['requests']
+
+  # 
+  # <-- TRIGGERED EVENTS -->
+  #
 
   @bot.event
   async def on_message(message):
@@ -159,6 +160,7 @@ class Text(commands.Cog):
 
   @bot.event
   async def on_member_update(before, after):
+    activity_type = None
     try:
       activity_type = after.activity.type
     except:
@@ -170,17 +172,10 @@ class Text(commands.Cog):
     else:
       pass
 
-  @commands.command()
-  async def die(self, ctx):
-    async with ctx.typing():
-      await ctx.send("I'd rather die standing than live kneeling")
-      await ctx.send("And I don't even have legs")
-
-  @commands.command()
-  async def hug(self, ctx):
-    url = await send_gif("hug", 50)
-    await ctx.send(url)
-
+  # 
+  # <-- COMMANDS -->
+  #
+  
   @commands.command()
   async def help(self, ctx):
     await ctx.send(
@@ -196,13 +191,41 @@ class Text(commands.Cog):
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
+!lenny: send 1 or more lennies
 !hug: send hugs
 !help: Show this message```""")
+
+  @commands.command()
+  async def die(self, ctx):
+    async with ctx.typing():
+      await ctx.send("I'd rather die standing than live kneeling")
+      await ctx.send("And I don't even have legs")
+
+  @commands.command()
+  async def hug(self, ctx):
+    url = await send_gif("hug", 100)
+    await ctx.send(url)
 
   @commands.command()
   async def nature(self, ctx, *, query):
     image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['full']
     await ctx.send(image)
+  
+  @commands.command()
+  async def lenny(self, ctx, num=1):
+    if num > 500:
+      await ctx.send("Error 37: lenny overflow")
+      return
+    if num > 100:
+      await ctx.send("https://tenor.com/view/straining-gif-6190466")
+    async with ctx.typing():
+      lenny = requests.get("https://api.lenny.today/v1/random?limit=%s" % (num)).json()
+      if lenny:
+        total_lennies = ""
+        for l in lenny:
+          total_lennies += l['face']
+        await ctx.send(total_lennies)
+        await ctx.message.delete()
 
   @commands.command()
   async def request(self, ctx, *req):

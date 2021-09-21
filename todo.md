@@ -1,13 +1,12 @@
 - Play queue
   - Skip function
-- Loop function
+  - Loop
+  - Show position in queue
 - Dice roller
+- Refactor Text class, geting unwieldy
 - Random commands
   - !kill
   - !biglaff: laugh at most recent image sent by user
-  - !abyses: ses data for OotA
 - Database storage
-  - Feature request list
   - Word counter
-  - Drew ses time
 - Different commands for different servers
