@@ -238,14 +238,16 @@ class Text(commands.Cog):
     if pun['success']:
       async with ctx.typing():
         pun = pun['body'][0]
-        channel = ctx.channel
+        if pun['NSFW']:
+          await ctx.send("Oh, this one's a naughty one.")
+
         await ctx.send(pun['setup'])
 
         def check(m):
-          return m.channel == channel
+          return m.channel == ctx.channel
 
         await bot.wait_for('message', check=check)
-        await channel.send(pun['punchline'])
+        await ctx.send(pun['punchline'])
 
 
   @commands.command()
