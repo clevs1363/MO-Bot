@@ -4,6 +4,7 @@ import os
 import requests
 import random
 import youtube_dl
+import json
 from discord.ext import commands
 from keep_alive import keep_alive
 from replit import db
@@ -35,7 +36,6 @@ ffmpeg_options = {
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 intents = discord.Intents.all()
-print(intents.members)
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
                    description='Relatively simple music bot example', intents=intents)
 bot.remove_command('help')
@@ -159,7 +159,10 @@ class Text(commands.Cog):
 
   @bot.event
   async def on_member_update(before, after):
-    activity_type = after.activity.type
+    try:
+      activity_type = after.activity.type
+    except:
+      pass
     if activity_type is discord.ActivityType.streaming:
       # Do X if he is streaming
       channel = discord.get_channel(604834176645988354)
@@ -169,10 +172,14 @@ class Text(commands.Cog):
 
   @commands.command()
   async def die(self, ctx):
-    # !die command
     async with ctx.typing():
       await ctx.send("I'd rather die standing than live kneeling")
       await ctx.send("And I don't even have legs")
+
+  @commands.command()
+  async def hug(self, ctx):
+    url = await send_gif("hug", 50)
+    await ctx.send(url)
 
   @commands.command()
   async def help(self, ctx):
@@ -189,6 +196,7 @@ class Text(commands.Cog):
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
+!hug: send hugs
 !help: Show this message```""")
 
   @commands.command()
@@ -226,7 +234,7 @@ class Text(commands.Cog):
     counter = 1
     for request in db['requests'].keys():
       if counter == int(num):
-        if ctx.message.author.name == db['requests'][request]:
+        if ctx.message.author.name == db['requests'][request] or ctx.message.author.name == "CerealGuy69":
           db['requests'].pop(request)
           await ctx.send("yoink")
         else:
@@ -284,6 +292,21 @@ async def add_emoji(message, emoji_name):
   for emoji in bot.emojis:
     if emoji.name == emoji_name:
       await message.add_reaction(emoji)
+
+async def send_gif(term, limit):
+  # set the apikey and limit
+  apikey = os.environ['gif_key']  # test value
+
+  # get the top <limit> GIFs for the search term
+  r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (term, apikey, limit))
+
+  if r.status_code == 200:
+      # load the GIFs using the urls for the smaller GIF sizes
+      top_gifs = json.loads(r.content)['results']
+      rand_url = top_gifs[random.randrange(0, limit - 1)]['url']
+      return rand_url
+  else:
+      return None
 
 @bot.event
 async def on_ready():
