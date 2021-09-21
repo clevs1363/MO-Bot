@@ -34,8 +34,10 @@ ffmpeg_options = {
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
+intents = discord.Intents.all()
+print(intents.members)
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
-                   description='Relatively simple music bot example')
+                   description='Relatively simple music bot example', intents=intents)
 bot.remove_command('help')
 
 class YTDLSource(discord.PCMVolumeTransformer):
@@ -156,9 +158,9 @@ class Text(commands.Cog):
     return # exit if not found
 
   @bot.event
-  async def on_member_update(self, before, after):
+  async def on_member_update(before, after):
     activity_type = after.activity.type
-    if activity_type is discord.ActivityType.Streaming:
+    if activity_type is discord.ActivityType.streaming:
       # Do X if he is streaming
       channel = discord.get_channel(604834176645988354)
       await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
