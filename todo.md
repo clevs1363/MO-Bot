@@ -10,3 +10,6 @@
 - Database storage
   - Word counter
 - Different commands for different servers
+- Daily message
+  - Word of the day
+  - Good morning

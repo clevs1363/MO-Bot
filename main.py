@@ -10,11 +10,6 @@ from discord.ext import commands
 from keep_alive import keep_alive
 from replit import db
 
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
-unsplash_token = os.environ['unsplash_key']
-rapid_api = os.environ['rapidapi_key']
-
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
@@ -37,31 +32,44 @@ ffmpeg_options = {
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
+# -- GLOBAL VARIABLES -- #
+
+# tokens
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
+unsplash_token = os.environ['unsplash_key']
+rapid_api = os.environ['rapidapi_key']
+
+# gif links
+no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
+straining_gif = "https://tenor.com/view/straining-gif-6190466"
+finger_wag = "https://tenor.com/view/nope-no-shake-finger-shake-finger-gif-4138495"
+
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
                    description='Relatively simple music bot example', intents=intents)
 bot.remove_command('help')
 
 class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
-        super().__init__(source, volume)
+  def __init__(self, source, *, data, volume=0.5):
+      super().__init__(source, volume)
 
-        self.data = data
+      self.data = data
 
-        self.title = data.get('title')
-        self.url = data.get('url')
+      self.title = data.get('title')
+      self.url = data.get('url')
 
-    @classmethod
-    async def from_url(cls, url, *, loop=None, stream=False):
-        loop = loop or asyncio.get_event_loop()
-        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+  @classmethod
+  async def from_url(cls, url, *, loop=None, stream=False):
+      loop = loop or asyncio.get_event_loop()
+      data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
 
-        if 'entries' in data:
-            # take first item from a playlist
-            data = data['entries'][0]
+      if 'entries' in data:
+          # take first item from a playlist
+          data = data['entries'][0]
 
-        filename = data['url'] if stream else ytdl.prepare_filename(data)
-        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+      filename = data['url'] if stream else ytdl.prepare_filename(data)
+      return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
 
 class Music(commands.Cog):
   def __init__(self, bot):
@@ -128,11 +136,11 @@ class Text(commands.Cog):
   @bot.event
   async def on_message(message):
     await bot.process_commands(message)
-    # print(message.content)
     if message.author == bot.user:
+      # ignore own messages
       return
 
-    # hardly knew her, ignores links and commands
+    # hkh, ignores links and commands
     if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
       if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
@@ -144,14 +152,10 @@ class Text(commands.Cog):
 
     # random fact
     if '37' in message.content and not message.content.startswith('http'):
-      # ignore emotes
+      # ignore emotes of form <:emote:12439824598248>
       if '<' in message.content and '>' in message.content:
         return
-      await random_autism(message)
-    
-    if 'goblin' in message.content:
-      await add_emoji(message, 'biglaff')
-      await message.channel.send('goblin these nuts lmao')
+      await random_fact(message)
 
   @bot.event
   async def on_message_edit(before, after):
@@ -207,7 +211,7 @@ class Text(commands.Cog):
 
   @commands.command()
   async def hug(self, ctx):
-    url = await send_gif("hug", 100)
+    url = await send_gif("hug", 50)
     await ctx.send(url)
 
   @commands.command()
@@ -221,7 +225,7 @@ class Text(commands.Cog):
       await ctx.send("Error 37: lenny overflow")
       return
     if num > 100:
-      await ctx.send("https://tenor.com/view/straining-gif-6190466")
+      await ctx.send(straining_gif)
     async with ctx.typing():
       lenny = requests.get("https://api.lenny.today/v1/random?limit=%s" % (num)).json()
       if lenny:
@@ -241,7 +245,7 @@ class Text(commands.Cog):
       async with ctx.typing():
         pun = pun['body'][0]
         if pun['NSFW']:
-          await ctx.send("Oh, this one's a naughty one.")
+          await ctx.send("Oh, this one's a nasty one.")
 
         await ctx.send(pun['setup'])
 
@@ -263,7 +267,9 @@ class Text(commands.Cog):
         db['requests'][" ".join(req)] = ctx.message.author.name
       else:
         db['requests'] = {" ".join(req): ctx.message.author.name}
-      await ctx.send("Let me be clear. We will work incredibly hard, together, to pass this feature for the good of all our people.")
+      await add_emoji(ctx.message, "pepehap")
+      await ctx.send("\U0001F60E" + "\U0001F44D")
+      await ctx.send("You are number %s in the queue" % (len(db['requests'])))
     else:
       # list requests
       ret_string = ""
@@ -286,21 +292,22 @@ class Text(commands.Cog):
           db['requests'].pop(request)
           await ctx.send("yoink")
         else:
-          await ctx.send("Not very cash money of you to try and delete someone else's request. Now I'm deleting your requests off and you'll have to work your own birthday.")
+          await ctx.send("Not very cash money of you to try and delete someone else's request")
+          await ctx.send(finger_wag)
       counter += 1
 
   @commands.command()
   async def ses(self, ctx, *msg):
     async with ctx.typing():
       await add_emoji(ctx.message, 'ses')
-      if msg: # check if arguments passed
+      if msg: # check if arguments were passed
         if ctx.author.name == "CerealGuy69":
           output = " ".join(msg)
           await ctx.message.channel.edit(topic = output)
           await update_ses('ses', output)
           await ctx.send('--SESSION CHANGED--')
         else:
-          await ctx.send("Nice try, scrub")
+          await ctx.send(no_gif)
           return
       await ctx.send(db['ses'])
   
@@ -314,7 +321,7 @@ class Text(commands.Cog):
         await update_ses('abyses', output)
         await ctx.send('--SESSION CHANGED--')
       else:
-        await ctx.send("Nice try, scrub")
+        await ctx.send(no_gif)
         return
     await ctx.send(db['abyses'])
 
@@ -322,15 +329,13 @@ class Text(commands.Cog):
   async def release(self, ctx):
     if ctx.message.author.name == "CerealGuy69":
       async with ctx.typing():
-        await ctx.send("""
-          My fellow Americans. We have worked very hard, to fight for each and every one of you. I am happy to announce that we have now passed the Feature Request legislation. With this historic enactment, the voice of the people can be heard more than ever. Because that is democracy. Because that is America. See !help to be perfectly clear.
-        """)
+        await ctx.send("New features added! Check !help for help")
 
-async def random_autism(message):
+async def random_fact(message):
   random_decorator = ["trivia", "math", "date", "year"]
   response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, len(random_decorator) - 1)] + '?json').json()['text']
   await message.channel.send(response)
-  random_adjective = ['tidy', 'nifty', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'swell', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'interesting', 'beautiful', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'trig', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'resourceful', 'unadulterated', 'orderly', 'own', 'super', 'formidable', 'trim', 'net', 'unmixed', 'dry', 'extra', 'bandbox', 'near', 'rigorous', 'sec', 'belle', 'sect', 'sce', 'esa', 'owl', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'ces', 'delightful', 'poggers', 'epic', 'fabulous', 'presentable', 'splendid']
+  random_adjective = ['tidy', 'nifty', 'captivating', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'arresting', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'stimulating', 'swell', 'riveting', 'alluring', 'appealing', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'stirring', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'amusing', 'interesting', 'beautiful', 'engrossing', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'organzied', 'resourceful', 'unadulterated', 'orderly', 'super', 'formidable', 'trim', 'curious', 'rigorous', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'delightful', 'poggers', 'systematic', 'epic', 'enthralling', 'fabulous', 'presentable', 'pleasing', 'splendid']
   await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
 
 async def update_ses(entry, update_message):
