@@ -13,3 +13,4 @@
 - Daily message
   - Word of the day
   - Good morning
+- Poll function

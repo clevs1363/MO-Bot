@@ -6,7 +6,11 @@ import random
 import youtube_dl
 import json
 import math
-from discord.ext import commands
+import schedule
+import time
+import threading
+from datetime import date, datetime, timedelta
+from discord.ext import commands, tasks
 from keep_alive import keep_alive
 from replit import db
 
@@ -39,6 +43,9 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
+dictionary_key = os.environ['dictionary_key']
+
+
 
 # gif links
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
@@ -173,7 +180,7 @@ class Text(commands.Cog):
       pass
     if activity_type is discord.ActivityType.streaming:
       # Do X if he is streaming
-      channel = discord.get_channel(604834176645988354)
+      channel = bot.get_channel(604834176645988354)
       await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
     else:
       pass
@@ -216,7 +223,7 @@ class Text(commands.Cog):
 
   @commands.command()
   async def nature(self, ctx, *, query):
-    image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['full']
+    image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['regular']
     await ctx.send(image)
   
   @commands.command()
@@ -232,9 +239,12 @@ class Text(commands.Cog):
         total_lennies = ""
         for l in lenny:
           total_lennies += l['face']
-        print(len(total_lennies)/4000)
-        for x in range(math.floor(len(total_lennies)/2000)):
-          await ctx.send(total_lennies[x*2000:(x+1)*2000])
+        if len(total_lennies) > 4000:
+          # split up into separate messages if necessary
+          for x in range(math.floor(len(total_lennies)/2000)):
+            await ctx.send(total_lennies[x*2000:(x+1)*2000])
+        else:
+          await ctx.send(total_lennies)
 
   @commands.command()
   async def pun(self, ctx):
@@ -361,11 +371,73 @@ async def send_gif(term, limit):
   else:
       return None
 
+@tasks.loop(minutes=1)
+async def daily_message():
+  # channel = discord.get_channel(604834176645988354) # chats and bants
+  channel = bot.get_channel(887682725375528963) # testing chat
+  await channel.send("Good morning.")
+
+  # send today in history
+  # API docs: https://history.muffinlabs.com/
+  today = date.today().strftime("%m/%d/%y").split("/")
+  month = today[0]
+  day = today[1]
+  fact_request = requests.get("http://history.muffinlabs.com/date/%s/%s" % (month, day)).json()["data"]
+
+  event_fact = fact_request["Events"][0]
+  event_links = " | ".join(["<" + link['link'] + ">" for link in event_fact['links']])
+  birth_fact = fact_request['Births'][0]
+  birth_links = " | ".join(["<" + link['link'] + ">" for link in birth_fact['links']])
+  death_fact = fact_request["Deaths"][0]
+  death_links = " | ".join(["<" + link['link'] + ">" for link in death_fact['links']])
+
+  await channel.send("TODAY IN HISTORY: \n")
+  await channel.send("\N{bullet} %s: %s \n" % (event_fact['year'], event_fact['text']))
+  await channel.send(event_links)
+  await channel.send("\N{bullet} %s is born. %s" % (birth_fact['text'], birth_links))
+  await channel.send("\N{bullet} %s dies. %s" % (death_fact['text'], death_links))
+
+  # send quote of the day
+  # API docs: https://github.com/lukePeavey/quotable
+  quote_response = requests.get("https://api.quotable.io/random").json()
+  quote = quote_response['content']
+  author = quote_response['author']
+  await channel.send("QUOTE OF THE DAY: \"%s\" \n~%s" % (quote, author))
+
+  # send definition of the day
+  url = "https://wordsapiv1.p.rapidapi.com/words/"
+  querystring = {"random":"true"}
+  headers = {
+    'x-rapidapi-host': "wordsapiv1.p.rapidapi.com",
+    'x-rapidapi-key': "fb731cefd2msh69364977b49898ep16b903jsn21c4ae1a6eab"
+  }
+  r = requests.request("GET", url, headers=headers, params=querystring).json()
+
+  word = "\N{bullet}".join([syllable for syllable in r['syllables']['list']]) # join syllables over dot like google definition
+  pronunciation = r['pronunciation']['all']
+  definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
+
+  await channel.send("WORD OF THE DAY: %s" % word)
+  await channel.send(pronunciation)
+  await channel.send("\N{bullet}" + definitions)
+
+@daily_message.before_loop
+async def before_daily_message():
+  hour = 18
+  minute = 55
+  await bot.wait_until_ready()
+  now = datetime.now()
+  future = datetime.datetime(now.year, now.month, now.day, hour, minute)
+  if now.hour >= hour and now.minute > minute:
+      future += timedelta(days=1)
+  await asyncio.sleep((future-now).seconds)
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
+    # daily_message.start()
 
 # keep_alive() 
 
