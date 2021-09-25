@@ -2,6 +2,7 @@
   - Skip function
   - Loop
   - Show position in queue
+  - Play youtube playlists
 - Dice roller
 - Refactor Text class, geting unwieldy
 - Random commands
@@ -14,3 +15,5 @@
   - Word of the day
   - Good morning
 - Poll function
+- Sync request list with todo file
+- Bartender mode post-5pm

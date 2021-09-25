@@ -10,8 +10,10 @@ import schedule
 import time
 import threading
 from datetime import date, datetime, timedelta
+from pytz import timezone
 from discord.ext import commands, tasks
 from keep_alive import keep_alive
+from pprint import pprint
 from replit import db
 
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -204,6 +206,7 @@ class Text(commands.Cog):
 --MEMES--
 !pun: sends a random pun
 !lenny: send 1 or more lennies
+!meme: summons a random meme. quality not guaranteed.
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
@@ -265,13 +268,18 @@ class Text(commands.Cog):
         await bot.wait_for('message', check=check)
         await ctx.send(pun['punchline'])
 
+  @commands.command()
+  async def meme(self, ctx):
+    r = requests.get("https://meme-api.herokuapp.com/gimme").json()
+    await ctx.send(r['title'])
+    await ctx.send(r['url'])
 
   @commands.command()
   async def request(self, ctx, *req):
-    if 'requests' in db.keys() and len(db['requests']) > 15:
-      await ctx.send('Too many features. Delete one or tell my dev to move his ass.')
-      return
     if req:
+      if 'requests' in db.keys() and len(db['requests']) > 15:
+        await ctx.send('Too many features. Delete useless shit.')
+      return
       # add request to dictionary
       if 'requests' in db.keys():
         db['requests'][" ".join(req)] = ctx.message.author.name
@@ -295,6 +303,10 @@ class Text(commands.Cog):
   
   @commands.command()
   async def delete_request(self, ctx, num):
+    if num == 0 and ctx.message.author.name == "CerealGuy69":
+      # clear list
+      del db["requests"]
+      return
     counter = 1
     for request in db['requests'].keys():
       if counter == int(num):
@@ -371,76 +383,97 @@ async def send_gif(term, limit):
   else:
       return None
 
-@tasks.loop(minutes=1)
-async def daily_message():
-  # channel = discord.get_channel(604834176645988354) # chats and bants
-  channel = bot.get_channel(887682725375528963) # testing chat
-  await channel.send("Good morning.")
+class Daily(commands.Cog):
+  def __init__(self, bot):
+    self.bot = bot
+    self.daily_message.start()
 
-  # send today in history
-  # API docs: https://history.muffinlabs.com/
-  today = date.today().strftime("%m/%d/%y").split("/")
-  month = today[0]
-  day = today[1]
-  fact_request = requests.get("http://history.muffinlabs.com/date/%s/%s" % (month, day)).json()["data"]
+  @tasks.loop(minutes=1)
+  async def daily_message(self):
+    # channel = discord.get_channel(604834176645988354) # chats and bants
+    channel = bot.get_channel(887682725375528963) # testing chat
+    await channel.send("Good morning.")
 
-  event_fact = fact_request["Events"][0]
-  event_links = " | ".join(["<" + link['link'] + ">" for link in event_fact['links']])
-  birth_fact = fact_request['Births'][0]
-  birth_links = " | ".join(["<" + link['link'] + ">" for link in birth_fact['links']])
-  death_fact = fact_request["Deaths"][0]
-  death_links = " | ".join(["<" + link['link'] + ">" for link in death_fact['links']])
+    # send today in history
+    # API docs: https://history.muffinlabs.com/
+    today = date.today().strftime("%m/%d/%y").split("/")
+    month = today[0]
+    day = today[1]
+    fact_request = requests.get("http://history.muffinlabs.com/date/%s/%s" % (month, day)).json()["data"]
 
-  await channel.send("TODAY IN HISTORY: \n")
-  await channel.send("\N{bullet} %s: %s \n" % (event_fact['year'], event_fact['text']))
-  await channel.send(event_links)
-  await channel.send("\N{bullet} %s is born. %s" % (birth_fact['text'], birth_links))
-  await channel.send("\N{bullet} %s dies. %s" % (death_fact['text'], death_links))
+    event_fact = fact_request["Events"][0]
+    event_links = " | ".join(["<" + link['link'] + ">" for link in event_fact['links']])
+    birth_fact = fact_request['Births'][0]
+    birth_links = " | ".join(["<" + link['link'] + ">" for link in birth_fact['links']])
+    death_fact = fact_request["Deaths"][0]
+    death_links = " | ".join(["<" + link['link'] + ">" for link in death_fact['links']])
 
-  # send quote of the day
-  # API docs: https://github.com/lukePeavey/quotable
-  quote_response = requests.get("https://api.quotable.io/random").json()
-  quote = quote_response['content']
-  author = quote_response['author']
-  await channel.send("QUOTE OF THE DAY: \"%s\" \n~%s" % (quote, author))
+    await channel.send("TODAY IN HISTORY: \n")
+    await channel.send("\N{bullet} %s: %s \n" % (event_fact['year'], event_fact['text']))
+    await channel.send(event_links)
+    await channel.send("\N{bullet} %s is born. %s" % (birth_fact['text'], birth_links))
+    await channel.send("\N{bullet} %s dies. %s" % (death_fact['text'], death_links))
 
-  # send definition of the day
-  url = "https://wordsapiv1.p.rapidapi.com/words/"
-  querystring = {"random":"true"}
-  headers = {
-    'x-rapidapi-host': "wordsapiv1.p.rapidapi.com",
-    'x-rapidapi-key': "fb731cefd2msh69364977b49898ep16b903jsn21c4ae1a6eab"
-  }
-  r = requests.request("GET", url, headers=headers, params=querystring).json()
+    # send quote of the day
+    # API docs: https://github.com/lukePeavey/quotable
+    quote_response = requests.get("https://api.quotable.io/random").json()
+    quote = quote_response['content']
+    author = quote_response['author']
+    await channel.send("QUOTE OF THE DAY: \"%s\" \n~%s" % (quote, author))
 
-  word = "\N{bullet}".join([syllable for syllable in r['syllables']['list']]) # join syllables over dot like google definition
-  pronunciation = r['pronunciation']['all']
-  definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
+    # send definition of the day
+    url = "https://wordsapiv1.p.rapidapi.com/words/"
+    querystring = {"random":"true"}
+    headers = {
+      'x-rapidapi-host': "wordsapiv1.p.rapidapi.com",
+      'x-rapidapi-key': "fb731cefd2msh69364977b49898ep16b903jsn21c4ae1a6eab"
+    }
 
-  await channel.send("WORD OF THE DAY: %s" % word)
-  await channel.send(pronunciation)
-  await channel.send("\N{bullet}" + definitions)
+    # API is very inconsistent, loop until getting a valid word
+    all_fields = False
+    while not all_fields:
+      r = requests.request("GET", url, headers=headers, params=querystring).json()
+      if 'word' not in r or 'results' not in r:
+        pass
+      else:
+        all_fields = True
 
-@daily_message.before_loop
-async def before_daily_message():
-  hour = 18
-  minute = 55
-  await bot.wait_until_ready()
-  now = datetime.now()
-  future = datetime.datetime(now.year, now.month, now.day, hour, minute)
-  if now.hour >= hour and now.minute > minute:
-      future += timedelta(days=1)
-  await asyncio.sleep((future-now).seconds)
+    try:
+      word = "\N{bullet}".join([syllable for syllable in r['syllables']['list']]) # join syllables over dot like google definition
+    except:
+      word = r['word'] # revert to default word if syllables not present
+    pronunciation = "[none]"
+    if r['pronunciation']:
+      pronunciation = r['pronunciation']['all']
+    definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
+
+    await channel.send("WORD OF THE DAY: %s" % word)
+    await channel.send(pronunciation)
+    await channel.send("\N{bullet}" + definitions)
+
+  @daily_message.before_loop
+  async def before_daily_message(self):
+    hour = 7
+    minute = 00
+    await bot.wait_until_ready()
+    tz = timezone('EST')
+    now = datetime.now(tz) 
+    future = datetime(now.year, now.month, now.day, hour, minute, tzinfo=tz)
+    if now.hour >= hour and now.minute > minute:
+        future += timedelta(days=1)
+    await asyncio.sleep((future-now).seconds)
+    # print("waiting...")
+    # await self.bot.wait_until_ready()
 
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
-    # daily_message.start()
 
 # keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
+bot.add_cog(Daily(bot))
 bot.run(bot_token)
