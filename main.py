@@ -53,6 +53,7 @@ dictionary_key = os.environ['dictionary_key']
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
 straining_gif = "https://tenor.com/view/straining-gif-6190466"
 finger_wag = "https://tenor.com/view/nope-no-shake-finger-shake-finger-gif-4138495"
+annoyed = "https://tenor.com/view/kabangu-upset-annoyed-gif-14814728"
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
@@ -277,9 +278,9 @@ class Text(commands.Cog):
   @commands.command()
   async def request(self, ctx, *req):
     if req:
-      if 'requests' in db.keys() and len(db['requests']) > 15:
-        await ctx.send('Too many features. Delete useless shit.')
-      return
+      if 'requests' in db.keys() and len(db['requests']) > 14:
+        await ctx.send(annoyed)
+        return
       # add request to dictionary
       if 'requests' in db.keys():
         db['requests'][" ".join(req)] = ctx.message.author.name
@@ -289,23 +290,24 @@ class Text(commands.Cog):
       await ctx.send("\U0001F60E" + "\U0001F44D")
       await ctx.send("You are number %s in the queue" % (len(db['requests'])))
     else:
-      # list requests
-      ret_string = ""
-      counter = 1
-      for item in db['requests'].keys():
-        ret_string += str(counter) + '. ' + item + '\n'
-        counter += 1
-      if counter == 1:
-        # requests are empty
-        await ctx.send("No features requested yet")
+      if 'requests' in db.keys():
+        # list requests
+        ret_string = ""
+        counter = 1
+        for item in db['requests'].keys():
+          ret_string += str(counter) + '. ' + item + '\n'
+          counter += 1
+          await ctx.send(ret_string)
       else:
-        await ctx.send(ret_string)
+        # requests are empty
+        await ctx.send("No features requested yet") 
   
   @commands.command()
   async def delete_request(self, ctx, num):
-    if num == 0 and ctx.message.author.name == "CerealGuy69":
+    if int(num) == 0 and ctx.message.author.name == "CerealGuy69":
       # clear list
       del db["requests"]
+      await ctx.send("admin yoink")
       return
     counter = 1
     for request in db['requests'].keys():
@@ -390,8 +392,8 @@ class Daily(commands.Cog):
 
   @tasks.loop(minutes=1)
   async def daily_message(self):
-    # channel = discord.get_channel(604834176645988354) # chats and bants
-    channel = bot.get_channel(887682725375528963) # testing chat
+    channel = discord.get_channel(604834176645988354) # chats and bants
+    # channel = bot.get_channel(887682725375528963) # testing chat
     await channel.send("Good morning.")
 
     # send today in history

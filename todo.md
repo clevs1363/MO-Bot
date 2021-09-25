@@ -17,3 +17,5 @@
 - Poll function
 - Sync request list with todo file
 - Bartender mode post-5pm
+- TTS with sexy voice
+- Says something if 5+ biglaffs
