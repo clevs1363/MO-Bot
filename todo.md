@@ -4,18 +4,15 @@
   - Show position in queue
   - Play youtube playlists
 - Dice roller
-- Refactor Text class, geting unwieldy
 - Random commands
   - !kill
   - !biglaff: laugh at most recent image sent by user
 - Database storage
   - Word counter
 - Different commands for different servers
-- Daily message
-  - Word of the day
-  - Good morning
 - Poll function
 - Sync request list with todo file
 - Bartender mode post-5pm
 - TTS with sexy voice
 - Says something if 5+ biglaffs
+- Website with commands

@@ -149,6 +149,10 @@ class Text(commands.Cog):
     if message.author == bot.user:
       # ignore own messages
       return
+    
+    if isinstance(message.channel, discord.DMChannel):
+        me = bot.get_user(547127905679966209) # my id
+        await me.send(f"*Message from {message.author}*:\n{message.content}")
 
     # hkh, ignores links and commands
     if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
@@ -208,6 +212,8 @@ class Text(commands.Cog):
 !pun: sends a random pun
 !lenny: send 1 or more lennies
 !meme: summons a random meme. quality not guaranteed.
+--DICE ROLLER--
+!r XdY: rolls x number of a dY. Accepts modifiers. Example: !r 3d6+5
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
@@ -229,7 +235,49 @@ class Text(commands.Cog):
   async def nature(self, ctx, *, query):
     image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['regular']
     await ctx.send(image)
+
+  @commands.command()
+  async def ses(self, ctx, *msg):
+    async with ctx.typing():
+      await add_emoji(ctx.message, 'ses')
+      if msg: # check if arguments were passed
+        if ctx.author.name == "CerealGuy69":
+          output = " ".join(msg)
+          await ctx.message.channel.edit(topic = output)
+          await update_ses('ses', output)
+          await ctx.send('--SESSION CHANGED--')
+        else:
+          await ctx.send(no_gif)
+          return
+      await ctx.send(db['ses'])
   
+  @commands.command()
+  async def abyses(self, ctx, *msg):
+    await add_emoji(ctx.message, 'ses')
+    if msg: # check if arguments passed
+      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.name == "CerealGuy69":
+        output = " ".join(msg)
+        await ctx.message.channel.edit(topic = output)
+        await update_ses('abyses', output)
+        await ctx.send('--SESSION CHANGED--')
+      else:
+        await ctx.send(no_gif)
+        return
+    await ctx.send(db['abyses'])
+
+  @commands.command()
+  async def release(self, ctx):
+    if ctx.message.author.name == "CerealGuy69":
+      async with ctx.typing():
+        await ctx.send("New features added! Check !help for help")
+
+
+class Memes(commands.Cog):
+  # commands associated with memes
+  def __init__(self, bot):
+    self.bot = bot
+    self._last_member = None
+
   @commands.command()
   async def lenny(self, ctx, num=1):
     if num > 500:
@@ -320,72 +368,8 @@ class Text(commands.Cog):
           await ctx.send(finger_wag)
       counter += 1
 
-  @commands.command()
-  async def ses(self, ctx, *msg):
-    async with ctx.typing():
-      await add_emoji(ctx.message, 'ses')
-      if msg: # check if arguments were passed
-        if ctx.author.name == "CerealGuy69":
-          output = " ".join(msg)
-          await ctx.message.channel.edit(topic = output)
-          await update_ses('ses', output)
-          await ctx.send('--SESSION CHANGED--')
-        else:
-          await ctx.send(no_gif)
-          return
-      await ctx.send(db['ses'])
-  
-  @commands.command()
-  async def abyses(self, ctx, *msg):
-    await add_emoji(ctx.message, 'ses')
-    if msg: # check if arguments passed
-      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.name == "CerealGuy69":
-        output = " ".join(msg)
-        await ctx.message.channel.edit(topic = output)
-        await update_ses('abyses', output)
-        await ctx.send('--SESSION CHANGED--')
-      else:
-        await ctx.send(no_gif)
-        return
-    await ctx.send(db['abyses'])
-
-  @commands.command()
-  async def release(self, ctx):
-    if ctx.message.author.name == "CerealGuy69":
-      async with ctx.typing():
-        await ctx.send("New features added! Check !help for help")
-
-async def random_fact(message):
-  random_decorator = ["trivia", "math", "date", "year"]
-  response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, len(random_decorator) - 1)] + '?json').json()['text']
-  await message.channel.send(response)
-  random_adjective = ['tidy', 'nifty', 'captivating', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'arresting', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'stimulating', 'swell', 'riveting', 'alluring', 'appealing', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'stirring', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'amusing', 'interesting', 'beautiful', 'engrossing', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'organzied', 'resourceful', 'unadulterated', 'orderly', 'super', 'formidable', 'trim', 'curious', 'rigorous', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'delightful', 'poggers', 'systematic', 'epic', 'enthralling', 'fabulous', 'presentable', 'pleasing', 'splendid']
-  await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
-
-async def update_ses(entry, update_message):
-  db[entry] = update_message
-
-async def add_emoji(message, emoji_name):
-  for emoji in bot.emojis:
-    if emoji.name == emoji_name:
-      await message.add_reaction(emoji)
-
-async def send_gif(term, limit):
-  # set the apikey and limit
-  apikey = os.environ['gif_key']  # test value
-
-  # get the top <limit> GIFs for the search term
-  r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (term, apikey, limit))
-
-  if r.status_code == 200:
-      # load the GIFs using the urls for the smaller GIF sizes
-      top_gifs = json.loads(r.content)['results']
-      rand_url = top_gifs[random.randrange(0, limit - 1)]['url']
-      return rand_url
-  else:
-      return None
-
-class Daily(commands.Cog):
+class Schedule(commands.Cog):
+  # commands and functions that occur at scheduled times
   def __init__(self, bot):
     self.bot = bot
     self.daily_message.start()
@@ -464,8 +448,81 @@ class Daily(commands.Cog):
     if now.hour >= hour and now.minute > minute:
         future += timedelta(days=1)
     await asyncio.sleep((future-now).seconds)
-    # print("waiting...")
-    # await self.bot.wait_until_ready()
+
+class Dice(commands.Cog):
+  # commands associated with the built-in dice roller
+  def __init__(self, bot):
+    self.bot = bot
+    self._last_member = None
+
+  @commands.command()
+  async def r(self, ctx, roll):
+    try:
+      if roll.startswith("d"):
+        # interpet as one dice
+        num = 1
+        dice = roll[1:]
+      else:
+        data = roll.split("d")
+        num = int(data[0])
+        dice = data[1]
+      mods_raw = dice.split("+")
+      if len(mods_raw) == 1:
+        # no modifiers
+        mods = 0
+      else:
+        mods = int(mods_raw[1])
+      dice = int(mods_raw[0]) # dice will always be first element
+      result = ""
+      total = 0
+      for res in range(num):
+        rolled = random.randrange(1, dice+1)
+        total += rolled
+        result += str(rolled) + ", "
+      total += mods
+      if total - mods == 20 and num == 1 and dice == 20: # only trigger on nat 1d20
+        await ctx.send('https://ih1.redbubble.net/image.756099120.1069/st,small,507x507-pad,600x600,f8f8f8.u2.jpg')
+      elif total - mods == 1 and num == 1 and dice == 20:
+        await ctx.send('https://ih1.redbubble.net/image.1047087046.0562/st,small,845x845-pad,1000x1000,f8f8f8.u1.jpg')
+      else:
+        await ctx.send(result[:-2]) # sliced to remove last ', '
+      if mods != 0:
+        await ctx.send("Total = " + str(total))
+    except Exception as e:
+      print(e)
+      await ctx.send("Error: dice fell off the table. Reformat and try again")
+
+# --GLOBAL FUNCTIONS--
+
+async def random_fact(message):
+  random_decorator = ["trivia", "math", "date", "year"]
+  response = requests.get(f'http://numbersapi.com/random/' + random_decorator[random.randrange(0, len(random_decorator) - 1)] + '?json').json()['text']
+  await message.channel.send(response)
+  random_adjective = ['tidy', 'nifty', 'captivating', 'good', 'great', 'cool', 'elegant', 'dandy', 'tasteful', 'groovy', 'clean', 'peachy', 'arresting', 'keen', 'refined', 'adroit', 'straight', 'corking', 'smashing', 'bully', 'stimulating', 'swell', 'riveting', 'alluring', 'appealing', 'cracking', 'undiluted', 'bang-up', 'full-strength', 'not bad', 'slap-up', 'nice', 'lovely', 'clever', 'wonderful', 'fantastic', 'stirring', 'wondrous', 'stunning', 'classy', 'awesome', 'amazing', 'amusing', 'interesting', 'beautiful', 'engrossing', 'brilliant', 'terrific', 'cute', 'simple', 'fun', 'gorgeous', 'groovin', 'snazzy', 'crisp', 'spiffy', 'crafty', 'fancy', 'ingenious', 'sweet', 'pretty', 'skilful', 'purty', 'wow', 'handsome', 'fine', 'well', 'chic', 'flawless', 'shipshape', 'leggy', 'clear', 'impeccable', 'pure', 'astute', 'spotless', 'precise', 'shrewd', 'careful', 'spruce', 'distinct', 'goody', 'organzied', 'resourceful', 'unadulterated', 'orderly', 'super', 'formidable', 'trim', 'curious', 'rigorous', 'ordered', 'good-looking', 'kiln-dried', 'nice-looking', 'delightful', 'poggers', 'systematic', 'epic', 'enthralling', 'fabulous', 'presentable', 'pleasing', 'splendid']
+  await message.channel.send(f'Aren\'t numbers so ' + random_adjective[random.randrange(0, len(random_adjective) - 1)] + '?')
+
+async def update_ses(entry, update_message):
+  db[entry] = update_message
+
+async def add_emoji(message, emoji_name):
+  for emoji in bot.emojis:
+    if emoji.name == emoji_name:
+      await message.add_reaction(emoji)
+
+async def send_gif(term, limit):
+  # set the apikey and limit
+  apikey = os.environ['gif_key']  # test value
+
+  # get the top <limit> GIFs for the search term
+  r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (term, apikey, limit))
+
+  if r.status_code == 200:
+      # load the GIFs using the urls for the smaller GIF sizes
+      top_gifs = json.loads(r.content)['results']
+      rand_url = top_gifs[random.randrange(0, limit - 1)]['url']
+      return rand_url
+  else:
+      return None
 
 @bot.event
 async def on_ready():
@@ -477,5 +534,7 @@ async def on_ready():
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
-bot.add_cog(Daily(bot))
+bot.add_cog(Memes(bot))
+bot.add_cog(Schedule(bot))
+bot.add_cog(Dice(bot))
 bot.run(bot_token)
