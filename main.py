@@ -6,7 +6,6 @@ import random
 import youtube_dl
 import json
 import math
-import ast
 from datetime import date, datetime, timedelta
 from pytz import timezone
 from discord.ext import commands, tasks
@@ -44,8 +43,6 @@ bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
-
-
 
 # gif links
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
@@ -128,6 +125,54 @@ class Music(commands.Cog):
       if not url.startswith('http'):
         # if the query was not a url, send the url
         await ctx.send(p.data['webpage_url'])
+  
+  @commands.command()
+  async def pause(self, ctx):
+    """Pause the currently playing song."""
+    vc = ctx.voice_client
+
+    if not vc or not vc.is_playing():
+      embed = discord.Embed(title="", description="I am currently not playing anything", color=discord.Color.dark_green())
+      return await ctx.send(embed=embed)
+    elif vc.is_paused():
+      return
+
+    vc.pause()
+    await ctx.send("Paused ⏸️")
+  
+  @commands.command()
+  async def resume(self, ctx):
+    """Resume the currently paused song."""
+    vc = ctx.voice_client
+
+    if not vc or not vc.is_connected():
+      embed = discord.Embed(title="", description="I'm not connected to a voice channel", color=discord.Color.dark_green())
+      return await ctx.send(embed=embed)
+    elif not vc.is_paused():
+      return
+
+    vc.resume()
+    await ctx.send("Resuming ⏯️")
+  
+  @commands.command(name='skip', description="skips to next song in queue")
+  async def skip(self, ctx):
+    """Skip the song."""
+    vc = ctx.voice_client
+
+    if not vc or not vc.is_connected():
+      embed = discord.Embed(title="", description="I'm not connected to a voice channel", color=discord.Color.dark_green())
+      return await ctx.send(embed=embed)
+
+    if vc.is_paused():
+      pass
+    elif not vc.is_playing():
+      return
+    
+    if self.songs.empty():
+      return await ctx.send("No other songs in queue. Skip ignored")
+
+    await ctx.send("Skipping song...")
+    vc.stop()
 
 class Text(commands.Cog):
   # random commands associated with text channels
@@ -179,7 +224,6 @@ class Text(commands.Cog):
 
   @bot.event
   async def on_member_update(before, after):
-    print("AAAAAAAAAAA")
     activity_type = None
     try:
       activity_type = after.activity.type
@@ -208,6 +252,9 @@ class Text(commands.Cog):
 --MUSIC--
 !play <url>: plays YouTube video from given url. Must be in a voice chat
 !play <query>: searches and plays YouTube audio with given query. Must be in a voice chat
+!pause: pauses current song
+!resume: resumes song
+!skip: skips to next song in the queue
 !join: have a friend join you in voice chat
 --REQUESTS--
 !request <text>: add a feature request to a queue, up to 15
@@ -223,11 +270,21 @@ class Text(commands.Cog):
 --POLLS--
 Formatting for this one is very important
 !poll {title} [Option 1] [Option 2] [Option 3]: creates a poll for the given options. Supports up to 9 options. Braces and brackets should be typed out
+--RISK OF RAIN 2--
+!swag <time>: creates a swag session and @s people to ask to swag at given time. clears previous swag ses.
+!swaggers: shows list of people current interested in swagging
+!random_swag <numer>: randomizes characters for each current swaggers and randomly assigns <number> amount of artifacts
+!artifact <text>: returns description for artifact name given in <text>. Should be just "Chaos" or "Vengeance", not "Artifact of <text>"
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
 !hug: send hugs
-!help: Show this message```""")
+!help: Show this message
+--ADMIN CENTER--
+prepare for sass if trying to use these
+!delete_request 0: clears request list
+!scan: gives emoji stats in current channel
+```""")
 
   @commands.command()
   async def die(self, ctx):
@@ -279,7 +336,93 @@ Formatting for this one is very important
     if ctx.message.author.name == "CerealGuy69":
       async with ctx.typing():
         await ctx.send("New features added! Check !help for help")
+  
+  @commands.command()
+  async def scan(self, ctx):
+    async with ctx.typing():
+      if ctx.message.author.name == "CerealGuy69":   
+        reactions_given = {}
+        reactions_received = {}
+        # example dictionary format
+        # {
+        #   CerealGuy69: {
+        #     biglaff: 50,
+        #     ses: 100
+        #   }, Little_G: {
+        #     biglaff: 100,
+        #     ses: 50
+        #   } 
+        # }
+        async for msg in ctx.channel.history(limit=10000):
+          for reaction in msg.reactions:
+            # analyze reactions received
+            author = msg.author.name
+            # make sure emoji isnt a string, and assign to variable for simplicity
+            if not isinstance(reaction.emoji, str):
+              emoji = reaction.emoji.name
+            else:
+              continue
+            if author in reactions_received:
+              # user already in 
+              if emoji in reactions_received[author]:
+                # user already has been reacted to with this emote, add to total
+                reactions_received[author][emoji] += reaction.count
+              else:
+                # emote not documented, initialize to total
+                reactions_received[author][emoji] = reaction.count
+            else:
+              # user not yet in reactions, initialize to emoji count
+              reactions_received[author] = {emoji: reaction.count}
 
+            # analyze reactions given
+            async for reactor in reaction.users():
+              if reactor.name in reactions_given:
+                # user already reacted
+                if emoji in reactions_given[reactor.name]:
+                  # user already reacted with specific emoji
+                  reactions_given[reactor.name][emoji] += 1
+                else:
+                  # reactor has not yet reacted with specific emoji
+                  reactions_given[reactor.name][emoji] = 1
+              else:
+                # reactor has not yet reacted
+                reactions_given[reactor.name] = {emoji: 1}
+
+        # --Create Embeds--
+
+        # map emoji names to their id's
+        emojis = {}
+        for emoji in ctx.guild.emojis:
+          emojis[emoji.name] = emoji.id
+
+        # create receieved emojis stat embed      
+        await self.create_embed(emojis, reactions_received, "received", ctx)
+        
+        # create given emojis stat embed
+        await self.create_embed(emojis, reactions_given, "given", ctx)
+
+      else:
+        await ctx.send("We know we'd break the damn bot with everyone scanning")
+        return await ctx.send(finger_wag)
+    
+  async def create_embed(self, emojis, data, given_or_received, ctx):
+    # same code for creating given and received emotes
+    for user in data:
+      embed = discord.Embed(
+        title = "Emotes " + given_or_received.capitalize() + " Stats",
+        description = "Amount of emotes " + given_or_received + " for " + user + " in " + str(ctx.channel.name),
+        color = discord.Color.dark_green()
+      )
+      # get user avatar
+      avatar = "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg" # default to Obama
+      for member in ctx.guild.members:
+        if member.name == user:
+          avatar = member.avatar_url
+      embed.set_author(name=user, icon_url=avatar)
+      for emote in data[user]:
+        emoji_string = "<" + ":" + emote + ":" + str(emojis[emote]) + ">"
+        embed.add_field(name = emoji_string, value = data[user][emote])
+      await ctx.send(embed=embed)
 
 class Memes(commands.Cog):
   # commands associated with memes
@@ -456,7 +599,6 @@ class Schedule(commands.Cog):
     future = datetime(now.year, now.month, now.day, hour, minute, tzinfo=tz)
     if now.hour >= hour and now.minute > minute:
         future += timedelta(days=1)
-    print((future-now).seconds)
     await asyncio.sleep((future-now).seconds)
 
 class Dice(commands.Cog):
@@ -569,6 +711,114 @@ class Poll(commands.Cog):
     except:
       await ctx.send("Poll was rigged. Reformat and try again")
       return
+  
+class ROR2(commands.Cog):
+  # commands associated with ror2 and swaggin
+  def __init__(self, bot):
+    self.bot = bot
+    self._last_member = None
+    self.swag_id = 0
+    self.swaggers = []
+    self.characters = ['Acrid', 'Artificer', 'Bandit', 'Captain', 'Commando', 'Engineer', 'Huntress', 'Loader', 'Mercenary', 'MUL-T', 'REX'] 
+    self.artifacts = {
+      'Chaos': 'Friendly fire is enabled for both survivors and monsters alike.', 
+      'Command': 'Choose your items.', 
+      'Death': 'When one player dies, everyone dies. Enable only if you want to truly put your teamwork and individual skill to the ultimate test.', 
+      'Dissonance': 'Monsters can appear outside their usual environments.',
+      'Enigma': 'Spawn with a random equipment that changes every time it\'s activated.',
+      'Evolution': 'Monsters gain items between stages.',
+      'Frailty': 'Fall damage is doubled and lethal.',
+      'Glass': 'Allies deal 500% damage, but have 10% health.',
+      'Honor': 'Enemies can only spawn as elites.',
+      'Kin': 'Monsters will be of only one type per stage.',
+      'Metamorphosis': 'Players always spawn as a random survivor.',
+      'Sacrifice': 'Monsters drop items on death, but Chests no longer spawn.',
+      'Soul': 'Wisps emerge from defeated monsters.',
+      'Spite': 'Enemies drop multiple exploding bombs on death.',
+      'Swarms': 'Monster spawns are doubled, but monster maximum health is halved.',
+      'Vengeance': 'Your relentless doppelganger will invade every 10 minutes.'
+    }
+  
+  @commands.command()
+  async def swag(self, ctx, *swag_time):
+    if not swag_time:
+      return await ctx.send("Provide a time (!swag <time>)")
+    else:
+      t = str(swag_time[0])
+      self.swaggers = []
+      embed = discord.Embed(
+        title = "Swag at " + str(t) +"?",
+        description = "React yes or no below",
+        color = discord.Color.dark_blue()
+      )
+      embed.set_author(name="Risk of Rain 2", icon_url= "https://www.gamespot.com/a/uploads/original/1575/15759911/3719483-risk-of-rain-2-review-promothumb.jpg")
+      embed.add_field(name = "Yes:", value = "\N{thumbs up sign}")
+      embed.add_field(name = "No:", value = "\N{thumbs down sign}")
+
+      # get ror2 role id
+      role = 0
+      for role in ctx.guild.roles:
+        if role.name == "ror2":
+          role_id = role.id
+      await ctx.send("<@&" + str(role_id) + ">")
+      msg = await ctx.send(embed=embed)
+      await msg.add_reaction("\N{thumbs up sign}")
+      await msg.add_reaction("\N{thumbs down sign}")
+      self.swag_id = msg.id
+      return
+  
+  @commands.command()
+  async def swaggers(self, ctx):
+    if self.swaggers:
+      await ctx.send("Current swaggers: ")
+      await ctx.send(" ".join(self.swaggers))
+    else:
+      await ctx.send("No swaggers yet. Use !swag to initiate a potential swag. Will remove previous swagger session")
+      await ctx.send("https://i.ibb.co/f1fwZRf/john-travolta-lost-ror2.gif")
+  
+  @commands.command()
+  async def random_swag(self, ctx, *num):
+    for swagger in self.swaggers:
+      await ctx.send(swagger + ": " + random.choice(self.characters))
+    if num:
+      num = int(num[0])
+      if num <= 16 and num >= 0:
+        chosen_artifacts = []
+        for artifact in range(num):
+          # ensure every addition is unique
+          unique = False
+          while not unique:
+            rand_artifact = random.choice(list(self.artifacts.keys()))
+            if rand_artifact in chosen_artifacts:
+              unique = False
+            else:
+              chosen_artifacts.append(rand_artifact)
+              unique = True
+        await ctx.send("Artifacts: " + ", ".join(chosen_artifacts))
+      else:
+        await ctx.send("Enter a valid number of artifacts between 0 and 16")
+        await ctx.send("https://i.ibb.co/f1fwZRf/john-travolta-lost-ror2.gif")
+    else:
+      await ctx.send("No artifacts selected.")
+  
+  @commands.command()
+  async def artifact(self, ctx, artifact):
+    if artifact in self.artifacts:
+      await ctx.send(self.artifacts[artifact])
+    else:
+      await ctx.send("Artifact not found")
+      await ctx.send("https://i.ibb.co/f1fwZRf/john-travolta-lost-ror2.gif")
+
+  
+  @commands.Cog.listener()
+  async def on_reaction_add(self, reaction, user):
+    if not user.name == bot.user and reaction.message.id == self.swag_id and reaction.emoji == "\N{thumbs up sign}":
+      self.swaggers.append(user.name)
+  
+  @commands.Cog.listener()
+  async def on_reaction_remove(self, reaction, user):
+    if reaction.emoji == "\N{thumbs up sign}":
+      self.swaggers.remove(user.name)
     
 # --GLOBAL FUNCTIONS--
 
@@ -616,4 +866,5 @@ bot.add_cog(Memes(bot))
 bot.add_cog(Schedule(bot))
 bot.add_cog(Dice(bot))
 bot.add_cog(Poll(bot))
+bot.add_cog(ROR2(bot))
 bot.run(bot_token)

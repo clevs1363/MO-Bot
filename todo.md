@@ -9,8 +9,13 @@
 - Database storage
   - Word counter
 - Different commands for different servers
-- Poll function
 - Sync request list with todo file
 - Bartender mode post-5pm
 - TTS with sexy voice
 - Website with commands
+- Bills hype
+- RoR2 functions
+  - Randomize characters/artifacts
+  - Set swag time in channel
+- Integrate with https://thisanimedoesnotexist.ai/
+- Tidy and comment code
