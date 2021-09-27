@@ -3,7 +3,6 @@
   - Loop
   - Show position in queue
   - Play youtube playlists
-- Dice roller
 - Random commands
   - !kill
   - !biglaff: laugh at most recent image sent by user
@@ -14,5 +13,4 @@
 - Sync request list with todo file
 - Bartender mode post-5pm
 - TTS with sexy voice
-- Says something if 5+ biglaffs
 - Website with commands

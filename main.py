@@ -6,9 +6,7 @@ import random
 import youtube_dl
 import json
 import math
-import schedule
-import time
-import threading
+import ast
 from datetime import date, datetime, timedelta
 from pytz import timezone
 from discord.ext import commands, tasks
@@ -151,6 +149,7 @@ class Text(commands.Cog):
       return
     
     if isinstance(message.channel, discord.DMChannel):
+      if message.author.name != "CerealGuy69":
         me = bot.get_user(547127905679966209) # my id
         await me.send(f"*Message from {message.author}*:\n{message.content}")
 
@@ -180,6 +179,7 @@ class Text(commands.Cog):
 
   @bot.event
   async def on_member_update(before, after):
+    print("AAAAAAAAAAA")
     activity_type = None
     try:
       activity_type = after.activity.type
@@ -191,6 +191,11 @@ class Text(commands.Cog):
       await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
     else:
       pass
+  
+  @bot.event
+  async def on_reaction_add(reaction, user):
+    if reaction.count == 5 and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
+      await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
 
   # 
   # <-- COMMANDS -->
@@ -215,6 +220,9 @@ class Text(commands.Cog):
 --DICE ROLLER--
 !r XdY: rolls x number of a dY. Accepts modifiers. Example: !r 3d6+5
 !r stats: rolls character stats using 4d6 drop lowest method
+--POLLS--
+Formatting for this one is very important
+!poll {title} [Option 1] [Option 2] [Option 3]: creates a poll for the given options. Supports up to 9 options. Braces and brackets should be typed out
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
@@ -346,7 +354,7 @@ class Memes(commands.Cog):
         for item in db['requests'].keys():
           ret_string += str(counter) + '. ' + item + '\n'
           counter += 1
-          await ctx.send(ret_string)
+        await ctx.send(ret_string)
       else:
         # requests are empty
         await ctx.send("No features requested yet") 
@@ -513,6 +521,55 @@ class Dice(commands.Cog):
       stats.append(sum(drop_lowest))
     return stats
 
+class Poll(commands.Cog):
+  # commands associated with the built-in poll function
+  def __init__(self, bot):
+    self.bot = bot
+    self._last_member = None
+  
+  @commands.command()
+  async def poll(self, ctx, *, args):
+    try:
+      # get the title
+      poll_title = args[args.find('{') + 1:args.find('}')]
+      args = args[args.find('['):]
+
+      # get the arguments
+      options = []
+      while args:
+        options.append(args[args.find('[') + 1:args.find(']')])
+        args = args[args.find(']') + 2:] # +2 to account for bracket and white space
+      
+      # create embed
+      embed = discord.Embed(
+        title = poll_title,
+        description = "React with emotes below to vote!",
+        color = discord.Color.dark_green()
+      )
+      embed.set_author(name="Barack Obama", icon_url= "https://www.biography.com/.image/t_share/MTE4MDAzNDEwNzg5ODI4MTEw/barack-obama-12782369-1-402.jpg")
+      counter = 1
+      # await ctx.send("0\N{combining enclosing keycap}")
+      for option in options:
+        emoji_string = str(counter) + "\N{combining enclosing keycap}"
+        embed.add_field(name = "Option " + emoji_string + ":", value = option, inline="False")
+        counter += 1
+      size = len(options)
+      # check if poll only has 1 option to give snark
+      if size == 1:
+        embed.add_field(name = "Option 2\N{combining enclosing keycap}:", value = "Pollmaker is gey", inline="False")
+      msg = await ctx.send(embed=embed)
+      # add emojis
+      for x in range(size):
+        # x + 1 because it starts counting at 0
+        emoji_string = str(x+1) + "\N{combining enclosing keycap}"
+        await msg.add_reaction(emoji_string)
+      if size == 1:
+        await msg.add_reaction("2\N{combining enclosing keycap}")
+      return
+    except:
+      await ctx.send("Poll was rigged. Reformat and try again")
+      return
+    
 # --GLOBAL FUNCTIONS--
 
 async def random_fact(message):
@@ -558,4 +615,5 @@ bot.add_cog(Text(bot))
 bot.add_cog(Memes(bot))
 bot.add_cog(Schedule(bot))
 bot.add_cog(Dice(bot))
+bot.add_cog(Poll(bot))
 bot.run(bot_token)
