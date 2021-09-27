@@ -214,6 +214,7 @@ class Text(commands.Cog):
 !meme: summons a random meme. quality not guaranteed.
 --DICE ROLLER--
 !r XdY: rolls x number of a dY. Accepts modifiers. Example: !r 3d6+5
+!r stats: rolls character stats using 4d6 drop lowest method
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
 !nature <query>: fetches image related to query
@@ -374,7 +375,7 @@ class Schedule(commands.Cog):
     self.bot = bot
     self.daily_message.start()
 
-  @tasks.loop(minutes=1)
+  @tasks.loop(hours=24)
   async def daily_message(self):
     channel = discord.get_channel(604834176645988354) # chats and bants
     # channel = bot.get_channel(887682725375528963) # testing chat
@@ -447,6 +448,7 @@ class Schedule(commands.Cog):
     future = datetime(now.year, now.month, now.day, hour, minute, tzinfo=tz)
     if now.hour >= hour and now.minute > minute:
         future += timedelta(days=1)
+    print((future-now).seconds)
     await asyncio.sleep((future-now).seconds)
 
 class Dice(commands.Cog):
@@ -457,6 +459,17 @@ class Dice(commands.Cog):
 
   @commands.command()
   async def r(self, ctx, roll):
+    if roll == "stats":
+      stats = await self.roll_stats()
+      await ctx.send(", ".join([str(stat) for stat in stats]))
+      total = sum(stats)
+      if total > 75:
+        await ctx.send("Damn. I like ya stats, g")
+      elif total < 75 and total > 69:
+        await ctx.send("*light applause*")
+      else:
+        await ctx.send("https://i.ibb.co/KWK4Ysk/badroll.jpg")
+      return
     try:
       if roll.startswith("d"):
         # interpet as one dice
@@ -491,6 +504,14 @@ class Dice(commands.Cog):
     except Exception as e:
       print(e)
       await ctx.send("Error: dice fell off the table. Reformat and try again")
+  
+  async def roll_stats(self):
+    stats = []
+    for roll in range(6):
+      drop_lowest = [random.randrange(1, 7) for x in range(4)]
+      drop_lowest.remove(min(drop_lowest))
+      stats.append(sum(drop_lowest))
+    return stats
 
 # --GLOBAL FUNCTIONS--
 
