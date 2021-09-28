@@ -38,8 +38,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -245,6 +245,18 @@ class Text(commands.Cog):
   # 
   # <-- COMMANDS -->
   #
+
+  @commands.command()
+  async def test_emoji(self, ctx):
+    with open(r"C:\Users\Michael Cleversley\Downloads\Maleakosbadtrip.gif", "rb") as img:
+      img_byte = img.read()
+      await ctx.message.guild.create_custom_emoji(name = ("maleakos"), image = img_byte)
+  
+  @commands.command()
+  async def test_emoji_react(self, ctx):
+    for emoji in ctx.guild.emojis():
+      if emoji.name == "maleakos":
+        ctx.message_add_reaction(emoji)
   
   @commands.command()
   async def help(self, ctx):
@@ -837,7 +849,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
