@@ -31,25 +31,31 @@ h1#title {
     margin-bottom: 25px;
 }
 
- /* unvisited link */
- a:link {
-    color: #1c7da2;
-  }
-  
-  /* visited link */
-  a:visited {
-    color: #1c7da2;
-  }
-  
-  /* mouse over link */
-  a:hover {
-    color: #f24b83;
-  }
-  
-  /* selected link */
-  a:active {
-    color: #00132c;
-  } 
+p#instructions {
+  margin-left: 20px;
+  margin-right: 20px;
+  font-size: 20px;
+}
+
+/* unvisited link */
+a:link {
+  color: #1c7da2;
+}
+
+/* visited link */
+a:visited {
+  color: #1c7da2;
+}
+
+/* mouse over link */
+a:hover {
+  color: #f24b83;
+}
+
+/* selected link */
+a:active {
+  color: #00132c;
+} 
 
 #obotma_img {
     display: block;

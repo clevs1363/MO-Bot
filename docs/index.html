@@ -59,26 +59,33 @@
 
             <h1 class='text-center'>Commands</h1>
 
+            <br>
+            <p id='instructions'>
+                General format: <strong>!command</strong> <em>[argument]</em>. Command should be prefixed with !, but the argument should 
+                not have the brackets [ ] unless specified. Each command indicates whether the argument is required or not.
+            </p>
+            <br>
+
             <h2 id='music'>Music</h2>
             <p>
                 <strong>!play</strong> <em>[url]</em> : plays YouTube video from given url. Must be in a voice chat | <em>Argument required?</em> yes<br>
                 <strong>!play</strong> <em>[query]</em> : searches and plays YouTube audio with given query. Must be in a voice chat | <em>Argument required?</em> yes <br>
                 <strong>!pause</strong>: pauses current song <br>
                 <strong>!resume</strong>: resumes song <br>
-                <strong>!skip</strong>: skips to next song in the queue <br>
+                <strong>!skip</strong>: skips to next song in the queue if there is one queued <br>
                 <strong>!join</strong>: have a friend join you in voice chat <br>
             </p>
 
             <h2 id='requests'>Requests</h2>
             <p>
-                <strong>!request</strong> <em>[text]</em> : add a feature request to a queue, up to 15. Use without arguments to show the numbered list of requests | <em>Argument required?</em> no <br>
-                <strong>!delete_request</strong> <em>[number]</em> : deletes request of given number | <em>Argument required?</em> yes <br>
+                <strong>!request</strong> <em>[text]</em> : add a feature request to a queue, up to a max of 15. Use without arguments to show the numbered list of requests | <em>Argument required?</em> no <br>
+                <strong>!delete_request</strong> <em>[number]</em> : deletes request at position [number] in the queue | <em>Argument required?</em> yes <br>
             </p>
 
             <h2 id='memes'>Memes</h2>
             <p>
                 <strong>!pun</strong>: sends a random pun <br>
-                <strong>!lenny</strong> <em>[number]</em> : sends given number of lennies. Defaults to 1 if number not provided. | <em>Argument required?</em> no <br>
+                <strong>!lenny</strong> <em>[number]</em> : sends [number] of random lennies. Defaults to 1 if number not provided. | <em>Argument required?</em> no <br>
                 <strong>!meme</strong>: summons a random meme. Quality not guaranteed. <br>
             </p>
 
@@ -90,24 +97,25 @@
 
             <h2 id='polls'>Polls</h2>
             <p>
-                Formatting for this one is very important <br>
-                <strong>!poll</strong> <em>{title} [Option 1] [Option 2] [Option 3] ...</em> : creates a poll for the given options. Supports up to 9 options. Braces and brackets should be typed out | <em>Argument required?</em> yes<br>
+                Formatting for this one is very important. <br>
+                <strong>!poll</strong> <em>{title} [Option 1] [Option 2] [Option 3] ...</em> : creates a poll for the given options. Supports up to 9 options. Braces and brackets should be included | <em>Argument required?</em> yes<br>
             </p>
 
             <h2 id='ror2'>Risk of Rain 2</h2>
             <p>
-                <strong>!swag</strong> <em>[time]</em> : creates a swag session and @s people to ask to swag at given time. clears previous swag ses. | <em>Argument required?</em> yes<br>
+                <strong>!swag</strong> <em>[time]</em> : creates a swag session and tags the @ror2 role to ask to swag at given time. Clears previous swag ses. | <em>Argument required?</em> yes<br>
                 <strong>!swaggers</strong>: shows list of people current interested in swagging <br>
-                <strong>!random_swag</strong> <em>[number]</em> : randomizes characters for each current swaggers and randomly assigns [number] amount of artifacts. Default 0 artifacts if not provided. | <em>Argument required?</em> no<br>
+                <strong>!random_swag</strong> <em>[number]</em> : randomizes characters for each current swagger and randomly picks [number] amount of artifacts. Default 0 artifacts if not provided. | <em>Argument required?</em> no<br>
                 <strong>!artifact</strong> <em>[text]</em> : returns description for artifact name given in [text]. Should be just "Chaos" or "Vengeance", not "Artifact of [text]" | <em>Argument required?</em> yes<br>
             </p>
 
             <h2 id='tasks'>Scheduled Tasks</h2>
-            <p>Daily message: sends a good-morning message with Today In History (events, births, and deaths), quote of the day, and random word of the day.</p>
+            <p><strong>Daily message</strong>: sends a good-morning message with Today In History (events, births, and deaths), quote of the day, and random word of the day.</p>
 
             <h2 id='miscellaneous'>Miscellaneous</h2>
             <p>
-                <strong>!ses</strong>: Gives the time, date, and location of the next ses <br>
+                <strong>!ses</strong>: gives the time, date, and location of the next ses <br>
+                <strong>!abyses</strong>: same as previous but for Drew's campaign <br>
                 <strong>!nature</strong> <em>[query]</em> : fetches image related to query | <em>Argument required?</em> yes<br>
                 <strong>!hug</strong>: send hugs <br>
                 <strong>!help</strong>: Show this message <br>
@@ -116,6 +124,7 @@
             <h2 id='admin'>Admin Center</h2>
             <p>
                 These functions require administrator permissions, or to be named CerealGuy69. <br>
+                <strong>!(aby)ses</strong> <em>[text]</em> : changes next ses info and puts it in the current channel banner <br>
                 <strong>!delete_request</strong> 0: clears request list <br>
                 <strong>!scan</strong>: gives emoji stats in current channel. <span id='warning'>WARNING:</span> will take a while to run, and will return a lot of data! <br>
             </p>
@@ -135,6 +144,13 @@
                                     <li>Play YouTube playlists</li>
                                 </ul>
                             </li>
+                            <li>Swag improvement
+                                <ul>
+                                    <li>Max of 4 swagger cap</li>
+                                    <li>Tag swaggers 10 minutes before the run (requires time oarsing)</li>
+                                    <li>Post-run report & swag ses clearing</li>
+                                </ul>
+                            </li>
                             <li>Word counter?</li>
                             <li>Different commands and storage for different servers</li>
                             <li>Bartender mode</li>
@@ -142,6 +158,7 @@
                             <li>Positive encouragement</li>
                             <li>Server to-do list. Probably a bad idea.</li>
                             <li>Emoji replacement votes</li>
+                            <li>Animated emoji hack</li>
                         </ul>
                     </div>
 
