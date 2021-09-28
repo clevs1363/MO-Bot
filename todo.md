@@ -1,21 +1,16 @@
 - Play queue
-  - Skip function
   - Loop
   - Show position in queue
   - Play youtube playlists
-- Random commands
-  - !kill
-  - !biglaff: laugh at most recent image sent by user
+- !biglaff: laugh at most recent image sent by user
 - Database storage
   - Word counter
 - Different commands for different servers
 - Sync request list with todo file
 - Bartender mode post-5pm
-- TTS with sexy voice
 - Website with commands
+- Positive encouragement
 - Bills hype
-- RoR2 functions
-  - Randomize characters/artifacts
-  - Set swag time in channel
-- Integrate with https://thisanimedoesnotexist.ai/
 - Tidy and comment code
+- Server to-do list
+- Emoji replacement votes

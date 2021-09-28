@@ -273,7 +273,7 @@ Formatting for this one is very important
 --RISK OF RAIN 2--
 !swag <time>: creates a swag session and @s people to ask to swag at given time. clears previous swag ses.
 !swaggers: shows list of people current interested in swagging
-!random_swag <numer>: randomizes characters for each current swaggers and randomly assigns <number> amount of artifacts
+!random_swag <number>: randomizes characters for each current swaggers and randomly assigns <number> amount of artifacts
 !artifact <text>: returns description for artifact name given in <text>. Should be just "Chaos" or "Vengeance", not "Artifact of <text>"
 --MISCELLANEOUS--
 !ses: Gives the time, date, and location of the next ses
@@ -298,8 +298,11 @@ prepare for sass if trying to use these
     await ctx.send(url)
 
   @commands.command()
-  async def nature(self, ctx, *, query):
-    image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query + '&client_id=' + unsplash_token).json()['urls']['regular']
+  async def nature(self, ctx, *query):
+    if query:
+      image = requests.get(f'https://api.unsplash.com/photos/random?query=' + query[0] + '&client_id=' + unsplash_token).json()['urls']['regular']
+    else:
+      image = requests.get(f'https://api.unsplash.com/photos/random?client_id=' + unsplash_token).json()['urls']['regular']
     await ctx.send(image)
 
   @commands.command()
@@ -353,7 +356,7 @@ prepare for sass if trying to use these
         #     ses: 50
         #   } 
         # }
-        async for msg in ctx.channel.history(limit=10000):
+        async for msg in ctx.channel.history(limit=50000):
           for reaction in msg.reactions:
             # analyze reactions received
             author = msg.author.name
@@ -528,7 +531,7 @@ class Schedule(commands.Cog):
 
   @tasks.loop(hours=24)
   async def daily_message(self):
-    channel = discord.get_channel(604834176645988354) # chats and bants
+    channel = bot.get_channel(604834176645988354) # chats and bants
     # channel = bot.get_channel(887682725375528963) # testing chat
     await channel.send("Good morning.")
 
@@ -592,7 +595,7 @@ class Schedule(commands.Cog):
   @daily_message.before_loop
   async def before_daily_message(self):
     hour = 7
-    minute = 00
+    minute = 30
     await bot.wait_until_ready()
     tz = timezone('EST')
     now = datetime.now(tz) 
