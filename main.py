@@ -38,8 +38,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
+bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -50,6 +50,7 @@ no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt
 straining_gif = "https://tenor.com/view/straining-gif-6190466"
 finger_wag = "https://tenor.com/view/nope-no-shake-finger-shake-finger-gif-4138495"
 annoyed = "https://tenor.com/view/kabangu-upset-annoyed-gif-14814728"
+nope = "https://tenor.com/view/shannon-sharpe-undisputed-nope-no-smh-gif-12504325"
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix=commands.when_mentioned_or("!"),
@@ -248,15 +249,22 @@ class Text(commands.Cog):
 
   @commands.command()
   async def test_emoji(self, ctx):
-    with open(r"docs/assets/Maleakosbadtrip.gif", "rb") as img:
-      img_byte = img.read()
-      await ctx.message.guild.create_custom_emoji(name = ("maleakos"), image = img_byte)
+    if ctx.message.author.id == my_user_id:
+      with open(r"docs/assets/Maleakosbadtrip.gif", "rb") as img:
+        img_byte = img.read()
+        await ctx.message.guild.create_custom_emoji(name = ("maleakos"), image = img_byte)
+    else:
+      await ctx.send(nope)
+
   
   @commands.command()
   async def test_emoji_react(self, ctx):
-    for emoji in ctx.guild.emojis:
-      if emoji.name == "maleakos":
-        await ctx.message.add_reaction(emoji)
+    if ctx.message.author.id == my_user_id:
+      for emoji in ctx.guild.emojis:
+        if emoji.name == "maleakos":
+          await ctx.message.add_reaction(emoji)
+    else:
+      await ctx.send(nope)
   
   @commands.command()
   async def help(self, ctx):
@@ -849,7 +857,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
