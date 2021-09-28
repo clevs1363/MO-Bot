@@ -8,6 +8,7 @@ body {
     background-position: center center;
     background-size: cover;
     font-family: 'Roboto', sans-serif;
+    color: white;
 }
 
 .main {
@@ -15,7 +16,7 @@ body {
     margin-top: 30px;
     margin-bottom: 30px;
     opacity: 0.9;
-    background-color: white;
+    background-color: #111111;
     border-radius: 5px;
     padding: 20px;
 }
@@ -24,9 +25,36 @@ h1, h2 {
     font-weight: 100;
 }
 
+h1#title {
+    font-size: 60px;
+    margin-top: 15px;
+    margin-bottom: 25px;
+}
+
+ /* unvisited link */
+ a:link {
+    color: #1c7da2;
+  }
+  
+  /* visited link */
+  a:visited {
+    color: #1c7da2;
+  }
+  
+  /* mouse over link */
+  a:hover {
+    color: #f24b83;
+  }
+  
+  /* selected link */
+  a:active {
+    color: #00132c;
+  } 
+
 #obotma_img {
     display: block;
     margin: 0 auto;
+    margin-top: 30px;
 }
 
 #info {
