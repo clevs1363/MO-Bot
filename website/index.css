@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap');
+html, body { height: 100%; width: 100%; margin: 0; }
+
+body {
+    background-image: url('assets/cube.jpg');
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center center;
+    background-size: cover;
+    font-family: 'Roboto', sans-serif;
+}
+
+.main {
+    width: 80%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    opacity: 0.9;
+    background-color: white;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+h1, h2 {
+    font-weight: 100;
+}
+
+#obotma_img {
+    display: block;
+    margin: 0 auto;
+}
+
+#info {
+    margin-top: 15px;
+}
+
+#warning {
+    font-weight: bold;
+    color: red;
+}
