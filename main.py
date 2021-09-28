@@ -248,7 +248,7 @@ class Text(commands.Cog):
 
   @commands.command()
   async def test_emoji(self, ctx):
-    with open(r"C:\Users\Michael Cleversley\Downloads\Maleakosbadtrip.gif", "rb") as img:
+    with open(r"docs/assets/Maleakosbadtrip.gif", "rb") as img:
       img_byte = img.read()
       await ctx.message.guild.create_custom_emoji(name = ("maleakos"), image = img_byte)
   
