@@ -247,44 +247,13 @@ class Text(commands.Cog):
   
   @commands.command()
   async def help(self, ctx):
-    await ctx.send(
-      """```
---MUSIC--
-!play <url>: plays YouTube video from given url. Must be in a voice chat
-!play <query>: searches and plays YouTube audio with given query. Must be in a voice chat
-!pause: pauses current song
-!resume: resumes song
-!skip: skips to next song in the queue
-!join: have a friend join you in voice chat
---REQUESTS--
-!request <text>: add a feature request to a queue, up to 15
-!request: use without arguments to show the numbered list of requests
-!delete_request <number>: deletes request of given number
---MEMES--
-!pun: sends a random pun
-!lenny: send 1 or more lennies
-!meme: summons a random meme. quality not guaranteed.
---DICE ROLLER--
-!r XdY: rolls x number of a dY. Accepts modifiers. Example: !r 3d6+5
-!r stats: rolls character stats using 4d6 drop lowest method
---POLLS--
-Formatting for this one is very important
-!poll {title} [Option 1] [Option 2] [Option 3]: creates a poll for the given options. Supports up to 9 options. Braces and brackets should be typed out
---RISK OF RAIN 2--
-!swag <time>: creates a swag session and @s people to ask to swag at given time. clears previous swag ses.
-!swaggers: shows list of people current interested in swagging
-!random_swag <number>: randomizes characters for each current swaggers and randomly assigns <number> amount of artifacts
-!artifact <text>: returns description for artifact name given in <text>. Should be just "Chaos" or "Vengeance", not "Artifact of <text>"
---MISCELLANEOUS--
-!ses: Gives the time, date, and location of the next ses
-!nature <query>: fetches image related to query
-!hug: send hugs
-!help: Show this message
---ADMIN CENTER--
-prepare for sass if trying to use these
-!delete_request 0: clears request list
-!scan: gives emoji stats in current channel
-```""")
+    embed = discord.Embed(
+    title = "Obotma Commands",
+    description = "A fun passion project for the boys. It started as a replacement to Groovy and Rhythm, and has evolved into a collection of random commands for the server. \n\n https://clevs1363.github.io/Obotma/",
+    color = discord.Color.dark_blue()
+    )
+    embed.set_author(name=bot.user.name, icon_url=bot.user.avatar_url)
+    await ctx.send(embed=embed)
 
   @commands.command()
   async def die(self, ctx):

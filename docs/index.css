@@ -37,6 +37,10 @@ p#instructions {
   font-size: 20px;
 }
 
+p {
+  line-height: 1.7;
+}
+
 /* unvisited link */
 a:link {
   color: #1c7da2;
