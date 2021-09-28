@@ -38,11 +38,12 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
+bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
+my_user_id = int(os.environ['my_user_id'])
 
 # gif links
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
@@ -194,7 +195,7 @@ class Text(commands.Cog):
       return
     
     if isinstance(message.channel, discord.DMChannel):
-      if message.author.name != "CerealGuy69":
+      if message.author.id != my_user_id:
         me = bot.get_user(547127905679966209) # my id
         await me.send(f"*Message from {message.author}*:\n{message.content}")
 
@@ -279,7 +280,7 @@ class Text(commands.Cog):
     async with ctx.typing():
       await add_emoji(ctx.message, 'ses')
       if msg: # check if arguments were passed
-        if ctx.author.name == "CerealGuy69":
+        if ctx.author.id == my_user_id:
           output = " ".join(msg)
           await ctx.message.channel.edit(topic = output)
           await update_ses('ses', output)
@@ -293,7 +294,7 @@ class Text(commands.Cog):
   async def abyses(self, ctx, *msg):
     await add_emoji(ctx.message, 'ses')
     if msg: # check if arguments passed
-      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.name == "CerealGuy69":
+      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.id == my_user_id:
         output = " ".join(msg)
         await ctx.message.channel.edit(topic = output)
         await update_ses('abyses', output)
@@ -305,14 +306,14 @@ class Text(commands.Cog):
 
   @commands.command()
   async def release(self, ctx):
-    if ctx.message.author.name == "CerealGuy69":
+    if ctx.message.author.id == my_user_id:
       async with ctx.typing():
         await ctx.send("New features added! Check !help for help")
   
   @commands.command()
   async def scan(self, ctx):
     async with ctx.typing():
-      if ctx.message.author.name == "CerealGuy69":   
+      if ctx.message.author.id == my_user_id:   
         reactions_given = {}
         reactions_received = {}
         # example dictionary format
@@ -476,21 +477,27 @@ class Memes(commands.Cog):
   
   @commands.command()
   async def delete_request(self, ctx, num):
-    if int(num) == 0 and ctx.message.author.name == "CerealGuy69":
+    if int(num) == 0 and ctx.message.author.id == my_user_id:
       # clear list
-      del db["requests"]
-      await ctx.send("admin yoink")
+      if 'requests' in db:
+        del db["requests"]
+        await ctx.send("admin yoink")
+      else:
+        await ctx.send('nothing to admin yoink')
       return
-    counter = 1
-    for request in db['requests'].keys():
-      if counter == int(num):
-        if ctx.message.author.name == db['requests'][request] or ctx.message.author.name == "CerealGuy69":
-          db['requests'].pop(request)
-          await ctx.send("yoink")
-        else:
-          await ctx.send("Not very cash money of you to try and delete someone else's request")
-          await ctx.send(finger_wag)
-      counter += 1
+    if 'request' in db:
+      counter = 1
+      for request in db['requests'].keys():
+        if counter == int(num):
+          if ctx.message.author.name == db['requests'][request] or ctx.message.author.id == my_user_id:
+            db['requests'].pop(request)
+            await ctx.send("yoink")
+          else:
+            await ctx.send("Not very cash money of you to try and delete someone else's request")
+            await ctx.send(finger_wag)
+        counter += 1
+    else:
+      await ctx.send('nothing to yoink yet')
 
 class Schedule(commands.Cog):
   # commands and functions that occur at scheduled times
@@ -830,7 +837,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
