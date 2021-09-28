@@ -254,9 +254,9 @@ class Text(commands.Cog):
   
   @commands.command()
   async def test_emoji_react(self, ctx):
-    for emoji in ctx.guild.emojis():
+    for emoji in ctx.guild.emojis:
       if emoji.name == "maleakos":
-        ctx.message_add_reaction(emoji)
+        await ctx.message.add_reaction(emoji)
   
   @commands.command()
   async def help(self, ctx):
