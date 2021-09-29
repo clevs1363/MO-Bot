@@ -230,20 +230,19 @@ class Text(commands.Cog):
       await add_emoji(after, 'edited')
     return # exit if not found
 
-  @bot.event
-  async def on_member_update(before, after):
-    print(after.activity.type)
-    activity_type = None
-    try:
-      activity_type = after.activity.type
-    except:
-      pass
-    if activity_type is discord.ActivityType.streaming:
-      # Do X if he is streaming
-      channel = bot.get_channel(604834176645988354)
-      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
-    else:
-      pass
+  # @bot.event
+  # async def on_member_update(before, after):
+  #   activity_type = None
+  #   try:
+  #     activity_type = after.activity.type
+  #   except:
+  #     pass
+  #   if activity_type is discord.ActivityType.streaming:
+  #     # Do X if he is streaming
+  #     channel = bot.get_channel(604834176645988354)
+  #     await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
+  #   else:
+  #     pass
   
   @bot.event
   async def on_reaction_add(reaction, user):
@@ -356,8 +355,9 @@ class Text(commands.Cog):
   @commands.command()
   async def update(self, ctx):
     if ctx.message.author.id == my_user_id:
-      await ctx.send("New features and/or commands added! Check !help and go to the site to see what's new.")
-    ctx.message.delete()
+      await ctx.send("New features and/or commands added! Check out the site to see what's new.")
+      await ctx.invoke(self.bot.get_command('help'))
+    await ctx.message.delete()
   
   @commands.command()
   async def scan(self, ctx):
@@ -886,7 +886,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
