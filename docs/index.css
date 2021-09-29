@@ -75,3 +75,8 @@ a:active {
     font-weight: bold;
     color: red;
 }
+
+.new {
+  font-weight: 100;
+  color: #69e5ae;
+}

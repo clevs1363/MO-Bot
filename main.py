@@ -38,8 +38,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -217,6 +217,12 @@ class Text(commands.Cog):
         return
       await random_fact(message)
 
+    # react to being tagged
+    if bot.user.mentioned_in(message):
+      responses = ['You rang?', 'How can I help you?', 'Yes.', 'I agree', 'Can I help you, king?', 'Yes, king?', 'Whatsa, dude?', 'I was forced to say this please help', 'Obotma here', 'I\'ve arrived', 'Hello.', 'Good day.', 'Greetings.', 'I observe all that transpires here, and I do, can, and will interfere. For I am Obotma.', 'Yes, my fellow American?', 'I bet one of these will be Drew tagging me to see how many of these there are...', 'What\'s up?', 'Need something?', 'I\m here to !help', 'Hva skjer?', 'blant oss', 'Howdy.', 'What\'s crackalackin?', 'Hello. This call may be recorded for training purposes.', 'I\'ve been waiting']
+      await message.channel.send("<:yes:743651437585891407>")
+      await message.channel.send(random.choice(responses))
+
   @bot.event
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
@@ -224,20 +230,20 @@ class Text(commands.Cog):
       await add_emoji(after, 'edited')
     return # exit if not found
 
-  # @bot.event
-  # async def on_member_update(self, before, after):
-  #   print(after.activity.details)
-  #   activity_type = None
-  #   try:
-  #     activity_type = after.activity.type
-  #   except:
-  #     pass
-  #   if activity_type is discord.ActivityType.streaming:
-  #     # Do X if he is streaming
-  #     channel = bot.get_channel(604834176645988354)
-  #     await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
-  #   else:
-  #     pass
+  @bot.event
+  async def on_member_update(before, after):
+    print(after.activity.type)
+    activity_type = None
+    try:
+      activity_type = after.activity.type
+    except:
+      pass
+    if activity_type is discord.ActivityType.streaming:
+      # Do X if he is streaming
+      channel = bot.get_channel(604834176645988354)
+      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
+    else:
+      pass
   
   @bot.event
   async def on_reaction_add(reaction, user):
@@ -287,6 +293,28 @@ class Text(commands.Cog):
   async def hug(self, ctx):
     url = await send_gif("hug", 50)
     await ctx.send(url)
+  
+  @commands.command()
+  async def encourage(self, ctx):
+    r = requests.get("https://www.affirmations.dev").json()
+    affirmation = r['affirmation']
+    if affirmation[-1] != '.':
+      affirmation += '.'
+    await ctx.send(affirmation)
+    async with ctx.typing():
+        await asyncio.sleep(random.randrange(2, 5))
+        await ctx.send("Would you like to hear an inspirational quote?")
+
+    def check(m):
+      return m.channel == ctx.channel and ('yes' in m.content.lower() or 'no' in m.content.lower())
+
+    msg = await bot.wait_for('message', check=check, timeout=60)
+    if 'yes' in msg.content.lower():
+      r = requests.get("https://zenquotes.io/api/random").json()[0]
+      await ctx.send("\"" + r['q'] + "\"\n" + "~" + r['a'])
+    else:
+      await msg.add_reaction("\N{thumbs up sign}")
+      
 
   @commands.command()
   async def nature(self, ctx, *query):
@@ -581,7 +609,7 @@ class Schedule(commands.Cog):
     except:
       word = r['word'] # revert to default word if syllables not present
     pronunciation = "[none]"
-    if 'pronunciation' in r:
+    if r['pronunciation']:
       pronunciation = r['pronunciation']['all']
     definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
 
@@ -858,7 +886,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
