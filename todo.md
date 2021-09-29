@@ -8,7 +8,6 @@
 - Different commands for different servers
 - Sync request list with todo file
 - Bartender mode post-5pm
-- Website with commands
 - Positive encouragement
 - Bills hype
 - Tidy and comment code

@@ -224,19 +224,20 @@ class Text(commands.Cog):
       await add_emoji(after, 'edited')
     return # exit if not found
 
-  @bot.event
-  async def on_member_update(before, after):
-    activity_type = None
-    try:
-      activity_type = after.activity.type
-    except:
-      pass
-    if activity_type is discord.ActivityType.streaming:
-      # Do X if he is streaming
-      channel = bot.get_channel(604834176645988354)
-      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
-    else:
-      pass
+  # @bot.event
+  # async def on_member_update(self, before, after):
+  #   print(after.activity.details)
+  #   activity_type = None
+  #   try:
+  #     activity_type = after.activity.type
+  #   except:
+  #     pass
+  #   if activity_type is discord.ActivityType.streaming:
+  #     # Do X if he is streaming
+  #     channel = bot.get_channel(604834176645988354)
+  #     await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
+  #   else:
+  #     pass
   
   @bot.event
   async def on_reaction_add(reaction, user):
@@ -580,7 +581,7 @@ class Schedule(commands.Cog):
     except:
       word = r['word'] # revert to default word if syllables not present
     pronunciation = "[none]"
-    if r['pronunciation']:
+    if 'pronunciation' in r:
       pronunciation = r['pronunciation']['all']
     definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
 
