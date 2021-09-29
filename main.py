@@ -38,8 +38,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
+bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -354,10 +354,10 @@ class Text(commands.Cog):
     await ctx.send(db['abyses'])
 
   @commands.command()
-  async def release(self, ctx):
+  async def update(self, ctx):
     if ctx.message.author.id == my_user_id:
-      async with ctx.typing():
-        await ctx.send("New features added! Check !help for help")
+      await ctx.send("New features and/or commands added! Check !help and go to the site to see what's new.")
+    ctx.message.delete()
   
   @commands.command()
   async def scan(self, ctx):
