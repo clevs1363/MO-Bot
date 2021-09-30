@@ -6,6 +6,7 @@ import random
 import youtube_dl
 import json
 import math
+import re
 from datetime import date, datetime, timedelta
 from pytz import timezone
 from discord.ext import commands, tasks
@@ -38,8 +39,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -211,10 +212,8 @@ class Text(commands.Cog):
         await message.channel.send("Censor? I 'ardly knew 'er!")
 
     # random fact
-    if '37' in message.content and not message.content.startswith('http'):
-      # ignore emotes of form <:emote:12439824598248>
-      if '<' in message.content and '>' in message.content:
-        return
+    if '37' in re.sub("<:[a-z]*:[0-9]{18}", "", message.content) and not message.content.startswith('http'):
+      # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
       await random_fact(message)
 
     # react to being tagged
@@ -248,7 +247,7 @@ class Text(commands.Cog):
   
   @bot.event
   async def on_reaction_add(reaction, user):
-    if reaction.count == 5 and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
+    if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
       await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
 
   # 
@@ -889,7 +888,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
