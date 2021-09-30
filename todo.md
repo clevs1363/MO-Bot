@@ -13,3 +13,6 @@
 - Tidy and comment code
 - Server to-do list
 - Emoji replacement votes
+- Convert youtube url to downloadable mp3
+- ses reminder
+- remindme

@@ -38,8 +38,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -221,7 +221,9 @@ class Text(commands.Cog):
     if bot.user.mentioned_in(message):
       responses = ['You rang?', 'How can I help you?', 'Yes.', 'I agree', 'Can I help you, king?', 'Yes, king?', 'Whatsa, dude?', 'I was forced to say this please help', 'Obotma here', 'I\'ve arrived', 'Hello.', 'Good day.', 'Greetings.', 'I observe all that transpires here, and I do, can, and will interfere. For I am Obotma.', 'Yes, my fellow American?', 'I bet one of these will be Drew tagging me to see how many of these there are...', 'What\'s up?', 'Need something?', 'I\m here to !help', 'Hva skjer?', 'blant oss', 'Howdy.', 'What\'s crackalackin?', 'Hello. This call may be recorded for training purposes.', 'I\'ve been waiting']
       await message.channel.send("<:yes:743651437585891407>")
-      await message.channel.send(random.choice(responses))
+      async with message.channel.typing():
+        await asyncio.sleep(random.randrange(2, 4))
+        await message.channel.send(random.choice(responses))
 
   @bot.event
   async def on_message_edit(before, after):
@@ -620,7 +622,7 @@ class Schedule(commands.Cog):
   @daily_message.before_loop
   async def before_daily_message(self):
     hour = 7
-    minute = 30
+    minute = random.randrange(15, 45)
     await bot.wait_until_ready()
     tz = timezone('EST')
     now = datetime.now(tz) 
@@ -886,7 +888,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
