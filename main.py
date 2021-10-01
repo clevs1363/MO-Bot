@@ -39,8 +39,8 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-# bot_token = os.environ['bot_token']
-bot_token = os.environ['dbot_token'] # dev bot token
+bot_token = os.environ['bot_token']
+# bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -611,7 +611,7 @@ class Schedule(commands.Cog):
     except:
       word = r['word'] # revert to default word if syllables not present
     pronunciation = "[none]"
-    if r['pronunciation']:
+    if 'pronunciation' in r and 'all' in r['pronunciation']:
       pronunciation = r['pronunciation']['all']
     definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
 
@@ -888,7 +888,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
