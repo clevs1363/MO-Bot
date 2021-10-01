@@ -103,10 +103,16 @@
 
             <h2 id='ror2'>Risk of Rain 2</h2>
             <p>
-                <strong>!swag</strong> <em>[time]</em> : creates a swag session and tags the @ror2 role to ask to swag at given time. Clears previous swag ses. | <em>Argument required?</em> yes<br>
-                <strong>!swaggers</strong>: shows list of people current interested in swagging <br>
+                <strong>!swag</strong> <em>[time]</em> : creates a swag session and tags the @ror2 role to ask to swag at given time. Max of 4 swaggers. Clears previous swag ses. | <em>Argument required?</em> yes<br>
+                <ul><span class='new'>--NEW-- 
+                  <li>Time must be formatted appropriately. Accepts either military HH:MM time (ex: 17:50) or standard HH:MMxm time (ex: 12:50pm)</li>
+                  <li>Now caps at 4 swaggers</li>
+                  <li>Will notify current swaggers of the ses 10 minutes beforehand.</li>
+                </ul>
+                <strong>!swaggers</strong>: shows list of people current interested in swagging<br>
                 <strong>!random_swag</strong> <em>[number]</em> : randomizes characters for each current swagger and randomly picks [number] amount of artifacts. Default 0 artifacts if not provided. | <em>Argument required?</em> no<br>
                 <strong>!artifact</strong> <em>[text]</em> : returns description for artifact name given in [text]. Should be just "Chaos" or "Vengeance", not "Artifact of [text]" | <em>Argument required?</em> yes<br>
+                <span class='new'>--NEW-- </span><strong>!swag_report</strong> <em>win</em> OR <em>loss</em> : ends the current swag ses and clears the swagger list. Option (win/loss) to keep track of stats. | <em>Argument required?</em> no <br>
             </p>
 
             <h2 id='tasks'>Scheduled Tasks</h2>
@@ -118,7 +124,7 @@
                 <strong>!abyses</strong>: same as previous but for Drew's campaign <br>
                 <strong>!nature</strong> <em>[query]</em> : fetches image related to query | <em>Argument required?</em> yes<br>
                 <strong>!hug</strong>: send hugs <br>
-                <span class='new'>--NEW-- </span><strong>!encourage</strong>: sends affirmation, and an optional inspirational quote <br>
+                <strong>!encourage</strong>: sends affirmation, and an optional inspirational quote <br>
                 <strong>!help</strong>: Show this message <br>
             </p>
 
@@ -145,19 +151,10 @@
                                     <li>Play YouTube playlists</li>
                                 </ul>
                             </li>
-                            <li>Swag improvement
-                                <ul>
-                                    <li>Max of 4 swagger cap</li>
-                                    <li>Tag swaggers 10 minutes before the run (requires time oarsing)</li>
-                                    <li>Post-run report & swag ses clearing</li>
-                                </ul>
-                            </li>
                             <li>Word counter?</li>
                             <li>Different commands and storage for different servers</li>
                             <li>Bartender mode</li>
                             <li>Football gameday hype</li>
-                            <li>Server to-do list. Probably a bad idea.</li>
-                            <li>Emoji replacement votes</li>
                             <li>Animated emoji hack</li>
                             <li>Convert YouTube url to downloadable mp3</li>
                             <li>ses reminder</li>
