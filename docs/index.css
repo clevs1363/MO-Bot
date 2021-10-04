@@ -37,8 +37,9 @@ p#instructions {
   font-size: 20px;
 }
 
-p {
-  line-height: 1.7;
+section {
+  line-height: 1.8;
+  margin-bottom: 10px;
 }
 
 /* unvisited link */
@@ -59,7 +60,7 @@ a:hover {
 /* selected link */
 a:active {
   color: #00132c;
-} 
+}
 
 #obotma_img {
     display: block;

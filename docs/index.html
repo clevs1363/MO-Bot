@@ -33,6 +33,7 @@
                             <li><a href='#dice'>Dice Roller</a></li>
                             <li><a href='#polls'>Polls</a></li>
                             <li><a href='#ror2'>Risk of Rain 2</a></li>
+                            <li><a href='#positivity'>Positivity</a></li>
                             <li><a href='#tasks'>Scheduled Tasks</a></li>
                             <li><a href='#miscellaneous'>Miscellaneous</a></li>
                             <li><a href='#admin'>Admin Center</a></li>
@@ -42,10 +43,10 @@
                         <h2>About the Bot</h2>
                         <p>
                             A fun passion project for the boys. It started as a replacement to Groovy and Rhythm, and has
-                            evolved into a collection of random commands for the server. Meant to make repeated tasks easier, 
-                            and to get a chuckle from time to time.. I'm always looking for cool things to develop with Obotma, 
+                            evolved into a collection of random commands for the server. Meant to make repeated tasks easier,
+                            and to get a chuckle from time to time.. I'm always looking for cool things to develop with Obotma,
                             so don't be afraid to !request stuff. Our screening process is pretty loose.
-                        </p> 
+                        </p>
                         <p>See the links below to see features in progress and the Future of Obotma.</p>
                         <ul>
                             <li><a href='#progress'>In Progress</a></li>
@@ -61,50 +62,50 @@
 
             <br>
             <p id='instructions'>
-                General format: <strong>!command</strong> <em>[argument]</em>. Command should be prefixed with !, but the argument should 
+                General format: <strong>!command</strong> <em>[argument]</em>. Command should be prefixed with !, but the argument should
                 not have the brackets [ ] unless specified. Each command indicates whether the argument is required or not.
             </p>
             <br>
 
             <h2 id='music'>Music</h2>
-            <p>
+            <section>
                 <strong>!play</strong> <em>[url]</em> : plays YouTube video from given url. Must be in a voice chat | <em>Argument required?</em> yes<br>
                 <strong>!play</strong> <em>[query]</em> : searches and plays YouTube audio with given query. Must be in a voice chat | <em>Argument required?</em> yes <br>
                 <strong>!pause</strong>: pauses current song <br>
                 <strong>!resume</strong>: resumes song <br>
                 <strong>!skip</strong>: skips to next song in the queue if there is one queued <br>
                 <strong>!join</strong>: have a friend join you in voice chat <br>
-            </p>
+            </section>
 
             <h2 id='requests'>Requests</h2>
-            <p>
+            <section>
                 <strong>!request</strong> <em>[text]</em> : add a feature request to a queue, up to a max of 15. Use without arguments to show the numbered list of requests | <em>Argument required?</em> no <br>
                 <strong>!delete_request</strong> <em>[number]</em> : deletes request at position [number] in the queue | <em>Argument required?</em> yes <br>
-            </p>
+            </section>
 
             <h2 id='memes'>Memes</h2>
-            <p>
+            <section>
                 <strong>!pun</strong>: sends a random pun <br>
                 <strong>!lenny</strong> <em>[number]</em> : sends [number] of random lennies. Defaults to 1 if number not provided. | <em>Argument required?</em> no <br>
                 <strong>!meme</strong>: summons a random meme. Quality not guaranteed. <br>
-            </p>
+            </section>
 
             <h2 id='dice'>Dice Roller</h2>
-            <p>
+            <section>
                 <strong>!r</strong> XdY+Z: rolls X number of a dY and adds a modifer Z. Example: !r 3d6+5 <br>
                 <strong>!r</strong> stats: rolls character stats using 4d6 drop lowest method <br>
-            </p>
+            </section>
 
             <h2 id='polls'>Polls</h2>
-            <p>
+            <section>
                 Formatting for this one is very important. <br>
                 <strong>!poll</strong> <em>{title} [Option 1] [Option 2] [Option 3] ...</em> : creates a poll for the given options. Supports up to 9 options. Braces and brackets should be included | <em>Argument required?</em> yes<br>
-            </p>
+            </section>
 
             <h2 id='ror2'>Risk of Rain 2</h2>
-            <p>
+            <section>
                 <strong>!swag</strong> <em>[time]</em> : creates a swag session and tags the @ror2 role to ask to swag at given time. Max of 4 swaggers. Clears previous swag ses. | <em>Argument required?</em> yes
-                <ul><span class='new'>--NEW-- </span>
+                <ul>
                   <li>Time must be formatted appropriately. Accepts either military HH:MM time (ex: 17:50) or standard HH:MMxm time (ex: 12:50pm)</li>
                   <li>Now caps at 4 swaggers</li>
                   <li>Will notify current swaggers of the ses 10 minutes beforehand.</li>
@@ -112,29 +113,34 @@
                 <strong>!swaggers</strong>: shows list of people current interested in swagging<br>
                 <strong>!random_swag</strong> <em>[number]</em> : randomizes characters for each current swagger and randomly picks [number] amount of artifacts. Default 0 artifacts if not provided. | <em>Argument required?</em> no<br>
                 <strong>!artifact</strong> <em>[text]</em> : returns description for artifact name given in [text]. Should be just "Chaos" or "Vengeance", not "Artifact of [text]" | <em>Argument required?</em> yes<br>
-                <span class='new'>--NEW-- </span><strong>!swag_report</strong> <em>win</em> OR <em>loss</em> : ends the current swag ses and clears the swagger list. Option (win/loss) to keep track of stats. | <em>Argument required?</em> no <br>
-            </p>
+                <strong>!swag_report</strong> <em>win</em> OR <em>loss</em> : ends the current swag ses and clears the swagger list. Option (win/loss) to keep track of stats. | <em>Argument required?</em> no <br>
+            </section>
+
+            <h2 id='positivity'><span class='new'>--NEW-- </span>Positivity</h2>
+            <section>
+                <strong>!nature</strong> <em>[query]</em> : fetches image related to query | <em>Argument required?</em> yes<br>
+                <strong>!hug</strong>: send hugs <br>
+                <strong>!encourage</strong>: sends affirmation, and an optional inspirational quote <br>
+                <span class='new'>--NEW-- </span><strong>!compliment</strong>: sends a random compliment <br>
+            </section>
 
             <h2 id='tasks'>Scheduled Tasks</h2>
             <p><strong>Daily message</strong>: sends a good-morning message with Today In History (events, births, and deaths), quote of the day, and random word of the day.</p>
 
             <h2 id='miscellaneous'>Miscellaneous</h2>
-            <p>
+            <section>
                 <strong>!ses</strong>: gives the time, date, and location of the next ses <br>
                 <strong>!abyses</strong>: same as previous but for Drew's campaign <br>
-                <strong>!nature</strong> <em>[query]</em> : fetches image related to query | <em>Argument required?</em> yes<br>
-                <strong>!hug</strong>: send hugs <br>
-                <strong>!encourage</strong>: sends affirmation, and an optional inspirational quote <br>
-                <strong>!help</strong>: Show this message <br>
-            </p>
+                <strong>!help</strong>: Sends a link to this site <br>
+            </section>
 
             <h2 id='admin'>Admin Center</h2>
-            <p>
+            <section>
                 These functions require administrator permissions, or to be named CerealGuy69. <br>
                 <strong>!(aby)ses</strong> <em>[text]</em> : changes next ses info and puts it in the current channel banner <br>
                 <strong>!delete_request</strong> 0: clears request list <br>
                 <strong>!scan</strong>: gives emoji stats in current channel. <span id='warning'>WARNING:</span> will take a while to run, and will return a lot of data! <br>
-            </p>
+            </section>
 
             <hr>
 
@@ -155,7 +161,7 @@
                             <li>Different commands and storage for different servers</li>
                             <li>Bartender mode</li>
                             <li>Football gameday hype</li>
-                            <li>Animated emoji hack</li>
+                            <li>Daily news event</li>
                             <li>Convert YouTube url to downloadable mp3</li>
                             <li>ses reminder</li>
                             <li>!remindme command to tag after a certain period of time with a reminder</li>
@@ -176,7 +182,7 @@
 
             <img src='assets/obotma.png' width='500' height='300' id='obotma_img'>
         </div>
-        
+
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
         <script src="" async defer></script>
     </body>
