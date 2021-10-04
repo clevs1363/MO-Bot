@@ -11,6 +11,7 @@ class Schedule(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self.daily_message.start()
+    self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
 
   @tasks.loop(hours=24)
   async def daily_message(self):
@@ -74,6 +75,8 @@ class Schedule(commands.Cog):
     await channel.send("WORD OF THE DAY: %s" % word)
     await channel.send(pronunciation)
     await channel.send("\N{bullet}" + definitions)
+    today = date.today().day
+    await channel.send("Today's Inktober prompt is **" + self.inktober[int(today) - 1] + "**. Happy drawing!")
 
   @daily_message.before_loop
   async def before_daily_message(self):
@@ -81,7 +84,7 @@ class Schedule(commands.Cog):
     minute = random.randrange(15, 45)
     await gl.bot.wait_until_ready()
     tz = timezone('EST')
-    now = datetime.now(tz) 
+    now = datetime.now(tz)
     future = datetime(now.year, now.month, now.day, hour, minute, tzinfo=tz)
     if now.hour >= hour and now.minute > minute:
         future += timedelta(days=1)
