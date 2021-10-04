@@ -182,6 +182,7 @@ class Text(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
     # if 'requests' in db.keys():
     #   del db['requests']
 
@@ -314,7 +315,12 @@ class Text(commands.Cog):
       await ctx.send("\"" + r['q'] + "\"\n" + "~" + r['a'])
     else:
       await msg.add_reaction("\N{thumbs up sign}")
-      
+
+  @commands.command()
+  async def compliment(self, ctx):
+    r = requests.get("https://complimentr.com/api").json()
+    compliment = r['compliment']
+    await ctx.send(ctx.message.author.name + ", " + compliment + ".")
 
   @commands.command()
   async def nature(self, ctx, *query):
@@ -447,6 +453,11 @@ class Text(commands.Cog):
         embed.add_field(name = emoji_string, value = data[user][emote])
       await ctx.send(embed=embed)
 
+  @commands.command()
+  async def inktober(self, ctx):
+    today = date.today().day
+    await ctx.send("Today's Inktober prompt is **" + self.inktober[int(today) - 1] + "**. Happy drawing!")
+
 class Memes(commands.Cog):
   # commands associated with memes
   def __init__(self, bot):
@@ -536,7 +547,7 @@ class Memes(commands.Cog):
       else:
         await ctx.send('nothing to admin yoink')
       return
-    if 'request' in db:
+    if 'requests' in db:
       counter = 1
       for request in db['requests'].keys():
         if counter == int(num):
@@ -822,12 +833,13 @@ class ROR2(commands.Cog):
       self.swaggers = []
       embed = discord.Embed(
         title = "Swag at " + str(t) +"?",
-        description = "React yes or no below",
+        description = "React yes, no, or maybe below",
         color = discord.Color.dark_blue()
       )
       embed.set_author(name="Risk of Rain 2", icon_url= "https://www.gamespot.com/a/uploads/original/1575/15759911/3719483-risk-of-rain-2-review-promothumb.jpg")
       embed.add_field(name = "Yes:", value = "\N{thumbs up sign}")
       embed.add_field(name = "No:", value = "\N{thumbs down sign}")
+      embed.add_field(name = "Maybe:", value = "\N{shrug}")
 
       # get ror2 role id
       role_id = await get_role(ctx, "ror2")
@@ -835,6 +847,7 @@ class ROR2(commands.Cog):
       msg = await ctx.send(embed=embed)
       await msg.add_reaction("\N{thumbs up sign}")
       await msg.add_reaction("\N{thumbs down sign}")
+      await msg.add_reaction("\N{shrug}")
       self.swag_id = msg.id
 
       print((future-now).seconds)
