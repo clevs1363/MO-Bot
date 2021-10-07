@@ -9,6 +9,7 @@ from Dice import Dice
 from Poll import Poll
 from ROR2 import ROR2
 from Positivity import Positivity
+from Emotes import Emotes
 
 bot = gl.bot
 
@@ -29,4 +30,5 @@ bot.add_cog(Dice(bot))
 bot.add_cog(Poll(bot))
 bot.add_cog(ROR2(bot))
 bot.add_cog(Positivity(bot))
+bot.add_cog(Emotes(bot))
 bot.run(gl.bot_token)
