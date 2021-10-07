@@ -10,6 +10,7 @@ from Poll import Poll
 from ROR2 import ROR2
 from Positivity import Positivity
 from Emotes import Emotes
+from keep_alive import keep_alive
 
 bot = gl.bot
 
@@ -19,7 +20,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))

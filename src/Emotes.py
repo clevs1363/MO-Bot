@@ -35,6 +35,17 @@ class Emotes(commands.Cog):
       await ctx.send("Please provide the emote name: !e <name>")
       return
     emote_name = emote_name[0]
+    if emote_name in ('wetawd', 'advanced'):
+      emote_name = 'fwend'
+    elif emote_name == 'edited':
+      await ctx.send("Certified Drew moment.")
+    elif emote_name == 'fred':
+      for emoji in ctx.guild.emojis:
+        if emoji.name == 'pepestress':
+          await ctx.send(str(emoji) + 'fred spooks me, sorry friend')
+          return
+    elif emote_name == 'fwend':
+      await ctx.send('You\'re a good friend too, ' + ctx.author.display_name + '.')
     if ctx.message.reference:
       # react to message reply
       msg = ctx.message.reference.resolved # the reply itself
