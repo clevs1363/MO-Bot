@@ -3,6 +3,7 @@ import discord
 from Music import Music
 from Text import Text
 from Memes import Memes
+from Requests import Requests
 from Schedule import Schedule
 from Dice import Dice
 from Poll import Poll
@@ -22,6 +23,7 @@ async def on_ready():
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
 bot.add_cog(Memes(bot))
+bot.add_cog(Requests(bot))
 bot.add_cog(Schedule(bot))
 bot.add_cog(Dice(bot))
 bot.add_cog(Poll(bot))
