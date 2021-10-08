@@ -6,6 +6,7 @@ import re
 import asyncio
 import random
 from replit import db
+from heapq import heappush
 
 class Text(commands.Cog):
   # random commands associated with text channels
@@ -105,10 +106,19 @@ class Text(commands.Cog):
       await ctx.send('No stats yet!')
     else:
       await ctx.send('How many times has everyone been *hardly knew er*-ed?')
-      ret_string = ""
+      stat_heap = []
       for user, num in db['hkr_stats'].items():
-        ret_string += "**" + user + "**: " + str(num) + "\n"
+        if user != "Obotma Dev":
+          stat_heap.append((num, user))
+      counter = 1
+      stat_heap = sorted(stat_heap, key=lambda a:a[0])
+      stat_heap.reverse()
+      ret_string = ""
+      for stat in stat_heap:
+        ret_string += str(counter) + ". **" + stat[1] + "**: " + str(stat[0]) + "\n"
+        counter += 1
       await ctx.send(ret_string)
+      
 
   @commands.command()
   async def help(self, ctx):

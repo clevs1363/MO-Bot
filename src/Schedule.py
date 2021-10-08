@@ -100,6 +100,7 @@ class Schedule(commands.Cog):
     print((future-now).seconds)
     await asyncio.sleep((future-now).seconds)
   
+  @commands.command()
   async def news(self, channel):
     # get current news
     topics = ['arts', 'automobiles', 'books', 'business', 'fashion', 'food', 'health', 'home', 'insider', 'magazine', 'movies', 'nyregion', 'obituaries', 'opinion', 'politics', 'realestate', 'science', 'sports', 'sundayreview', 'technology', 'theater', 't-magazine', 'travel', 'upshot', 'us', 'world']
