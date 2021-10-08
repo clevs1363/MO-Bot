@@ -15,8 +15,10 @@ class Text(commands.Cog):
     self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
     # if 'requests' in db.keys():
     #   del db['requests']
+    if 'hkr_stats' not in db.keys():
+      db['hkr_states'] = {}
 
-  # 
+  #
   # <-- TRIGGERED EVENTS -->
   #
 
@@ -26,14 +28,19 @@ class Text(commands.Cog):
     if message.author == gl.bot.user:
       # ignore own messages
       return
-    
+
     if isinstance(message.channel, discord.DMChannel):
       if message.author.id != gl.my_user_id:
-        m = gl.bot.get_user(gl.my_user_id) 
+        m = gl.bot.get_user(gl.my_user_id)
         await m.send(f"*Message from {message.author}*:\n{message.content}")
 
     # hkh, ignores links and commands
-    if not message.clean_content.startswith('http') and not message.clean_content.startswith('!'):
+    if not message.clean_content.startswith('https://') and not message.clean_content.startswith('!'):
+      author = message.author.name
+      if author in db['hkr_stats']:
+        db['hkr_stats'][author] += 1
+      else:
+        db['hkr'][author] = 0
       if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
         await message.channel.send(last + "? I 'ardly knew 'er!")
@@ -81,35 +88,27 @@ class Text(commands.Cog):
   #     await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
   #   else:
   #     pass
-  
+
   @gl.bot.event
   async def on_reaction_add(reaction, user):
     if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
       await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
 
-  # 
+  #
   # <-- COMMANDS -->
   #
 
   @commands.command()
-  async def test_emoji(self, ctx):
-    if ctx.message.author.id == gl.my_user_id:
-      with open(r"docs/assets/Maleakosbadtrip.gif", "rb") as img:
-        img_byte = img.read()
-        await ctx.message.guild.create_custom_emoji(name = ("maleakos"), image = img_byte)
+  async def stats(self, ctx):
+    if not db['hkr_stats']:
+      await ctx.send('No stats yet!')
     else:
-      await ctx.send(gl.nope)
+      await ctx.send('How many times has everyone been hardly knew er-ed?')
+      ret_string = ""
+      for user, num in db['hkr_stats'].items():
+        ret_string += user + str(num) + "\n"
+      await ctx.send(ret_string)
 
-  
-  @commands.command()
-  async def test_emoji_react(self, ctx):
-    if ctx.message.author.id == gl.my_user_id:
-      for emoji in ctx.guild.emojis:
-        if emoji.name == "maleakos":
-          await ctx.message.add_reaction(emoji)
-    else:
-      await ctx.send(gl.nope)
-  
   @commands.command()
   async def help(self, ctx):
     embed = discord.Embed(
@@ -140,7 +139,7 @@ class Text(commands.Cog):
           await ctx.send(gl.no_gif)
           return
       await ctx.send(db['ses'])
-  
+
   @commands.command()
   async def abyses(self, ctx, *msg):
     await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
@@ -161,11 +160,11 @@ class Text(commands.Cog):
       await ctx.send("New features and/or commands added! Check out the site to see what's new.")
       await ctx.invoke(self.bot.get_command('help'))
     await ctx.message.delete()
-  
+
   @commands.command()
   async def scan(self, ctx):
     async with ctx.typing():
-      if ctx.message.author.id == gl.my_user_id:   
+      if ctx.message.author.id == gl.my_user_id:
         reactions_given = {}
         reactions_received = {}
         # example dictionary format
@@ -176,7 +175,7 @@ class Text(commands.Cog):
         #   }, Little_G: {
         #     biglaff: 100,
         #     ses: 50
-        #   } 
+        #   }
         # }
         async for msg in ctx.channel.history(limit=50000):
           for reaction in msg.reactions:
@@ -188,7 +187,7 @@ class Text(commands.Cog):
             else:
               continue
             if author in reactions_received:
-              # user already in 
+              # user already in
               if emoji in reactions_received[author]:
                 # user already has been reacted to with this emote, add to total
                 reactions_received[author][emoji] += reaction.count
@@ -220,16 +219,16 @@ class Text(commands.Cog):
         for emoji in ctx.guild.emojis:
           emojis[emoji.name] = emoji.id
 
-        # create receieved emojis stat embed      
+        # create receieved emojis stat embed
         await self.create_embed(emojis, reactions_received, "received", ctx)
-        
+
         # create given emojis stat embed
         await self.create_embed(emojis, reactions_given, "given", ctx)
 
       else:
         await ctx.send("We know we'd break the damn bot with everyone scanning")
         return await ctx.send(gl.finger_wag)
-    
+
   async def create_embed(self, emojis, data, given_or_received, ctx):
     # same code for creating given and received emotes
     for user in data:
