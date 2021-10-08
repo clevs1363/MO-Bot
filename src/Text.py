@@ -16,7 +16,7 @@ class Text(commands.Cog):
     # if 'requests' in db.keys():
     #   del db['requests']
     if 'hkr_stats' not in db.keys():
-      db['hkr_states'] = {}
+      db['hkr_stats'] = {}
 
   #
   # <-- TRIGGERED EVENTS -->
@@ -40,7 +40,7 @@ class Text(commands.Cog):
       if author in db['hkr_stats']:
         db['hkr_stats'][author] += 1
       else:
-        db['hkr'][author] = 0
+        db['hkr_stats'][author] = 1
       if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
         await message.channel.send(last + "? I 'ardly knew 'er!")
@@ -103,10 +103,10 @@ class Text(commands.Cog):
     if not db['hkr_stats']:
       await ctx.send('No stats yet!')
     else:
-      await ctx.send('How many times has everyone been hardly knew er-ed?')
+      await ctx.send('How many times has everyone been *hardly knew er*-ed?')
       ret_string = ""
       for user, num in db['hkr_stats'].items():
-        ret_string += user + str(num) + "\n"
+        ret_string += "**" + user + "**: " + str(num) + "\n"
       await ctx.send(ret_string)
 
   @commands.command()
