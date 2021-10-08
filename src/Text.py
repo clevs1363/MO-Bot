@@ -16,6 +16,7 @@ class Text(commands.Cog):
     self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
     # if 'requests' in db.keys():
     #   del db['requests']
+    del db['hkr_stats']
     if 'hkr_stats' not in db.keys():
       db['hkr_stats'] = {}
 
@@ -37,18 +38,24 @@ class Text(commands.Cog):
 
     # hkh, ignores links and commands
     if not message.clean_content.startswith('https://') and not message.clean_content.startswith('!'):
-      author = message.author.name
+      add_stat = False
+      if message.content.endswith('er'):
+        last = (message.content.split()[-1]).replace("?", "")
+        await message.channel.send(last + "? I 'ardly knew 'er!")
+        add_stat = True
+      elif message.content.endswith('er?') or message.content.endswith('*r?'):
+        await message.channel.send("I \'ardly knew \'er!")
+        add_stat = True
+      elif message.content.endswith('*r'):
+        await message.channel.send("Censor? I 'ardly knew 'er!")
+        add_stat = True
+      
+      if add_stat:
+        author = message.author.name
       if author in db['hkr_stats']:
         db['hkr_stats'][author] += 1
       else:
         db['hkr_stats'][author] = 1
-      if message.content.endswith('er'):
-        last = (message.content.split()[-1]).replace("?", "")
-        await message.channel.send(last + "? I 'ardly knew 'er!")
-      elif message.content.endswith('er?') or message.content.endswith('*r?'):
-        await message.channel.send("I \'ardly knew \'er!")
-      elif message.content.endswith('*r'):
-        await message.channel.send("Censor? I 'ardly knew 'er!")
 
     # random fact
     if '37' in re.sub("<:[a-z]*:[0-9]{18}", "", message.content) and not message.content.startswith('http'):
