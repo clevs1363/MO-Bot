@@ -67,13 +67,14 @@ class Text(commands.Cog):
     # add edit emoji to edited messages
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
     messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
-    edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
-    if edited:
-      edited = edited[0]
-      drew = gl.bot.get_user(gl.drew_id)
-      await drew.send(random.choice(messages))
-      await drew.send(edited)
-      return # exit if not found
+    if before.author.id == gl.drew_id:
+      edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
+      if edited:
+        edited = edited[0]
+        drew = gl.bot.get_user(gl.drew_id)
+        await drew.send(random.choice(messages))
+        await drew.send(edited)
+        return # exit if not found
 
   # @bot.event
   # async def on_member_update(before, after):
