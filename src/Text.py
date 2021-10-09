@@ -18,6 +18,8 @@ class Text(commands.Cog):
     #   del db['requests']
     if 'hkr_stats' not in db.keys():
       db['hkr_stats'] = {}
+    if 'edited_stats' not in db.keys():
+      db['edited_stats'] = {}
 
   #
   # <-- TRIGGERED EVENTS -->
@@ -89,15 +91,22 @@ class Text(commands.Cog):
       # ignore links
       return
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
-    if before.author.id == gl.drew_id:
-      messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
-      edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
-      if edited:
-        edited = edited[0]
-        drew = gl.bot.get_user(gl.drew_id)
-        await drew.send(random.choice(messages))
-        await drew.send(edited)
-        return # exit if not found
+    # add stats 
+    author = before.author.name
+    if author in db['edited_stats']:
+      db['edited_stats'][author] += 1
+    else:
+      db['edited_stats'][author] = 1
+    # if before.author.id == gl.drew_id:
+    #   # harass drew
+    #   messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
+    #   edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
+    #   if edited:
+    #     edited = edited[0]
+    #     drew = gl.bot.get_user(gl.drew_id)
+    #     await drew.send(random.choice(messages))
+    #     await drew.send(edited)
+    #     return # exit if not found
 
   # @bot.event
   # async def on_member_update(before, after):
@@ -127,19 +136,28 @@ class Text(commands.Cog):
     if not db['hkr_stats']:
       await ctx.send('No stats yet!')
     else:
-      await ctx.send('How many times has everyone been *hardly knew er*-ed?')
-      stat_heap = []
-      for user, num in db['hkr_stats'].items():
-        if user != "Obotma Dev":
-          stat_heap.append((num, user))
-      counter = 1
-      stat_heap = sorted(stat_heap, key=lambda a:a[0])
-      stat_heap.reverse()
-      ret_string = ""
-      for stat in stat_heap:
-        ret_string += str(counter) + ". **" + stat[1] + "**: " + str(stat[0]) + "\n"
-        counter += 1
-      await ctx.send(ret_string)
+      hkr_string = await self.get_stats(db['hkr_stats'])
+      await ctx.send('How many times has everyone been *hardly knew er*-ed?\n' + hkr_string)
+    if not db['edited_stats']:
+      await ctx.send('No edited stats yet!')
+    else:
+      edited_string = await self.get_stats(db['edited_stats'])
+      await ctx.send('How many times has everyone edited?\n' + edited_string)
+
+  async def get_stats(self, data):
+    # data should be a dictionary
+    stat_heap = []
+    for user, num in data.items():
+      if user != "Obotma Dev" and user != "NotSoBot":
+        stat_heap.append((num, user))
+    counter = 1
+    stat_heap = sorted(stat_heap, key=lambda a:a[0])
+    stat_heap.reverse()
+    ret_string = ""
+    for stat in stat_heap:
+      ret_string += str(counter) + ". **" + stat[1] + "**: " + str(stat[0]) + "\n"
+      counter += 1
+    return ret_string
       
 
   @commands.command()

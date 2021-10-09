@@ -1,17 +1,10 @@
-import asyncio
 import discord
 import os
 import requests
 import random
-import youtube_dl
 import json
-import math
-import re
-from datetime import date, datetime, timedelta
-from pytz import timezone
-from discord.ext import commands, tasks
+from discord.ext import commands
 from keep_alive import keep_alive
-from pprint import pprint
 from replit import db
 
 intents = discord.Intents.all()
@@ -22,8 +15,8 @@ bot.remove_command('help')
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
@@ -63,12 +56,12 @@ async def send_gif(term, limit):
   r = requests.get("https://g.tenor.com/v1/search?q=%s&key=%s&limit=%s" % (term, apikey, limit))
 
   if r.status_code == 200:
-      # load the GIFs using the urls for the smaller GIF sizes
-      top_gifs = json.loads(r.content)['results']
-      rand_url = top_gifs[random.randrange(0, limit - 1)]['url']
-      return rand_url
+    # load the GIFs using the urls for the smaller GIF sizes
+    top_gifs = json.loads(r.content)['results']
+    rand_url = top_gifs[random.randrange(0, limit - 1)]['url']
+    return rand_url
   else:
-      return None
+    return None
 
 # returns role_id as an int. Returns None if not found
 async def get_role(ctx, name):
