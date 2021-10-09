@@ -65,10 +65,11 @@ class Text(commands.Cog):
       
       if add_stat:
         author = message.author.name
-        if author in db['hkr_stats']:
-          db['hkr_stats'][author] += 1
-        else:
-          db['hkr_stats'][author] = 1
+        if author != 'Obotma Dev' and author != 'NotSoBot':
+          if author in db['hkr_stats']:
+            db['hkr_stats'][author] += 1
+          else:
+            db['hkr_stats'][author] = 1
 
     # random fact
     fact_message_1 = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
@@ -93,10 +94,11 @@ class Text(commands.Cog):
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
     # add stats 
     author = before.author.name
-    if author in db['edited_stats']:
-      db['edited_stats'][author] += 1
-    else:
-      db['edited_stats'][author] = 1
+    if author != 'Obotma Dev' and author != 'NotSoBot':
+      if author in db['edited_stats']:
+        db['edited_stats'][author] += 1
+      else:
+        db['edited_stats'][author] = 1
     # if before.author.id == gl.drew_id:
     #   # harass drew
     #   messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
