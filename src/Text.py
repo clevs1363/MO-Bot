@@ -16,7 +16,6 @@ class Text(commands.Cog):
     self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
     # if 'requests' in db.keys():
     #   del db['requests']
-    del db['hkr_stats']
     if 'hkr_stats' not in db.keys():
       db['hkr_stats'] = {}
 
@@ -38,28 +37,41 @@ class Text(commands.Cog):
 
     # hkh, ignores links and commands
     if not message.clean_content.startswith('https://') and not message.clean_content.startswith('!'):
+      # TODO: tidy up this code
       add_stat = False
       if message.content.endswith('er'):
         last = (message.content.split()[-1]).replace("?", "")
         await message.channel.send(last + "? I 'ardly knew 'er!")
         add_stat = True
-      elif message.content.endswith('er?') or message.content.endswith('*r?'):
+      elif message.content.endswith('er.'):
+        last = (message.content.split()[-1])
+        await message.channel.send(last + ". I 'ardly knew 'er.")
+        add_stat = True
+      elif message.content.endswith('er?'):
         await message.channel.send("I \'ardly knew \'er!")
         add_stat = True
-      elif message.content.endswith('*r'):
+      elif message.content.endswith('*r') or message.content.endswith('*r?'):
         await message.channel.send("Censor? I 'ardly knew 'er!")
+        add_stat = True
+      elif message.content.endswith('er!'):
+        await message.channel.send("Aha! I did in fact know 'er!")
+        add_stat = True
+      elif message.content.endswith('er...'):
+        last = (message.content.split()[-1])
+        await message.channel.send(last + "... I 'ardly knew 'er...")
         add_stat = True
       
       if add_stat:
         author = message.author.name
-      if author in db['hkr_stats']:
-        db['hkr_stats'][author] += 1
-      else:
-        db['hkr_stats'][author] = 1
+        if author in db['hkr_stats']:
+          db['hkr_stats'][author] += 1
+        else:
+          db['hkr_stats'][author] = 1
 
     # random fact
-    if '37' in re.sub("<:[a-z]*:[0-9]{18}", "", message.content) and not message.content.startswith('http'):
-      # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
+    fact_message = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
+    fact_message = re.sub("<@[0-9]{18}>", "", fact_message) # ignores user IDs (when @ed) of the form <@123456789123456789>
+    if '37' in fact_message and not message.content.startswith('https://'):
       await gl.random_fact(message)
 
     # react to being tagged
@@ -73,9 +85,12 @@ class Text(commands.Cog):
   @gl.bot.event
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
+    if 'https://' in before.content:
+      # ignore links
+      return
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
-    messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
     if before.author.id == gl.drew_id:
+      messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
       edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
       if edited:
         edited = edited[0]
