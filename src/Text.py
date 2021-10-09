@@ -69,8 +69,8 @@ class Text(commands.Cog):
           db['hkr_stats'][author] = 1
 
     # random fact
-    fact_message = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
-    fact_message = re.sub("<@[0-9]{18}>", "", fact_message) # ignores user IDs (when @ed) of the form <@123456789123456789>
+    fact_message_1 = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
+    fact_message = re.sub("<@!*[0-9]{18}>", "", fact_message_1) # ignores user IDs (when @ed) of the form <@123456789123456789>
     if '37' in fact_message and not message.content.startswith('https://'):
       await gl.random_fact(message)
 
