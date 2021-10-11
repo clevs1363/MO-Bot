@@ -26,8 +26,8 @@ class Text(commands.Cog):
   @gl.bot.event
   async def on_message(message):
     await gl.bot.process_commands(message)
-    if message.author == gl.bot.user:
-      # ignore own messages
+    if message.author.bot:
+      # ignore messages from bots
       return
 
     if isinstance(message.channel, discord.DMChannel):
@@ -38,28 +38,40 @@ class Text(commands.Cog):
     # hkh, ignores links and commands
     if not message.clean_content.startswith('https://') and not message.clean_content.startswith('!'):
       # TODO: tidy up this code
-      add_stat = False
-      if message.content.endswith('er'):
-        last = (message.content.split()[-1]).replace("?", "")
-        await message.channel.send(last + "? I 'ardly knew 'er!")
-        add_stat = True
-      elif message.content.endswith('er.'):
-        last = (message.content.split()[-1])
-        await message.channel.send(last + ". I 'ardly knew 'er.")
-        add_stat = True
-      elif message.content.endswith('er?'):
-        await message.channel.send("I \'ardly knew \'er!")
-        add_stat = True
-      elif message.content.endswith('*r') or message.content.endswith('*r?'):
+      responses = {
+        '.': "...I 'ardly knew 'er.",
+        '?': "I 'ardly knew 'er!",
+        "!": "Aha! I did in fact know 'er!",
+        'default': "? I 'ardly knew 'er!"
+      }
+      msg = message.content
+      add_stat = True
+      if re.search("er[!?.]+$", msg) :
+        # matches 1+ punctuation: pogger?, pogger!!!
+        punc = msg[-1]
+        last = (msg.split()[-1]).replace("?", "").replace('!', '').replace('.', '')
+        await message.channel.send(responses[punc])
+      elif re.search('([*]r+)(\W|\d|[_])*$', msg):
         await message.channel.send("Censor? I 'ardly knew 'er!")
-        add_stat = True
-      elif message.content.endswith('er!'):
-        await message.channel.send("Aha! I did in fact know 'er!")
-        add_stat = True
-      elif message.content.endswith('er...'):
-        last = (message.content.split()[-1])
-        await message.channel.send(last + "... I 'ardly knew 'er...")
-        add_stat = True
+      elif re.search("(e(r)+)(\W|\d|[_])*$", msg):
+        # matches 1+ r's: pogger, poggerrrrr, poggerrrr*891832
+        last = msg.split()[-1]
+        span = re.search("(e(r)+)(\W|\d|[_])*$", last).span()
+        last_stripped = last[:span[0]+2] # removes excess symbols
+        await message.channel.send(last_stripped + responses['default'])
+      elif re.search("er\W+$", msg):
+        # matches non-string characters at the end: pogger---, pogger###
+        last = msg.split()[-1]
+        span = re.search("er\W+$", last).span()
+        last_stripped = last[:span[0]+2] # removes excess symbols
+        await message.channel.send(last_stripped + responses['default'])
+      elif re.search('er\d+$', msg):
+        last = msg.split()[-1]
+        span = re.search("er\d+$", last).span()
+        last_stripped = last[:span[0]+2] # removes excess symbols
+        await message.channel.send(last_stripped + responses['default'])
+      else:
+        add_stat = False
       
       if add_stat:
         author = message.author.name

@@ -48,36 +48,20 @@ class Schedule(commands.Cog):
     await channel.send("QUOTE OF THE DAY: \"%s\" \n~%s" % (quote, author))
 
     # send definition of the day
-    url = "https://wordsapiv1.p.rapidapi.com/words/"
-    querystring = {"random":"true"}
-    headers = {
-      'x-rapidapi-host': "wordsapiv1.p.rapidapi.com",
-      'x-rapidapi-key': "fb731cefd2msh69364977b49898ep16b903jsn21c4ae1a6eab"
-    }
-
-    # API is very inconsistent, loop until getting a valid word
-    all_fields = False
-    while not all_fields:
-      r = requests.request("GET", url, headers=headers, params=querystring).json()
-      if 'word' not in r or 'results' not in r:
-        pass
-      else:
-        all_fields = True
-
-    try:
-      word = "\N{bullet}".join([syllable for syllable in r['syllables']['list']]) # join syllables over dot like google definition
-    except:
-      word = r['word'] # revert to default word if syllables not present
-    pronunciation = ""
-    if 'pronunciation' in r and 'all' in r['pronunciation']:
-      pronunciation = r['pronunciation']['all']
-    definitions = "\n\N{bullet}".join([definition['definition'] for definition in r['results']])
-
-    await channel.send("WORD OF THE DAY: %s" % word)
-    if pronunciation:
-      # might be an empty string
-      await channel.send(pronunciation)
-    await channel.send("\N{bullet}" + definitions)
+    r = requests.get("http://api.wordnik.com/v4/words.json/wordOfTheDay?api_key=" + gl.wordnik_key).json()
+    word = r['word']
+    defs_string = "" # string including all definitions
+    definitions = r.get('definitions', [])
+    if definitions:
+      for definition in definitions:
+        defs_string += "\N{bullet} *" + definition['partOfSpeech'] + "*. " + definition['text'] + "\n"
+    ex_string = "" # string including one example
+    examples = r.get('examples', [])
+    if examples:
+      ex_string += examples[0]['text']
+    await channel.send('WORD OF THE DAY: ' + word)
+    await channel.send(defs_string)
+    await channel.send('\"' + ex_string + '\"')
 
     # send daily news
     await self.news(channel)
