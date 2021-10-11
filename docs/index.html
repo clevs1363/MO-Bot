@@ -164,8 +164,8 @@
                             <ul>
                                 <li>Argument <em>[number]</em> : The number of the lennies to send. Max of 500, you lenny fiend.</li>
                                 <li>Argument required: <strong class='no'>no</strong>.  Sends one brave lenny if no argument provided.</li>
-                                <li><em>Aliases</em> : <span class="code">!lennies</span> </li>
-                                <li><em>Example</em> : "!lenny 100" </li>
+                                <li>Aliases : <span class="code">!lennies</span> </li>
+                                <li>Example : <span class="example">!lenny 100</span> </li>
                             </ul>
                         </div>
                     </div>
@@ -188,6 +188,40 @@
             </div>
 
             <h2 id='dice'>Dice Roller</h2>
+            <div class="accordion" id="rollAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="rollHeadingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseOne" aria-expanded="false" aria-controls="rollCollapseOne">
+                            <strong>!r&nbsp;</strong><span class="example">XdY+Z</span>: rolls dice based on given formula.
+                        </button>
+                    </h2>
+                    <div id="rollCollapseOne" class="accordion-collapse collapse" aria-labelledby="rollHeadingOne" data-bs-parent="#rollAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <span class="example">XdY+Z</span>: rolls X number of a dY and adds a modifer Z. If X = 1, it's optional.</li>
+                                <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                                <li>Aliases: <em>!roll XdY+Z</em> </li>
+                                <li>Example: <span class="example">!r 1d20+5</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="rollHeadingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseTwo" aria-expanded="false" aria-controls="rollCollapseTwo">
+                            <strong>!r&nbsp;</strong><span class="example">stats</span>: rolls character stats using 4d6 drop lowest method.
+                        </button>
+                    </h2>
+                    <div id="rollCollapseTwo" class="accordion-collapse collapse" aria-labelledby="rollHeadingTwo" data-bs-parent="#rollAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument required: <strong class='yes'>yes</strong>.  </li>
+                                <li>Aliases: <span class="code">!roll stats</span> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <section>
                 <strong>!r</strong> XdY+Z: rolls X number of a dY and adds a modifer Z. Example: !r 3d6+5 <br>
                 <strong>!r</strong> stats: rolls character stats using 4d6 drop lowest method <br>
