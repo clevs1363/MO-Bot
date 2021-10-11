@@ -15,14 +15,16 @@ bot.remove_command('help')
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
 my_user_id = int(os.environ['my_user_id'])
 drew_id = 382364782365376512
 nyt_key = os.environ['nyt_key']
+mw_dict_key = os.environ['mw_dict_key'] # merriam-webster dictionary key
+mw_thes_key = os.environ['mw_thes_key'] # merriam-webster thesaurus key
 
 # gif links
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
