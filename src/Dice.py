@@ -7,8 +7,8 @@ class Dice(commands.Cog):
     self.bot = bot
     self._last_member = None
 
-  @commands.command()
-  async def r(self, ctx, roll):
+  @commands.command(aliases=['r'])
+  async def roll(self, ctx, roll):
     if roll == "stats":
       stats = await self.roll_stats()
       await ctx.send(", ".join([str(stat) for stat in stats]))

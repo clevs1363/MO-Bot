@@ -10,7 +10,7 @@ class Miscellaneous(commands.Cog):
     self.bot = bot
     self._last_member = None
 
-  @commands.command()
+  @commands.command(aliases=['h'])
   async def help(self, ctx):
     embed = discord.Embed(
     title = "Obotma Commands",
@@ -20,11 +20,14 @@ class Miscellaneous(commands.Cog):
     embed.set_author(name=gl.bot.user.name, icon_url=gl.bot.user.avatar_url)
     await ctx.send(embed=embed)
 
-  @commands.command()
+  @commands.command(aliases=['kill'])
   async def die(self, ctx):
     async with ctx.typing():
-      await ctx.send("I'd rather die standing than live kneeling")
-      await ctx.send("And I don't even have legs")
+      return await ctx.send("I'd rather die standing than live kneeling \n And I don't even have legs")
+  
+  @commands.command()
+  async def kill(self, ctx):
+    return await ctx.send('https://tenor.com/view/braun-strow-man-you-cant-kill-me-gif-10197798')
 
   @commands.command()
   async def ses(self, ctx, *msg):
@@ -37,9 +40,8 @@ class Miscellaneous(commands.Cog):
           await gl.update_ses('ses', output)
           await ctx.send('--SESSION CHANGED--')
         else:
-          await ctx.send(gl.no_gif)
-          return
-      await ctx.send(db['ses'])
+          return await ctx.send(gl.no_gif)
+      return await ctx.send(db['ses'])
 
   @commands.command()
   async def abyses(self, ctx, *msg):

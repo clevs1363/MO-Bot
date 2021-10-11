@@ -33,7 +33,7 @@ class Words(commands.Cog):
       else:
         return await ctx.send("No definitions found. Maybe try !udefine, that guy has some wacky shit...")
     
-  @commands.command()
+  @commands.command(aliases=['synonyms'])
   async def syns(self, ctx, word, depth=1):
     async with ctx.typing():
       if depth > 3:
@@ -61,7 +61,7 @@ class Words(commands.Cog):
       else:
         return await ctx.send("No synonyms found.")
   
-  @commands.command()
+  @commands.command(aliases=['urban_define'])
   async def udefine(self, ctx, word, num=1):
     # num is amount of definitions to return
     if num > 5:

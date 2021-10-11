@@ -8,8 +8,8 @@ class Emotes(commands.Cog):
     self.bot = bot
     self._last_member = None
 
-  @commands.command()
-  async def ue(self, ctx, emote_name):
+  @commands.command(aliases=['ue'])
+  async def upload_emote(self, ctx, emote_name):
     # stand for upload emoji
     if ctx.message.author.id == gl.my_user_id:
       with open(r"docs/assets/" + emote_name, "rb") as img:
@@ -29,8 +29,8 @@ class Emotes(commands.Cog):
       await ctx.send(gl.nope)
 
   
-  @commands.command()
-  async def e(self, ctx, *emote_name):
+  @commands.command(aliases=['e'])
+  async def emote(self, ctx, *emote_name):
     if not emote_name:
       await ctx.send("Please provide the emote name: !e <name>")
       return

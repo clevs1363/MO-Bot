@@ -41,7 +41,7 @@ class ROR2(commands.Cog):
         "loss": 0
       }
   
-  @commands.command()
+  @commands.command(aliases=['shag'])
   async def swag(self, ctx, *swag_time):
     if not swag_time:
       return await ctx.send("Provide a time (!swag <time>)")
@@ -125,7 +125,7 @@ class ROR2(commands.Cog):
       await ctx.send("No swaggers yet. Use !swag to initiate a potential swag. Will remove previous swagger session")
       await ctx.send("https://i.ibb.co/f1fwZRf/john-travolta-lost-ror2.gif")
   
-  @commands.command()
+  @commands.command(aliases=['rand_swag', 'r_swag'])
   async def random_swag(self, ctx, *num):
     for swagger in self.swaggers:
       await ctx.send(swagger + ": " + random.choice(self.characters))
