@@ -94,19 +94,8 @@ em {
   font-family: 'Courier New', Courier, monospace;
 }
 
-ul.dashed {
-  list-style-type: none;
+ul {
   margin-bottom: 0;
-  padding-left: 0;
-}
-
-ul.dashed > li {
-  text-indent: -5px;
-}
-
-ul.dashed > li:before {
-  content: "-";
-  text-indent: -5px;
 }
 
 .accordion-item {
@@ -141,4 +130,16 @@ ul.dashed > li:before {
   color: #1c7da2;
   background-color: #1f1f1f;
   box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}
+
+.yes {
+  color: #f24b83;
+}
+
+.no {
+  color: #1c7da2;
+}
+
+.example {
+  color: gray;
 }

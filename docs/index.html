@@ -84,61 +84,108 @@
             <h2 id='requests'>Requests</h2>
             <div class="accordion" id="requestAccordion">
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingOne">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                  <h2 class="accordion-header" id="requestHeadingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#requestCollapseOne" aria-expanded="false" aria-controls="requestCollapseOne">
                         <strong>!request</strong> <em>&nbsp;[text ...]&nbsp;</em> : add a feature request to a queue, up to a max of 15.
                     </button>
                   </h2>
-                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#requestAccordion">
+                  <div id="requestCollapseOne" class="accordion-collapse collapse" aria-labelledby="requestHeadingOne" data-bs-parent="#requestAccordion">
                     <div class="accordion-body">
-                        <ul class='dashed'>
-                            <li>Argument <em>[text ...]</em> : The text of the request you'd like to make. Use with no arguments to list current requests. </li>
+                        <ul>
+                            <li>Argument <em>[text ...]</em> : The text of the request you'd like to make. </li>
+                            <li>Argument required: <strong class='no'>no</strong>. Lists current requests if no argument provided.</li>
                             <li>Aliases: <span class="code">!req</span>, <span class="code">!requests</span></li>
-                            <li>Example: "!request Make Obotma do my homework for free plz"</li>
+                            <li>Example: <span class="example">!request Make Obotma do my homework for free plz</span></li>
                         </ul>
                     </div>
                   </div>
                 </div>
                 <div class="accordion-item">
-                  <h2 class="accordion-header" id="headingTwo">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                  <h2 class="accordion-header" id="requestHeadingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#requestCollapseTwo" aria-expanded="false" aria-controls="requestCollapseTwo">
                         <strong>!delete_request</strong> <em>&nbsp;[number]&nbsp;</em> : deletes request at position <em>&nbsp;[number]&nbsp;</em> in the queue. You must have been the one to create the request.
                     </button>
                   </h2>
-                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#requestAccordion">
+                  <div id="requestCollapseTwo" class="accordion-collapse collapse" aria-labelledby="requestHeadingTwo" data-bs-parent="#requestAccordion">
                     <div class="accordion-body">
-                        <ul class="dashes">
-                            <li><em>Argument [number] </em><span class='text-danger'>*</span> : The number of the request to remove. Use <span class="code">!request</span> to see the each request's number.</li>
-                            <li><em>Aliases</em> : <span class="code">del_req</span>, <span class="code">delete_requests</span></li>
-                            <li><em>Example</em> : "!delete_request 1" </li>
+                        <ul>
+                            <li>Argument<em> [number] </em><span class='text-danger'>*</span> : The number of the request to remove. Use <span class="code">!request</span> to see the each request's number.</li>
+                            <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                            <li>Aliases: <span class="code">!del_req</span>, <span class="code">!delete_requests</span></li>
+                            <li>Example: <span class="example">!delete_request 1</span> </li>
                         </ul>
                     </div>
                   </div>
                 </div>
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
-                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#requestCollapseThree" aria-expanded="false" aria-controls="requestCollapseThree">
                         <span class="new">--NEW-- </span>&nbsp;<strong>!bug</strong> <em>&nbsp;[text ...]&nbsp;</em> : Reports a bug. Preferably used more seriously than <span class="code">!request</span>. Use with no arguments to list current bugs.
                       </button>
                     </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#requestAccordion">
-                      <div class="accordion-body">
-                          <ul class="dashes">
-                            <li>Argument <em>&nbsp;[text ...]&nbsp;</em> : text of the bug you'd like to report. Use with no arguments to list current known bugs.</li>
-                            <li><em>Aliases</em> : <span class="code">!bugs</span></li>
-                            <li><em>Example</em> : "!bug Sending a youtube link makes Obotma react with :edited:" </li>
-                          </ul>
-                      </div>
+                    <div id="requestCollapseThree" class="accordion-collapse collapse" aria-labelledby="requestHeadingThree" data-bs-parent="#requestAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[text ...]</em> : text of the bug you'd like to report. </li>
+                                <li>Argument required: <strong class='no'>no</strong>. Lists current known bugs if no argument provided.</li>
+                                <li>Aliases: <span class="code">!bugs</span></li>
+                                <li>Example: <span class="example">!bug Sending a youtube link makes Obotma react with :edited:</span> </li>
+                            </ul>
+                        </div>
                     </div>
-                  </div>
-              </div>
+                </div>
+            </div>
 
             <h2 id='memes'>Memes</h2>
-            <section>
-                <strong>!pun</strong>: sends a random pun <br>
-                <strong>!lenny</strong> <em>[number]</em> : sends [number] of random lennies. Defaults to 1 if number not provided. | <em>Argument required?</em> no <br>
-                <strong>!meme</strong>: summons a random meme. Quality not guaranteed. <br>
-            </section>
+            <div class="accordion" id="memeAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="memeHeadingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#memeCollapseOne" aria-expanded="false" aria-controls="memeCollapseOne">
+                            <strong>!pun</strong>: sends a random pun, and prompts for interaction.
+                        </button>
+                    </h2>
+                    <div id="memeCollapseOne" class="accordion-collapse collapse" aria-labelledby="memeHeadingOne" data-bs-parent="#memeAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Arguments: <em>None</em> </li>
+                                <li>Aliases: <em>None</em> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="memeHeadingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#memeCollapseTwo" aria-expanded="false" aria-controls="memeCollapseTwo">
+                            <strong>!lenny</strong> <em>&nbsp;[number]&nbsp;</em> : sends [number] of random lennies.
+                        </button>
+                    </h2>
+                    <div id="memeCollapseTwo" class="accordion-collapse collapse" aria-labelledby="memeHeadingTwo" data-bs-parent="#memeAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[number]</em> : The number of the lennies to send. Max of 500, you lenny fiend.</li>
+                                <li>Argument required: <strong class='no'>no</strong>.  Sends one brave lenny if no argument provided.</li>
+                                <li><em>Aliases</em> : <span class="code">!lennies</span> </li>
+                                <li><em>Example</em> : "!lenny 100" </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="memeHeadingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#memeCollapseThree" aria-expanded="false" aria-controls="memeCollapseThree">
+                            <strong>!meme</strong>: summons a random meme. Quality not guaranteed.
+                        </button>
+                    </h2>
+                    <div id="memeCollapseThree" class="accordion-collapse collapse" aria-labelledby="memeHeadingThree" data-bs-parent="#memeAccordion">
+                        <div class="accordion-body">
+                            <ul class='dashed'>
+                                <li>Arguments: <em>None</em> </li>
+                                <li>Aliases: <em>None</em> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <h2 id='dice'>Dice Roller</h2>
             <section>
