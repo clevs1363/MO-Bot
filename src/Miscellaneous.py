@@ -9,6 +9,7 @@ class Miscellaneous(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    self.inktober_prompts = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
 
   @commands.command(aliases=['h'])
   async def help(self, ctx):
@@ -20,7 +21,7 @@ class Miscellaneous(commands.Cog):
     embed.set_author(name=gl.bot.user.name, icon_url=gl.bot.user.avatar_url)
     await ctx.send(embed=embed)
 
-  @commands.command(aliases=['kill'])
+  @commands.command()
   async def die(self, ctx):
     async with ctx.typing():
       return await ctx.send("I'd rather die standing than live kneeling \n And I don't even have legs")
@@ -154,4 +155,4 @@ class Miscellaneous(commands.Cog):
   @commands.command()
   async def inktober(self, ctx):
     today = date.today().day
-    await ctx.send("Today's Inktober prompt is **" + self.inktober[int(today) - 1] + "**. Happy drawing!")
+    await ctx.send("Today's Inktober prompt is **" + self.inktober_prompts[int(today) - 1] + "**. Happy drawing!")

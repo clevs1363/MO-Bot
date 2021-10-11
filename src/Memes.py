@@ -10,7 +10,7 @@ class Memes(commands.Cog):
     self.bot = bot
     self._last_member = None
 
-  @commands.command(aliases='lennies')
+  @commands.command(aliases=['lennies'])
   async def lenny(self, ctx, num=1):
     if num > 500:
       await ctx.send("Error 37: lenny overflow")

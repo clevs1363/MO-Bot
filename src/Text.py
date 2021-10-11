@@ -11,7 +11,6 @@ class Text(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
-    self.inktober = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
     # if 'requests' in db.keys():
     #   del db['requests']
     if 'hkr_stats' not in db.keys():
