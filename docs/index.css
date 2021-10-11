@@ -28,7 +28,7 @@ h1, h2 {
 h1#title {
     font-size: 60px;
     margin-top: 15px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
 p#instructions {
@@ -80,4 +80,8 @@ a:active {
 .new {
   font-weight: 100;
   color: #69e5ae;
+}
+
+#back-to-coms{
+  font-size: 14px;
 }
