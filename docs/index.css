@@ -85,3 +85,60 @@ a:active {
 #back-to-coms{
   font-size: 14px;
 }
+
+em {
+  color: gray;
+}
+
+.code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+ul.dashed {
+  list-style-type: none;
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
+ul.dashed > li {
+  text-indent: -5px;
+}
+
+ul.dashed > li:before {
+  content: "-";
+  text-indent: -5px;
+}
+
+.accordion-item {
+  border: none;
+  margin-bottom: 10px;
+}
+
+/* .accordion-header {
+  border-bottom: 1px solid rgba(0,0,0,.125);
+} */
+
+.accordion-button {
+  color: white;
+  background-color: #292929;
+}
+
+.accordion-body {
+  background-color: #1f1f1f;
+}
+
+.accordion-body p {
+  padding: 5px;
+  margin-bottom: 0;
+}
+
+.accordion-button:not(.collapsed) {
+  color: #1c7da2;
+  border-bottom: 1px solid rgb(255, 255, 255, 0.5);
+}
+
+.accordion-button:not(.collapsed) {
+  color: #1c7da2;
+  background-color: #1f1f1f;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
+}

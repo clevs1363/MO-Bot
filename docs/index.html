@@ -66,7 +66,8 @@
             <br>
             <p id='instructions'>
                 General format: <strong>!command</strong> <em>[argument]</em>. Command should be prefixed with !, but the argument should
-                not have the brackets [ ] unless specified. Each command indicates whether the argument is required or not.
+                not have the brackets [ ] unless specified. A "<span class="text-danger"> * </span>" indicates whether that the argument is required.
+                <span class='new'>--NEW-- </span>Aliases are just different names for the same command.
             </p>
             <br>
 
@@ -81,10 +82,56 @@
             </section>
 
             <h2 id='requests'>Requests</h2>
-            <section>
-                <strong>!request</strong> <em>[text]</em> : add a feature request to a queue, up to a max of 15. Use without arguments to show the numbered list of requests | <em>Argument required?</em> no <br>
-                <strong>!delete_request</strong> <em>[number]</em> : deletes request at position [number] in the queue | <em>Argument required?</em> yes <br>
-            </section>
+            <div class="accordion" id="requestAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        <strong>!request</strong> <em>&nbsp;[text ...]&nbsp;</em> : add a feature request to a queue, up to a max of 15.
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#requestAccordion">
+                    <div class="accordion-body">
+                        <ul class='dashed'>
+                            <li>Argument <em>[text ...]</em> : The text of the request you'd like to make. Use with no arguments to list current requests. </li>
+                            <li>Aliases: <span class="code">!req</span>, <span class="code">!requests</span></li>
+                            <li>Example: "!request Make Obotma do my homework for free plz"</li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        <strong>!delete_request</strong> <em>&nbsp;[number]&nbsp;</em> : deletes request at position <em>&nbsp;[number]&nbsp;</em> in the queue. You must have been the one to create the request.
+                    </button>
+                  </h2>
+                  <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#requestAccordion">
+                    <div class="accordion-body">
+                        <ul class="dashes">
+                            <li><em>Argument [number] </em><span class='text-danger'>*</span> : The number of the request to remove. Use <span class="code">!request</span> to see the each request's number.</li>
+                            <li><em>Aliases</em> : <span class="code">del_req</span>, <span class="code">delete_requests</span></li>
+                            <li><em>Example</em> : "!delete_request 1" </li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseTwo">
+                        <span class="new">--NEW-- </span>&nbsp;<strong>!bug</strong> <em>&nbsp;[text ...]&nbsp;</em> : Reports a bug. Preferably used more seriously than <span class="code">!request</span>. Use with no arguments to list current bugs.
+                      </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#requestAccordion">
+                      <div class="accordion-body">
+                          <ul class="dashes">
+                            <li>Argument <em>&nbsp;[text ...]&nbsp;</em> : text of the bug you'd like to report. Use with no arguments to list current known bugs.</li>
+                            <li><em>Aliases</em> : <span class="code">!bugs</span></li>
+                            <li><em>Example</em> : "!bug Sending a youtube link makes Obotma react with :edited:" </li>
+                          </ul>
+                      </div>
+                    </div>
+                  </div>
+              </div>
 
             <h2 id='memes'>Memes</h2>
             <section>
@@ -169,6 +216,7 @@
                 These functions require administrator permissions, or to be named CerealGuy69. <br>
                 <strong>!(aby)ses</strong> <em>[text]</em> : changes next ses info and puts it in the current channel banner <br>
                 <strong>!delete_request</strong> 0: clears request list <br>
+                <span class='new'>--NEW-- </span><strong>!resolve_bug <em>[num]</em> : removes bug at given number. Use num = 0 to clear all bugs. <br>
                 </span><strong>!scan</strong>: gives emoji stats in current channel. <span id='warning'>WARNING:</span> will take a while to run, and will return a lot of data! <br>
             </section>
 
