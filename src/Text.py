@@ -43,30 +43,30 @@ class Text(commands.Cog):
         "!": "Aha! I did in fact know 'er!",
         'default': "? I 'ardly knew 'er!"
       }
-      msg = message.content
+      msg = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # filters out emoji
       add_stat = True
-      if re.search("er[!?.]+$", msg) :
+      if re.search("[eE3£ᵉε]r[!?.]+$", msg) :
         # matches 1+ punctuation: pogger?, pogger!!!
         punc = msg[-1]
         last = (msg.split()[-1]).replace("?", "").replace('!', '').replace('.', '')
         await message.channel.send(responses[punc])
       elif re.search('([*]r+)(\W|\d|[_])*$', msg):
         await message.channel.send("Censor? I 'ardly knew 'er!")
-      elif re.search("(e(r)+)(\W|\d|[_])*$", msg):
+      elif re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", msg):
         # matches 1+ r's: pogger, poggerrrrr, poggerrrr*891832
         last = msg.split()[-1]
-        span = re.search("(e(r)+)(\W|\d|[_])*$", last).span()
+        span = re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
-      elif re.search("er\W+$", msg):
+      elif re.search("[eE3£ᵉε]r\W+$", msg):
         # matches non-string characters at the end: pogger---, pogger###
         last = msg.split()[-1]
-        span = re.search("er\W+$", last).span()
+        span = re.search("[eE3£ᵉε]r\W+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
-      elif re.search('er\d+$', msg):
+      elif re.search('[eE3£ᵉε]r\d+$', msg):
         last = msg.split()[-1]
-        span = re.search("er\d+$", last).span()
+        span = re.search("[eE3£ᵉε]r\d+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
       else:
