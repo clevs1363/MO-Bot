@@ -120,7 +120,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingThree">
                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#requestCollapseThree" aria-expanded="false" aria-controls="requestCollapseThree">
-                        <span class="new">--NEW-- </span>&nbsp;<strong>!bug</strong> <em>&nbsp;[text ...]&nbsp;</em> : Reports a bug. Preferably used more seriously than <span class="code">!request</span>. Use with no arguments to list current bugs.
+                        <strong>!bug</strong> <em>&nbsp;[text ...]&nbsp;</em> : Reports a bug. Preferably used more seriously than <span class="code">!request</span>. Use with no arguments to list current bugs.
                       </button>
                     </h2>
                     <div id="requestCollapseThree" class="accordion-collapse collapse" aria-labelledby="requestHeadingThree" data-bs-parent="#requestAccordion">
@@ -222,16 +222,27 @@
                     </div>
                 </div>
             </div>
-            <section>
-                <strong>!r</strong> XdY+Z: rolls X number of a dY and adds a modifer Z. Example: !r 3d6+5 <br>
-                <strong>!r</strong> stats: rolls character stats using 4d6 drop lowest method <br>
-            </section>
 
             <h2 id='polls'>Polls</h2>
-            <section>
-                Formatting for this one is very important. <br>
-                <strong>!poll</strong> <em>{title} [Option 1] [Option 2] [Option 3] ...</em> : creates a poll for the given options. Supports up to 9 options. Braces and brackets should be included | <em>Argument required?</em> yes<br>
-            </section>
+            <div class="accordion" id="pollAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="pollHeadingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pollCollapseOne" aria-expanded="false" aria-controls="pollCollapseOne">
+                            <strong>!poll&nbsp;</strong><em>{title} [Option 1] [Option 2] [Option 3] ...</em> : creates a reaction-based poll with the given options (up to 9). Braces and brackets should be included
+                        </button>
+                    </h2>
+                    <div id="pollCollapseOne" class="accordion-collapse collapse" aria-labelledby="pollHeadingOne" data-bs-parent="#pollAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <span class="example">{title} [Option 1] [Option 2] [Option 3]</span>: Creates a poll for {title}, and makes a reaction for each option.</li>
+                                <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                                <li>Aliases: None</li>
+                                <li>Example: <span class="example">!poll {Should there be a daily ses?} [yes] [no] [maybe]</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <h2 id='ror2'>Risk of Rain 2</h2>
             <section>
@@ -257,12 +268,13 @@
 
             <h2 id='emotes'>Emotes</h2>
             <section>
-              <em>Disclaimer:</em> Emotes sent by Obotma do not represent his feelings or opinions expressed. He doesn't have any yet, and has no choice.
+              <em>Disclaimer:</em> Emotes sent by Obotma do not represent his feelings or opinions expressed. He doesn't have any yet, and has no choice. <br>
                 <strong>!e</strong> <em>[name]</em> <em>[num]</em> : sends [num] amount of emojis with given name. Use to send animated emojis. | <em>Argument required?</em> yes<br>
                 <strong>!e</strong> <em>[name]</em> : when you use this command to react to a message, it will react to the targeted message with the given emote. | <em>Argument required?</em> yes<br>
+                <span class='new'>--NEW-- </span><strong>!smoosh</strong> <em>[name_1]</em> <em>[name_2]</em> : smooshes the two emojis with the given names into one (cursed) image. | <em>Arguments required?</em> yes <br>
             </section>
 
-            <h2 id='words'><span class='new'>--NEW-- </span>Words</h2>
+            <h2 id='words'>Words</h2>
             <section>
                 <strong>!define</strong> <em>[word] [num]</em> : gives [num] definition of given [word], capped at 3 definitions. Default 1 definition | <em>Argument required?</em> no<br>
                 <strong>!syns</strong> <em>[word] [num]</em> : gives synoynyms and antonyms of [word] out to a given [depth]. Each depth consists of 5-10 words, with successive depths matching less. Default depth 1 | <em>Argument required?</em> no<br>
@@ -284,13 +296,13 @@
 
             <h2 id='miscellaneous'>Miscellaneous</h2>
             <section>
+                <strong>!help</strong>: Sends a link to this site <br>
                 <strong>!ses</strong>: gives the time, date, and location of the next ses <br>
                 <strong>!abyses</strong>: same as previous but for Drew's campaign <br>
-                <strong>!help</strong>: Sends a link to this site <br>
                 <strong>!inktober</strong>: says today's Inktober prompt. Will also be sent with daily message <br>
                 <strong>!stats</strong>: shows how many times everyone's been hardly knew er-ed <br>
                 <strong>!news</strong>: gets daily and popular news article; semi-randomized. Also called in daily message <br>
-                <span class='new'>--NEW-- </span><strong>!day</strong>: sends the current day, for some reason. Aliases: <span class='code'>!whatdayisit</span>, <span class='code'>!whatday</span>
+                <span class='new'>--NEW-- </span><strong>!day</strong>: sends the current day, for some reason. Aliases: <span class='code'>!whatdayisit</span>, <span class='code'>!whatday</span> <br>
             </section>
 
             <h2 id='admin'>Admin Center</h2>
@@ -298,7 +310,7 @@
                 These functions require administrator permissions, or to be named CerealGuy69. <br>
                 <strong>!(aby)ses</strong> <em>[text]</em> : changes next ses info and puts it in the current channel banner <br>
                 <strong>!delete_request</strong> 0: clears request list <br>
-                <span class='new'>--NEW-- </span><strong>!resolve_bug <em>[num]</em> : removes bug at given number. Use num = 0 to clear all bugs. <br>
+                <strong>!resolve_bug </strong><em>[num]</em> : removes bug at given number. Use num = 0 to clear all bugs. <br>
                 </span><strong>!scan</strong>: gives emoji stats in current channel. <span id='warning'>WARNING:</span> will take a while to run, and will return a lot of data! <br>
             </section>
 
