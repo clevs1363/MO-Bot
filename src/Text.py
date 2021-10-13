@@ -57,17 +57,20 @@ class Text(commands.Cog):
       elif re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", msg):
         # matches 1+ r's: pogger, poggerrrrr, poggerrrr*891832
         last = msg.split()[-1]
+        last = last.replace(" ", "")
         span = re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
       elif re.search("[eE3£ᵉε]r\W+$", msg):
         # matches non-string characters at the end: pogger---, pogger###
         last = msg.split()[-1]
+        last = last.replace(" ", "")
         span = re.search("[eE3£ᵉε]r\W+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
       elif re.search('[eE3£ᵉε]r\d+$', msg):
         last = msg.split()[-1]
+        last = last.replace(" ", "")
         span = re.search("[eE3£ᵉε]r\d+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
