@@ -1,5 +1,4 @@
 from discord.ext import commands
-from datetime import date
 import datetime
 import globals as gl
 import discord
@@ -155,10 +154,10 @@ class Miscellaneous(commands.Cog):
 
   @commands.command()
   async def inktober(self, ctx):
-    today = date.today().day
+    today = datetime.date.today().day
     await ctx.send("Today's Inktober prompt is **" + self.inktober_prompts[int(today) - 1] + "**. Happy drawing!")
 
-  @commands.command(alises=['whatday', 'whatdayisit'])
+  @commands.command(aliases=['whatday', 'whatdayisit'])
   async def day(self, ctx):
     cur_day = datetime.datetime.now()
     weekday = cur_day.strftime("%A")
