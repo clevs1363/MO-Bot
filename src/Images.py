@@ -4,6 +4,7 @@ import discord
 from io import BytesIO
 from PIL import Image
 from subprocess import Popen, PIPE
+import re
 
 class Images(commands.Cog):
   # random commands associated with text channels
@@ -14,6 +15,8 @@ class Images(commands.Cog):
   @commands.command()
   async def smoosh(self, ctx, emoji1, emoji2):
     # get first emoji
+    emoji1 = re.sub("[0-9]{18}", "", emoji1).replace(":", "").replace("<", "").replace(">", "")
+    emoji2 = re.sub("[0-9]{18}", "", emoji2).replace(":", "").replace("<", "").replace(">", "")
     e1 = None
     for emoji in ctx.guild.emojis:
       if emoji.name == emoji1:
@@ -38,8 +41,6 @@ class Images(commands.Cog):
 
     area2 = (width2/2, 0, width2, height2)
     img2 = img2.crop(area2)
-    print(img2.mode)
-    print(img2.size)
 
     # copy into new image
     dst = Image.new('RGBA', (img.width + img2.width, img.height))
