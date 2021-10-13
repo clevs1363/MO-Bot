@@ -12,6 +12,7 @@ from Positivity import Positivity
 from Emotes import Emotes
 from Miscellaneous import Miscellaneous
 from Words import Words
+from Images import Images
 from keep_alive import keep_alive
 
 bot = gl.bot
@@ -22,7 +23,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-keep_alive() 
+# keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
@@ -36,4 +37,5 @@ bot.add_cog(Positivity(bot))
 bot.add_cog(Emotes(bot))
 bot.add_cog(Miscellaneous(bot))
 bot.add_cog(Words(bot))
+bot.add_cog(Images(bot))
 bot.run(gl.bot_token)

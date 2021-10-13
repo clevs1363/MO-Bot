@@ -1,6 +1,7 @@
 from discord.ext import commands
 import globals as gl
 import discord
+import re
 
 class Emotes(commands.Cog):
   # random commands associated with text channels
@@ -30,11 +31,12 @@ class Emotes(commands.Cog):
 
   
   @commands.command(aliases=['e'])
-  async def emote(self, ctx, *emote_name):
+  async def emote(self, ctx, emote_name, num=1):
     if not emote_name:
       await ctx.send("Please provide the emote name: !e <name>")
       return
-    emote_name = emote_name[0]
+    # emote_name = emote_name[0]
+    emote_name = re.sub("[0-9]{18}", "", emote_name).replace(":", "").replace("<", "").replace(">", "")
     if emote_name in ('wetawd', 'advanced'):
       emote_name = 'fwend'
     elif emote_name == 'edited':
@@ -58,9 +60,13 @@ class Emotes(commands.Cog):
       # send emoji in chat
       for emoji in ctx.guild.emojis:
         if emoji.name == emote_name:
-          await ctx.send(str(emoji))
-          await ctx.message.delete() # delete triggering message
-          return
+          if len(str(emoji)) * num > 2000:
+            return await ctx.send("The message would be too long, Drew.")
+          emoji_string = ""
+          for x in range(num):
+            emoji_string += str(emoji)
+          await ctx.send(emoji_string)
+        return await ctx.message.delete() # delete triggering message
       # if not returned by now, emote doesn't exists
       await ctx.send("Emote doesn't exist, try again")
   
