@@ -66,7 +66,8 @@ class Emotes(commands.Cog):
           for x in range(num):
             emoji_string += str(emoji)
           await ctx.send(emoji_string)
-        return await ctx.message.delete() # delete triggering message
+          await ctx.message.delete() # delete triggering message
+          return 
       # if not returned by now, emote doesn't exists
       await ctx.send("Emote doesn't exist, try again")
   

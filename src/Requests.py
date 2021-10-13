@@ -41,7 +41,7 @@ class Requests(commands.Cog):
         await ctx.send("No features requested yet. Check the site to see what's in progress")
         await ctx.invoke(self.bot.get_command('help')) 
   
-  @commands.command(aliases=['del_req', 'delete_requests'])
+  @commands.command(aliases=['del_req', 'delete_requests', 'resolve_request'])
   async def delete_request(self, ctx, num):
     if int(num) == 0 and ctx.message.author.id == gl.my_user_id:
       # clear list
