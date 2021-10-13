@@ -14,21 +14,25 @@ class Images(commands.Cog):
   @commands.command()
   async def smoosh(self, ctx, emoji1, emoji2):
     # get first emoji
-    c1 = None
+    e1 = None
     for emoji in ctx.guild.emojis:
       if emoji.name == emoji1:
-        c1 = await emoji.url.read()
-    img = Image.open(BytesIO(c1), mode='r')
+        e1 = await emoji.url.read()
+    if not e1:
+      return await ctx.send("Emoji 1 not found :(")
+    img = Image.open(BytesIO(e1), mode='r')
     width, height = img.size
     area = (0, 0, width/2, height)
     img = img.crop(area) # cut in left half
 
     # get second emoji
-    c2 = None
+    e2 = None
     for emoji in ctx.guild.emojis:
       if emoji.name == emoji2:
-        c2 = await emoji.url.read()
-    img2 = Image.open(BytesIO(c2), mode='r')
+        e2 = await emoji.url.read()
+    if not e2:
+      return await ctx.send("Emoji 2 not found :(")
+    img2 = Image.open(BytesIO(e2), mode='r')
     img2 = img2.resize((width, height)) # make sure they're the same size
     width2, height2 = img2.size
 

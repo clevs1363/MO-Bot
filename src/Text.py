@@ -45,12 +45,14 @@ class Text(commands.Cog):
       }
       msg = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # filters out emoji
       add_stat = True
+      last = None
       if re.search("[eE3£ᵉε]r[!?.]+$", msg) :
         # matches 1+ punctuation: pogger?, pogger!!!
         punc = msg[-1]
         last = (msg.split()[-1]).replace("?", "").replace('!', '').replace('.', '')
         await message.channel.send(responses[punc])
       elif re.search('([*]r+)(\W|\d|[_])*$', msg):
+        last = msg.split()[-1]
         await message.channel.send("Censor? I 'ardly knew 'er!")
       elif re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", msg):
         # matches 1+ r's: pogger, poggerrrrr, poggerrrr*891832
@@ -71,7 +73,13 @@ class Text(commands.Cog):
         await message.channel.send(last_stripped + responses['default'])
       else:
         add_stat = False
-      
+
+      if last:
+        if 'words' in db['hkr_stats']:
+          db['hkr_stats']['words'].append(last)
+        else:
+          db['hkr_stats']['words'] = [last]
+
       if add_stat:
         author = message.author.name
         if author != 'Obotma Dev' and author != 'NotSoBot':
@@ -84,7 +92,7 @@ class Text(commands.Cog):
     fact_message_1 = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
     fact_message = re.sub("<@!*[0-9]{18}>", "", fact_message_1) # ignores user IDs (when @ed) of the form <@123456789123456789>
     if '37' in fact_message and not message.content.startswith('https://'):
-      await gl.random_fact(message)
+      return await gl.random_fact(message)
 
     # react to being tagged
     if gl.bot.user.mentioned_in(message):
@@ -119,19 +127,19 @@ class Text(commands.Cog):
     #     await drew.send(edited)
     #     return # exit if not found
 
-  # @bot.event
-  # async def on_member_update(before, after):
-  #   activity_type = None
-  #   try:
-  #     activity_type = after.activity.type
-  #   except:
-  #     pass
-  #   if activity_type is discord.ActivityType.streaming:
-  #     # Do X if he is streaming
-  #     channel = bot.get_channel(604834176645988354)
-  #     await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
-  #   else:
-  #     pass
+  @gl.bot.event
+  async def on_member_update(before, after):
+    activity_type = None
+    try:
+      activity_type = after.activity.type
+    except:
+      pass
+    if activity_type is discord.ActivityType.streaming:
+      # Do X if he is streaming
+      channel = gl.bot.get_channel(604834176645988354)
+      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
+    else:
+      pass
 
   @gl.bot.event
   async def on_reaction_add(reaction, user):
