@@ -2,6 +2,7 @@ import youtube_dl
 import discord
 import asyncio
 import requests
+import os
 from io import BytesIO
 from discord.ext import commands
 
@@ -148,12 +149,12 @@ class Music(commands.Cog):
   
   @commands.command()
   async def download(self, ctx, url):
-    await ctx.send("Downloading file. This may take a bit...")
+    await ctx.send("You got it, boss. Downloading file. This may take a bit...")
     async with ctx.typing():
       with ytdl:
         result = ytdl.extract_info(
             url,
-            download=True # We just want to extract the info
+            download=False # We just want to extract the info
         )
 
         if 'entries' in result:
@@ -163,7 +164,19 @@ class Music(commands.Cog):
             # Just a video
             video = result
 
-        video_url = video['url']
-
-        r = requests.get(video_url, allow_redirects=True)
-        return await ctx.send(file=discord.File(BytesIO(r.content), filename='download.mp3'))
+        if (video['filesize'] > 8388608):
+          await ctx.send("File too chonky. Here's a direct download link instead")
+          embed = discord.Embed(
+            title = video['title'],
+            description = "[Click here for audio link](" + video['url'] + ")",
+            color = discord.Color.red()
+          )
+          # embed.add_field(name='Audio link:', value="[Click here](" + video['url'] + ")")
+          embed.set_author(name=video['uploader'], icon_url=video['thumbnail'])
+          await ctx.send(embed=embed)
+        else:
+          r = requests.get(video['url'], allow_redirects=True)
+          file = BytesIO(r.content)
+          file.read()
+          print(file.getbuffer().nbytes)
+          return await ctx.send(file=discord.File(BytesIO(r.content), filename='download.mp3'))
