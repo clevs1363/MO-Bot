@@ -1,6 +1,8 @@
 import youtube_dl
 import discord
 import asyncio
+import requests
+from io import BytesIO
 from discord.ext import commands
 
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -143,3 +145,25 @@ class Music(commands.Cog):
 
     await ctx.send("Skipping song...")
     vc.stop()
+  
+  @commands.command()
+  async def download(self, ctx, url):
+    await ctx.send("Downloading file. This may take a bit...")
+    async with ctx.typing():
+      with ytdl:
+        result = ytdl.extract_info(
+            url,
+            download=True # We just want to extract the info
+        )
+
+        if 'entries' in result:
+            # Can be a playlist or a list of videos
+            video = result['entries'][0]
+        else:
+            # Just a video
+            video = result
+
+        video_url = video['url']
+
+        r = requests.get(video_url, allow_redirects=True)
+        return await ctx.send(file=discord.File(BytesIO(r.content), filename='download.mp3'))
