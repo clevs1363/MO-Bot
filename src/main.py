@@ -1,5 +1,6 @@
 import globals as gl
 import discord
+import sys
 from Music import Music
 from Text import Text
 from Memes import Memes
@@ -13,6 +14,7 @@ from Emotes import Emotes
 from Miscellaneous import Miscellaneous
 from Words import Words
 from Images import Images
+from Bartender import Bartender
 from keep_alive import keep_alive
 
 bot = gl.bot
@@ -38,4 +40,12 @@ bot.add_cog(Emotes(bot))
 bot.add_cog(Miscellaneous(bot))
 bot.add_cog(Words(bot))
 bot.add_cog(Images(bot))
-bot.run(gl.bot_token)
+# bot.add_cog(Bartender(bot))
+try:
+  bot.run(gl.bot_token)
+except Exception as e:
+  print("ERROR OCCURED WHILE RUNNING: ")
+  print("\n")
+  print(e)
+  print("\n")
+  sys.exit()

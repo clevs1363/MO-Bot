@@ -81,7 +81,6 @@ class Schedule(commands.Cog):
     future = datetime(now.year, now.month, now.day, hour, minute, tzinfo=tz)
     if now.hour >= hour and now.minute > minute:
         future += timedelta(days=1)
-    print((future-now).seconds)
     await asyncio.sleep((future-now).seconds)
   
   @commands.command()
