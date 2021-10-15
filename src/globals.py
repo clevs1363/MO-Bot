@@ -15,8 +15,8 @@ bot.remove_command('help')
 # -- GLOBAL VARIABLES -- #
 
 # tokens
-bot_token = os.environ['bot_token']
-# bot_token = os.environ['dbot_token'] # dev bot token
+# bot_token = os.environ['bot_token']
+bot_token = os.environ['dbot_token'] # dev bot token
 unsplash_token = os.environ['unsplash_key']
 rapid_api = os.environ['rapidapi_key']
 dictionary_key = os.environ['dictionary_key']
