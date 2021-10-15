@@ -1,6 +1,7 @@
 import asyncio
 import requests
 import random
+import discord
 import globals as gl
 from discord.ext import commands
 
@@ -48,3 +49,9 @@ class Positivity(commands.Cog):
     else:
       image = requests.get(f'https://api.unsplash.com/photos/random?client_id=' + gl.unsplash_token).json()['urls']['regular']
     await ctx.send(image)
+  
+  @commands.command()
+  async def thank(self, ctx): 
+    for emoji in ctx.guild.emojis:
+      if emoji.name == 'pepepet':
+        await ctx.send(emoji)
