@@ -40,7 +40,7 @@ bot.add_cog(Emotes(bot))
 bot.add_cog(Miscellaneous(bot))
 bot.add_cog(Words(bot))
 bot.add_cog(Images(bot))
-bot.add_cog(Bartender(bot))
+# bot.add_cog(Bartender(bot))
 try:
   bot.run(gl.bot_token)
 except Exception as e:

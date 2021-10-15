@@ -19,7 +19,6 @@ class Text(commands.Cog):
     if 'edited_stats' not in db.keys():
       db['edited_stats'] = {}
     if 'user_map' not in db.keys():
-      print("what? why?")
       db['user_map'] = {
         gl.drew_id: "Shroombo"
       }
@@ -123,8 +122,8 @@ class Text(commands.Cog):
   @gl.bot.event
   async def on_message_edit(before, after):
     # add edit emoji to edited messages
-    if 'https://' in before.content:
-      # ignore links
+    if before.content == after.content:
+      # ignore links, pins, etc., only editing message content
       return
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
     # add stats 
