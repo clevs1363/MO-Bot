@@ -30,7 +30,7 @@
                             <li><a href='#music'>Music</a></li>
                             <li><a href='#requests'>Requests</a></li>
                             <li><a href='#memes'>Memes</a></li>
-                            <li><a href='#dice'>Dice Roller</a></li>
+                            <li><span class="new">--REFACTORED-- </span><a href='#ses'>Ses</a></li>
                             <li><a href='#polls'>Polls</a></li>
                             <li><a href='#ror2'>Risk of Rain 2</a></li>
                             <li><a href='#positivity'>Positivity</a></li>
@@ -235,15 +235,36 @@
                 </div>
             </div>
 
-            <h2 id='dice'>Dice Roller</h2>
+            <h2 id='ses'>Ses</h2>
             <div class="accordion" id="rollAccordion">
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="rollHeadingOne">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseOne" aria-expanded="false" aria-controls="rollCollapseOne">
+                        <button class="accordion-button collapsed" type="button">
+                            <strong>!ses</strong>: gives the time, date, and location of the next ses.
+                        </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="rollHeadingTwo">
+                        <button class="accordion-button collapsed" type="button">
+                            <strong>!abyses</strong>: same as previous, but for Drew's campaign.
+                        </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="rollHeadingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseThree" aria-expanded="false" aria-controls="rollCollapseThree">
+                            <span class="new">--NEW--&nbsp;</span><strong>!sesdown</strong>: Gives a basic countdown until next ses!!!
+                        </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="rollHeadingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseFour" aria-expanded="false" aria-controls="rollCollapseFour">
                             <strong>!r&nbsp;</strong><span class="example">XdY+Z</span>: rolls dice based on given formula.
                         </button>
                     </h2>
-                    <div id="rollCollapseOne" class="accordion-collapse collapse" aria-labelledby="rollHeadingOne" data-bs-parent="#rollAccordion">
+                    <div id="rollCollapseFour" class="accordion-collapse collapse" aria-labelledby="rollHeadingFour" data-bs-parent="#rollAccordion">
                         <div class="accordion-body">
                             <ul>
                                 <li>Argument <span class="example">XdY+Z</span>: rolls X number of a dY and adds a modifer Z. If X = 1, it's optional.</li>
@@ -255,12 +276,12 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="rollHeadingTwo">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseTwo" aria-expanded="false" aria-controls="rollCollapseTwo">
+                    <h2 class="accordion-header" id="rollHeadingFive">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#rollCollapseFive" aria-expanded="false" aria-controls="rollCollapseFive">
                             <strong>!r&nbsp;</strong><span class="example">stats</span>: rolls character stats using 4d6 drop lowest method.
                         </button>
                     </h2>
-                    <div id="rollCollapseTwo" class="accordion-collapse collapse" aria-labelledby="rollHeadingTwo" data-bs-parent="#rollAccordion">
+                    <div id="rollCollapseFive" class="accordion-collapse collapse" aria-labelledby="rollHeadingFive" data-bs-parent="#rollAccordion">
                         <div class="accordion-body">
                             <ul>
                                 <li>Argument required: <strong class='yes'>yes</strong>.  </li>
@@ -346,8 +367,6 @@
             <h2 id='miscellaneous'>Miscellaneous</h2>
             <section>
                 <strong>!help</strong>: Sends a link to this site <br>
-                <strong>!ses</strong>: gives the time, date, and location of the next ses <br>
-                <strong>!abyses</strong>: same as previous but for Drew's campaign <br>
                 <strong>!inktober</strong>: says today's Inktober prompt. Will also be sent with daily message <br>
                 <strong>!stats</strong>: shows how many times everyone's been hardly knew er-ed <br>
                 <strong>!news</strong>: gets daily and popular news article; semi-randomized. Also called in daily message <br>
