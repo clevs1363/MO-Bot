@@ -72,14 +72,62 @@
             <br>
 
             <h2 id='music'>Music</h2>
-            <section>
-                <strong>!play</strong> <em>[url]</em> : plays YouTube video from given url. Must be in a voice chat | <em>Argument required?</em> yes<br>
-                <strong>!play</strong> <em>[query]</em> : searches and plays YouTube audio with given query. Must be in a voice chat | <em>Argument required?</em> yes <br>
-                <strong>!pause</strong>: pauses current song <br>
-                <strong>!resume</strong>: resumes song <br>
-                <strong>!skip</strong>: skips to next song in the queue if there is one queued <br>
-                <strong>!join</strong>: have a friend join you in voice chat <br>
-            </section>
+            <div class="accordion" id="musicAccordion">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="musicHeadingOne">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#musicCollapseOne" aria-expanded="false" aria-controls="musicCollapseOne">
+                        <strong>!play</strong> <em>&nbsp;[url]&nbsp;</em> : streams YouTube audio in your current voice channel. Queues a song if one is already playing.
+                    </button>
+                  </h2>
+                  <div id="musicCollapseOne" class="accordion-collapse collapse" aria-labelledby="musicHeadingOne" data-bs-parent="#musicAccordion">
+                    <div class="accordion-body">
+                        <ul>
+                            <li>Argument <em>[url]</em> : The url of the video you'd like to listen to, or a search query. </li>
+                            <li>Argument required: <strong class='yes'>yes</strong>.</li>
+                            <li>Example: <span class="example">!play https://www.youtube.com/watch?v=EGXPAoyP_cg</span></li>
+                            <li>Example: <span class="example">!play coffee jazz</span></li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="musicHeadingTwo">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false">
+                          <strong>!pause</strong>: pauses the audio that's currently being played in the voice chat you're in.
+                      </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="musicHeadingThree">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false">
+                          <strong>!resume</strong>: resumes the audio that's currently being played in the voice chat you're in.
+                      </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="musicHeadingFour">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" aria-expanded="false">
+                          <strong>!skip</strong>: skips to next song in the queue if there is another one queued.
+                      </button>
+                    </h2>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="musicHeadingFive">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#musicCollapseFive" aria-expanded="false" aria-controls="musicCollapseFive">
+                          <strong>!download</strong> <em>&nbsp;[url]&nbsp;</em> : downloads YouTube video from url and sends as mp3. If it's too big (> 8 MB), send a direct link for download instead.
+                      </button>
+                    </h2>
+                    <div id="musicCollapseFive" class="accordion-collapse collapse" aria-labelledby="musicHeadingFive" data-bs-parent="#musicAccordion">
+                      <div class="accordion-body">
+                          <ul>
+                              <li>Argument <em>[url]</em> : The url of the video you'd like to download. </li>
+                              <li>Argument required: <strong class='yes'>yes</strong>.</li>
+                              <li>Example: <span class="example">!play https://www.youtube.com/watch?v=aMgCBYgVwsI</span></li>
+                          </ul>
+                      </div>
+                    </div>
+                  </div>
+            </div>
 
             <h2 id='requests'>Requests</h2>
             <div class="accordion" id="requestAccordion">
@@ -264,6 +312,7 @@
                 <strong>!hug</strong>: send hugs <br>
                 <strong>!encourage</strong>: sends affirmation, and an optional inspirational quote <br>
                 <strong>!compliment</strong>: sends a random compliment <br>
+                <strong>!thank</strong>: thanks Obotma.
             </section>
 
             <h2 id='emotes'>Emotes</h2>
