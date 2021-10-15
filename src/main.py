@@ -1,5 +1,6 @@
 import globals as gl
 import discord
+import sys
 from Music import Music
 from Text import Text
 from Memes import Memes
@@ -23,7 +24,7 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))
@@ -38,4 +39,11 @@ bot.add_cog(Emotes(bot))
 bot.add_cog(Miscellaneous(bot))
 bot.add_cog(Words(bot))
 bot.add_cog(Images(bot))
-bot.run(gl.bot_token)
+try:
+  bot.run(gl.bot_token)
+except Exception as e:
+  print("ERROR OCCURED WHILE RUNNING: ")
+  print("\n")
+  print(e)
+  print("\n")
+  sys.exit()

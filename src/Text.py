@@ -14,15 +14,14 @@ class Text(commands.Cog):
     
     # if 'requests' in db.keys():
     #   del db['requests']
-    del db['hkr_stats']
-    del db['edited_stats']
     if 'hkr_stats' not in db.keys():
       db['hkr_stats'] = {}
     if 'edited_stats' not in db.keys():
       db['edited_stats'] = {}
     if 'user_map' not in db.keys():
+      print("what? why?")
       db['user_map'] = {
-        382364782365376512: "Shroombo"
+        gl.drew_id: "Shroombo"
       }
 
   #
@@ -37,8 +36,11 @@ class Text(commands.Cog):
       return
     
     # add user to user_map if unknown
-    if message.author.id not in db['user_map']:
+    if str(message.author.id) not in db['user_map']:
       db['user_map'][message.author.id] = message.author.name
+      print('user_map is: ')
+      print(db['user_map'])
+
 
     if isinstance(message.channel, discord.DMChannel):
       if message.author.id != gl.my_user_id:
@@ -95,7 +97,8 @@ class Text(commands.Cog):
           db['hkr_stats']['words'] = [last]
 
       if add_stat:
-        author_id = message.author.id
+        print(db['hkr_stats'])
+        author_id = str(message.author.id)
         if message.author.name != 'Obotma Dev' and message.author.name != 'NotSoBot':
           if author_id in db['hkr_stats']:
             db['hkr_stats'][author_id] += 1
@@ -125,9 +128,9 @@ class Text(commands.Cog):
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
     # add stats 
     author = before.author.name
-    author_id = before.author.id
+    author_id = str(before.author.id)
     if author != 'Obotma Dev' and author != 'NotSoBot':
-      if author in db['edited_stats']:
+      if author_id in db['edited_stats']:
         db['edited_stats'][author_id] += 1
       else:
         db['edited_stats'][author_id] = 1
