@@ -31,34 +31,6 @@ class Miscellaneous(commands.Cog):
     return await ctx.send('https://tenor.com/view/braun-strow-man-you-cant-kill-me-gif-10197798')
 
   @commands.command()
-  async def ses(self, ctx, *msg):
-    async with ctx.typing():
-      await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
-      if msg: # check if arguments were passed
-        if ctx.author.id == gl.my_user_id:
-          output = " ".join(msg)
-          await ctx.message.channel.edit(topic = output)
-          await gl.update_ses('ses', output)
-          await ctx.send('--SESSION CHANGED--')
-        else:
-          return await ctx.send(gl.no_gif)
-      return await ctx.send(db['ses'])
-
-  @commands.command()
-  async def abyses(self, ctx, *msg):
-    await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
-    if msg: # check if arguments passed
-      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.id == gl.my_user_id:
-        output = " ".join(msg)
-        await ctx.message.channel.edit(topic = output)
-        await gl.update_ses('abyses', output)
-        await ctx.send('--SESSION CHANGED--')
-      else:
-        await ctx.send(gl.no_gif)
-        return
-    await ctx.send(db['abyses'])
-
-  @commands.command()
   async def update(self, ctx):
     if ctx.message.author.id == gl.my_user_id:
       await ctx.send("New features and/or commands added! Check out the site to see what's new.")
