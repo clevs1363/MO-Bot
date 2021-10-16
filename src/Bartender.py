@@ -57,4 +57,5 @@ class Bartender(commands.Cog):
   TODO:
   -"Tab" system
   -More responses
+  -Basic drinks (beer, whiskey, etc.)
   """
