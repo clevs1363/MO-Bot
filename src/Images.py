@@ -12,7 +12,7 @@ class Images(commands.Cog):
     self.bot = bot
     self._last_member = None
 
-  @commands.command()
+  @commands.command(aliases = ['smooshy'])
   async def smoosh(self, ctx, emoji1, emoji2):
     # get first emoji
     emoji1 = re.sub("[0-9]{18}", "", emoji1).replace(":", "").replace("<", "").replace(">", "")
@@ -25,8 +25,7 @@ class Images(commands.Cog):
       return await ctx.send("Emoji 1 not found :(")
     img = Image.open(BytesIO(e1), mode='r')
     width, height = img.size
-    area = (0, 0, width/2, height)
-    img = img.crop(area) # cut in left half
+    
 
     # get second emoji
     e2 = None
@@ -39,13 +38,28 @@ class Images(commands.Cog):
     img2 = img2.resize((width, height)) # make sure they're the same size
     width2, height2 = img2.size
 
-    area2 = (width2/2, 0, width2, height2)
-    img2 = img2.crop(area2)
+    if ctx.ivoked_with == 'smooshy':
+      area = (0, 0, width, height/2)
+      img = img.crop(area) # cut in top half
 
-    # copy into new image
-    dst = Image.new('RGBA', (img.width + img2.width, img.height))
-    dst.paste(img, (0, 0))
-    dst.paste(img2, (img.width, 0))
+      area2 = (0, height/2, width2, height2)
+      img2 = img2.crop(area2)
+
+      # copy into new image
+      dst = Image.new('RGBA', (img.width + img2.width, img.height + img2.height))
+      dst.paste(img, (0, 0))
+      dst.paste(img2, (0, img.height))
+    else:
+      area = (0, 0, width/2, height)
+      img = img.crop(area) # cut in left half
+
+      area2 = (width2/2, 0, width2, height2)
+      img2 = img2.crop(area2)
+
+      # copy into new image
+      dst = Image.new('RGBA', (img.width + img2.width, img.height))
+      dst.paste(img, (0, 0))
+      dst.paste(img2, (img.width, 0))
 
     # convert into sendable object
     b = BytesIO()
