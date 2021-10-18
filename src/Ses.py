@@ -1,18 +1,19 @@
 import re
 from replit import db
 import globals as gl
+import asyncio
 from datetime import datetime
 from pytz import timezone
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 class Ses(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    self.ses_reminder.start()
   
   @commands.command()
   async def ses(self, ctx, *msg):
-    print(msg)
     async with ctx.typing():
       await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
       if msg: # check if arguments were passed
@@ -50,6 +51,7 @@ class Ses(commands.Cog):
       # format date and time into a datetime object
       tz = timezone('EST')
       final_date = datetime(ses_day.year, ses_day.month, ses_day.day, hour, minute, 0, tzinfo=tz)
+      db['ses']['ses_date'] = final_date
 
       # get time delta
       countdown = final_date - datetime.now(tz=tz)
@@ -59,8 +61,10 @@ class Ses(commands.Cog):
       # build and send string
       ret_string = str(count_days) + " days, " + str(count_hours) + " hours, " + str(count_minutes) + " minutes, " + str(count_seconds) + " seconds until ses!!!!"
       await ctx.send(ret_string)
+      return count_days, count_hours, count_minutes, count_seconds
     else:
       await ctx.send("No ses scheduled yet!")
+      return
 
   @commands.command()
   async def abyses(self, ctx, *msg):
@@ -74,6 +78,34 @@ class Ses(commands.Cog):
       else:
         await ctx.send(gl.no_gif)
         return
-    await ctx.send(db['abyses'])
+    await ctx.send(db['abyses'])  
+  
+  @tasks.loop(hours=336)
+  async def ses_reminder(self):
+    channel = gl.bot.get_channel(779693553092919306) # dnd-campaign2
+    dnd_role = "<@&862723344545742880>"
+    # channel = gl.bot.get_channel(887682725375528963) # testing chat
+    await channel.send(dnd_role + " ses in 8 hours!")
+    await asyncio.sleep(25200) # sleep for 7 hours
+    await channel.send(dnd_role + " ses in 1 hour!!!")
+    await asyncio.sleep(3000) # sleep for 50 minutes
+    await channel.send(dnd_role + " ses in 10 minutes!!!!!")
+
+  @ses_reminder.before_loop
+  async def before_ses_reminder(self):
+    await gl.bot.wait_until_ready()
+    if 'ses_date' in db['ses']:
+      ses_date = db['ses']['ses_date']
+    else:
+      channel = gl.bot.get_channel(779693553092919306) # dnd-campaign2
+      channel.invoke(self.bot.get_command('sesdown'))
+      ses_date = db['ses']['ses_date']
+    tz_ = timezone("EST")
+    cur_time = datetime.now(tz=tz_)
+    ses_date.hours -= 8
+    tdelta = (ses_date - cur_time)
+    await asyncio.sleep(tdelta.seconds)
+  
+  
   
   
