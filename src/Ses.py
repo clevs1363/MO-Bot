@@ -29,7 +29,28 @@ class Ses(commands.Cog):
   
   @commands.command()
   async def sesdown(self, ctx):
-    ses = db['ses']
+    await self.sesdown_(ctx, "ses")
+  
+  @commands.command()
+  async def abysesdown(self, ctx):
+    await self.sesdown_(ctx, "abyses")
+
+  @commands.command()
+  async def abyses(self, ctx, *msg):
+    await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
+    if msg: # check if arguments passed
+      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.id == gl.my_user_id:
+        output = " ".join(msg)
+        await ctx.message.channel.edit(topic = output)
+        await gl.update_ses('abyses', output)
+        await ctx.send('--SESSION CHANGED--')
+      else:
+        await ctx.send(gl.no_gif)
+        return
+    await ctx.send(db['abyses'])
+
+  async def sesdown_(self, ctx, which_ses):
+    ses = db[which_ses]
     if ses:
       # get date
       date_match = re.search('([0-1][0-2]|[1-9])/([0-2][0-9]|[3][0-1]|[1-9])[/21]{0,1}', ses)
@@ -52,7 +73,8 @@ class Ses(commands.Cog):
       # format date and time into a datetime object
       tz = timezone('EST')
       final_date = datetime(ses_day.year, ses_day.month, ses_day.day, hour, minute, 0, tzinfo=tz)
-      db['ses_date'] = {
+      which_entry = which_ses + "_date"
+      db[which_entry] = {
         'year': ses_day.year, 
         'month': ses_day.month, 
         'day': ses_day.day, 
@@ -67,26 +89,12 @@ class Ses(commands.Cog):
       count_days, count_hours, count_minutes = countdown.days, countdown.seconds//3600, (countdown.seconds//60)%60
       count_seconds = countdown.seconds - count_hours*3600 - count_minutes*60
       # build and send string
-      ret_string = str(count_days) + " days, " + str(count_hours) + " hours, " + str(count_minutes) + " minutes, " + str(count_seconds) + " seconds until ses!!!!"
+      ret_string = str(count_days) + " days, " + str(count_hours) + " hours, " + str(count_minutes) + " minutes, " + str(count_seconds) + " seconds until " + which_ses + "!!!!"
       await ctx.send(ret_string)
       return count_days, count_hours, count_minutes, count_seconds
     else:
-      await ctx.send("No ses scheduled yet!")
+      await ctx.send("No " + which_ses + " scheduled yet!")
       return
-
-  @commands.command()
-  async def abyses(self, ctx, *msg):
-    await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
-    if msg: # check if arguments passed
-      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.id == gl.my_user_id:
-        output = " ".join(msg)
-        await ctx.message.channel.edit(topic = output)
-        await gl.update_ses('abyses', output)
-        await ctx.send('--SESSION CHANGED--')
-      else:
-        await ctx.send(gl.no_gif)
-        return
-    await ctx.send(db['abyses'])  
   
   @tasks.loop(hours=336)
   async def ses_reminder(self):
