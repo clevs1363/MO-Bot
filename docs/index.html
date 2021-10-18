@@ -30,12 +30,14 @@
                             <li><a href='#music'>Music</a></li>
                             <li><a href='#requests'>Requests</a></li>
                             <li><a href='#memes'>Memes</a></li>
-                            <li><span class="new">--REFACTORED-- </span><a href='#ses'>Ses</a></li>
+                            <li><a href='#ses'>Ses</a></li>
                             <li><a href='#polls'>Polls</a></li>
                             <li><a href='#ror2'>Risk of Rain 2</a></li>
                             <li><a href='#positivity'>Positivity</a></li>
                             <li><a href='#emotes'>Emotes</a></li>
                             <li><a href='#words'>Words</a></li>
+                            <li><span class="new">--NEW-- </span><a href='#math'>Math</a></li>
+                            <li><span class="new">--NEW-- </span><a href='#bartender'>Bartender</a></li>
                             <li><a href='#tasks'>Scheduled Tasks</a></li>
                             <li><a href='#miscellaneous'>Miscellaneous</a></li>
                             <li><a href='#admin'>Admin Center</a></li>
@@ -350,6 +352,118 @@
                 <strong>!syns</strong> <em>[word] [num]</em> : gives synoynyms and antonyms of [word] out to a given [depth]. Each depth consists of 5-10 words, with successive depths matching less. Default depth 1 | <em>Argument required?</em> no<br>
                 <strong>!udefine</strong> <em>[word] [num]</em> : same as !define, but pulls from Urban Dictionary, and includes up/downvoted stats. | <em>Argument required?</em> no<br>
             </section>
+
+            <h2 id='math'><span class="new">--NEW-- </span>Math</h2>
+            <div class="accordion" id="mathAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="mathHeadingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mathCollapseOne" aria-expanded="false" aria-controls="mathCollapseOne">
+                            <strong>!math</strong> <em>&nbsp;[expression]&nbsp;</em> : evaluates the expression and sends the result.
+                        </button>
+                    </h2>
+                    <div id="mathCollapseOne" class="accordion-collapse collapse" aria-labelledby="mathHeadingOne" data-bs-parent="#mathAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Arguments: <em>[expression]</em>: an expression with the traditional math operators: +, -, /, *, ^ with a max value of 10^1000 </li>
+                                <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                                <li>Aliases: <span class="code">!m</span> , <span class="code">!eval</span> </li>
+                                <li>Example: <span class="example">!math (10*3)+(3^2)-2</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="mathHeadingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mathCollapseTwo" aria-expanded="false" aria-controls="mathCollapseTwo">
+                            <strong>![sin/cos/tan]</strong> <em>&nbsp;[number]&nbsp;</em> : evaluates the given trigonometric function
+                        </button>
+                    </h2>
+                    <div id="mathCollapseTwo" class="accordion-collapse collapse" aria-labelledby="mathHeadingTwo" data-bs-parent="#mathAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[number]</em> : The number to take the trigonometric function of, in radians.</li>
+                                <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                                <li>Example : <span class="example">!cos 45</span>, <span class="example">!sin 0</span>, <span class="example">!tan 37</span> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 id='bartender'><span class="new">--NEW-- </span>Bartender</h2>
+            <div class="accordion" id="bartenderAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="bartenderHeadingOne">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bartenderCollapseOne" aria-expanded="false" aria-controls="bartenderCollapseOne">
+                            <strong>!drink</strong> <em>&nbsp;[name]&nbsp;</em> : whips up a quick drink for you.
+                        </button>
+                    </h2>
+                    <div id="bartenderCollapseOne" class="accordion-collapse collapse" aria-labelledby="bartenderHeadingOne" data-bs-parent="#bartenderAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[name]&nbsp;</em>: the name of the drink to get. Should be just a basic drink (beer, whiskey, etc). See !cocktail for fancier drinks </li>
+                                <li>Argument required: <strong class='yes'>yes</strong>. </li>
+                                <li>Example: <span class="example">!drink vodka</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="bartenderHeadingTwo">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bartenderCollapseTwo" aria-expanded="false" aria-controls="bartenderCollapseTwo">
+                            <strong>!cockatil</strong> <em>&nbsp;[name]&nbsp; [alcholic]&nbsp;</em> : makes you a cocktail based on your requests.
+                        </button>
+                    </h2>
+                    <div id="bartenderCollapseTwo" class="accordion-collapse collapse" aria-labelledby="bartenderHeadingTwo" data-bs-parent="#bartenderAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[name]</em> : The name of the drink to make.</li>
+                                <li>Argument <em>[alcoholic]</em> : Whether or not the drink should contain alcohol. Should be "yes", "a", or "alcoholic" if you want alcohol, otherwise none.</li>
+                                <li>Arguments required: <strong class='yes'>yes</strong>, but will default to non-alcoholic if [alcoholic] not provided. </li>
+                                <li>Example : <span class="example">!cocktail margarita alcoholic</span> </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="bartenderHeadingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bartenderCollapseThree" aria-expanded="false" aria-controls="bartenderCollapseThree">
+                            <strong>!i_drink</strong> <em>&nbsp;[ingredient]&nbsp;</em> : makes you a cocktail based on the provided ingredient.
+                        </button>
+                    </h2>
+                    <div id="bartenderCollapseThree" class="accordion-collapse collapse" aria-labelledby="bartenderHeadingThree" data-bs-parent="#bartenderAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Argument <em>[ingredient]</em> : the ingredient the drink should contain.</li>
+                                <li>Arguments required: <strong class='yes'>yes</strong></li>
+                                <li>Example : <span class="example">!i_drink whiskey</span> </li>
+                                <li>Aliases: <span class="code">!ingredient_drink</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="bartenderHeadingFour">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bartenderCollapseFour" aria-expanded="false" aria-controls="bartenderCollapseFour">
+                            <strong>!r_drink</strong> : gets you a random drink of Obotma's choosing.
+                        </button>
+                    </h2>
+                    <div id="bartenderCollapseFour" class="accordion-collapse collapse" aria-labelledby="bartenderHeadingFour" data-bs-parent="#bartenderAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li>Aliases: <span class="code">!rand_drink</span> , <span class="code">rdrink</span> , <span class="code">rand_drink</span> , <span class="code">randdrink</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="bartenderHeadingFive">
+                        <button class="accordion-button collapsed" type="button">
+                            <strong>!bardown</strong> : gives a countdown until the bar opens.
+                        </button>
+                    </h2>
+                </div>
+            </div>
 
             <h2 id='tasks'>Scheduled Tasks</h2>
             <section>
