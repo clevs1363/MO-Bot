@@ -121,6 +121,31 @@ class Ses(commands.Cog):
     tdelta = (ses_date - cur_time)
     await asyncio.sleep(tdelta.seconds)
   
+  @tasks.loop(hours=336)
+  async def abyses_reminder(self):
+    channel = gl.bot.get_channel(873264246622933013) # dnd in suicide skwad 2
+    dnd_role = "<@&899749981676793887>" # @everyone
+    # channel = gl.bot.get_channel(887682725375528963) # testing chat
+    await channel.send(dnd_role + " abyses in 8 hours!")
+    await asyncio.sleep(25200) # sleep for 7 hours
+    await channel.send(dnd_role + " abyses in 1 hour!!!")
+    await asyncio.sleep(3000) # sleep for 50 minutes
+    await channel.send(dnd_role + " abyses in 10 minutes!!!!!")
+
+  @ses_reminder.before_loop
+  async def before_ses_reminder(self):
+    await gl.bot.wait_until_ready()
+    if 'ses_date' not in db.keys():
+      channel = gl.bot.get_channel(873264246622933013) # dnd
+      channel.invoke(self.bot.get_command('abysesdown'))
+    ses = db['abyses_date']
+    tz_ = timezone("EST")
+    ses_date = datetime(ses['year'], ses['month'], ses['day'], ses['hour'], ses['minute'], ses['second'], tzinfo=tz_)
+    cur_time = datetime.now(tz=tz_)
+    ses_date.hours -= 8
+    tdelta = (ses_date - cur_time)
+    await asyncio.sleep(tdelta.seconds)
+  
   
   
   

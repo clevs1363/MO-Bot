@@ -28,6 +28,8 @@ mw_dict_key = os.environ['mw_dict_key'] # merriam-webster dictionary key
 mw_thes_key = os.environ['mw_thes_key'] # merriam-webster thesaurus key
 wordnik_key = os.environ['wordnik_key']
 
+os.environ['MPLCONFIGDIR'] = "config/matplotlib"
+
 # gif links
 no_gif = "https://tenor.com/view/no-i-dont-think-i-will-captain-america-old-capt-gif-17162888"
 straining_gif = "https://tenor.com/view/straining-gif-6190466"
