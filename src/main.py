@@ -16,6 +16,7 @@ from Words import Words
 from Images import Images
 from Bartender import Bartender
 from Ses import Ses
+from Math import Math
 from keep_alive import keep_alive
 
 bot = gl.bot
@@ -41,8 +42,9 @@ bot.add_cog(Emotes(bot))
 bot.add_cog(Miscellaneous(bot))
 bot.add_cog(Words(bot))
 bot.add_cog(Images(bot))
-# bot.add_cog(Bartender(bot))
+bot.add_cog(Bartender(bot))
 bot.add_cog(Ses(bot))
+bot.add_cog(Math(bot))
 try:
   bot.run(gl.bot_token)
 except Exception as e:

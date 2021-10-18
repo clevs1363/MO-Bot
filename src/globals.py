@@ -4,7 +4,6 @@ import requests
 import random
 import json
 from discord.ext import commands
-from keep_alive import keep_alive
 from replit import db
 
 intents = discord.Intents.all()

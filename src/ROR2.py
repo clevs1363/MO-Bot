@@ -104,8 +104,7 @@ class ROR2(commands.Cog):
       await msg.add_reaction("\N{thumbs down sign}")
       await msg.add_reaction("\N{shrug}")
       self.swag_id = msg.id
-
-      print((future-now).seconds)
+      
       await asyncio.sleep((future-now).seconds) # sleep until 10 minutes before swag
 
       # notify swaggers

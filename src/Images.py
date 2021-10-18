@@ -38,7 +38,7 @@ class Images(commands.Cog):
     img2 = img2.resize((width, height)) # make sure they're the same size
     width2, height2 = img2.size
 
-    if ctx.ivoked_with == 'smooshy':
+    if ctx.invoked_with == 'smooshy':
       area = (0, 0, width, height/2)
       img = img.crop(area) # cut in top half
 
@@ -67,5 +67,13 @@ class Images(commands.Cog):
     b.seek(0)
   
     return await ctx.send(file=discord.File(b, filename='smooshed.png'))
+  
+  @commands.command()
+  async def text(self, ctx):
+    b = await ctx.message.attachments[0].read()
+    b = BytesIO(b)
+    img = Image.open(b)
+    txt = pytesseract.image_to_string(img)
+    await ctx.send(txt)
 
     
