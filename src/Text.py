@@ -96,7 +96,6 @@ class Text(commands.Cog):
           db['hkr_stats']['words'] = [last]
 
       if add_stat:
-        print(db['hkr_stats'])
         author_id = str(message.author.id)
         if message.author.name != 'Obotma Dev' and message.author.name != 'NotSoBot':
           if author_id in db['hkr_stats']:

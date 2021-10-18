@@ -1,6 +1,7 @@
 import globals as gl
 import discord
 import sys
+import os
 from Music import Music
 from Text import Text
 from Memes import Memes
@@ -27,7 +28,8 @@ async def on_ready():
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="everyone"))
 
-# keep_alive() 
+if 'bot_token' in os.environ:
+  keep_alive() 
 
 bot.add_cog(Music(bot))
 bot.add_cog(Text(bot))

@@ -3,12 +3,15 @@ import requests
 import random
 import discord
 import globals as gl
+from replit import db
 from discord.ext import commands
 
 class Positivity(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    if 'thank_stats' not in db.keys():
+      db['thank_stats'] = {}
   
   @commands.command()
   async def hug(self, ctx):
@@ -52,6 +55,11 @@ class Positivity(commands.Cog):
   
   @commands.command()
   async def thank(self, ctx): 
+    author_id = str(ctx.author.id)
+    if author_id in db['thank_stats']:
+      db['thank_stats'][author_id] += 1
+    else:
+      db['thank_stats'][author_id] = 1
     for emoji in ctx.guild.emojis:
       if emoji.name == 'pepepet':
         await ctx.send(emoji)

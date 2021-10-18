@@ -146,6 +146,7 @@ class Bartender(commands.Cog):
     await asyncio.sleep(tdelta.seconds)
   
   async def add_stat(self, id):
+    id = str(id)
     if id not in db['drink_stats']:
       db['drink_stats'][id] = 1
     else:
