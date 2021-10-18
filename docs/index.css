@@ -31,6 +31,10 @@ h1#title {
     margin-bottom: 15px;
 }
 
+ol#toc {
+  columns: 2;
+}
+
 p#instructions {
   margin-left: 20px;
   margin-right: 20px;
