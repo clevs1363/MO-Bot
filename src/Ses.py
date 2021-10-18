@@ -2,6 +2,7 @@ import re
 from replit import db
 import globals as gl
 import asyncio
+import json
 from datetime import datetime
 from pytz import timezone
 from discord.ext import commands, tasks
@@ -51,7 +52,14 @@ class Ses(commands.Cog):
       # format date and time into a datetime object
       tz = timezone('EST')
       final_date = datetime(ses_day.year, ses_day.month, ses_day.day, hour, minute, 0, tzinfo=tz)
-      db['ses']['ses_date'] = final_date
+      db['ses_date'] = {
+        'year': ses_day.year, 
+        'month': ses_day.month, 
+        'day': ses_day.day, 
+        'hour': hour, 
+        'minute': minute, 
+        'seconds': 0
+      }
 
       # get time delta
       countdown = final_date - datetime.now(tz=tz)
@@ -94,13 +102,12 @@ class Ses(commands.Cog):
   @ses_reminder.before_loop
   async def before_ses_reminder(self):
     await gl.bot.wait_until_ready()
-    if 'ses_date' in db['ses']:
-      ses_date = db['ses']['ses_date']
-    else:
+    if 'ses_date' not in db.keys():
       channel = gl.bot.get_channel(779693553092919306) # dnd-campaign2
       channel.invoke(self.bot.get_command('sesdown'))
-      ses_date = db['ses']['ses_date']
+    ses = db['ses_date']
     tz_ = timezone("EST")
+    ses_date = datetime(ses['year'], ses['month'], ses['day'], ses['hour'], ses['minute'], ses['second'], tzinfo=tz_)
     cur_time = datetime.now(tz=tz_)
     ses_date.hours -= 8
     tdelta = (ses_date - cur_time)
