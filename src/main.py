@@ -49,6 +49,14 @@ bot.add_cog(Ses(bot))
 bot.add_cog(Math(bot))
 try:
   bot.run(gl.bot_token)
+  # for guild in bot.guilds:
+  #     for channel in guild.channels:
+  #       if guild.name:
+  #         print(guild.name)
+  #       if channel.name:
+  #         print(channel.name) 
+  #       if channel.category:
+  #         print(channel.category.type)
 except Exception as e:
   print("ERROR OCCURED WHILE RUNNING: ")
   print("\n")

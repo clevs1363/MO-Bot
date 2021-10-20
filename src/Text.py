@@ -97,7 +97,7 @@ class Text(commands.Cog):
 
       if add_stat:
         author_id = str(message.author.id)
-        if message.author.name != 'Obotma Dev' and message.author.name != 'NotSoBot':
+        if str(message.author.id) != "887714761666600960" and str(message.author.id) != "439205512425504771":
           if author_id in db['hkr_stats']:
             db['hkr_stats'][author_id] += 1
           else:
@@ -128,7 +128,7 @@ class Text(commands.Cog):
     # add stats 
     author = before.author.name
     author_id = str(before.author.id)
-    if author != 'Obotma Dev' and author != 'NotSoBot':
+    if author_id != "887714761666600960" and author_id != "439205512425504771":
       if author_id in db['edited_stats']:
         db['edited_stats'][author_id] += 1
       else:
