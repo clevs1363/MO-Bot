@@ -125,11 +125,11 @@ class ROR2(commands.Cog):
       await ctx.send("https://i.ibb.co/f1fwZRf/john-travolta-lost-ror2.gif")
   
   @commands.command(aliases=['rand_swag', 'r_swag'])
-  async def random_swag(self, ctx, *num):
+  async def random_swag(self, ctx, num=0):
     for swagger in self.swaggers:
       await ctx.send(swagger + ": " + random.choice(self.characters))
     if num:
-      num = int(num[0])
+      num = int(num)
       if num <= 16 and num >= 0:
         chosen_artifacts = []
         for artifact in range(num):

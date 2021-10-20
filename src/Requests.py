@@ -20,9 +20,9 @@ class Requests(commands.Cog):
         return
       # add request to dictionary
       if 'requests' in db.keys():
-        db['requests'][" ".join(req)] = ctx.message.author.name
+        db['requests'][" ".join(req)] = ctx.message.author.id
       else:
-        db['requests'] = {" ".join(req): ctx.message.author.name}
+        db['requests'] = {" ".join(req): ctx.message.author.id}
       await gl.add_emoji(ctx.message, "pepehap", gl.bot.emojis)
       await ctx.send("\U0001F60E" + "\U0001F44D")
       await ctx.send("You are number %s in the queue" % (len(db['requests'])))
@@ -32,8 +32,9 @@ class Requests(commands.Cog):
         ret_string = ""
         counter = 1
         for request, user in db['requests'].items():
+          print(request, user)
           ret_string += str(counter) + '. ' + request
-          ret_string += ' | *Requested by ' + user + '*\n'
+          ret_string += ' | *Requested by ' + db['user_map'][user] + '*\n'
           counter += 1
         await ctx.send(ret_string)
       else:
@@ -55,9 +56,10 @@ class Requests(commands.Cog):
       counter = 1
       for request in db['requests'].keys():
         if counter == int(num):
-          if ctx.message.author.name == db['requests'][request] or ctx.message.author.id == gl.my_user_id:
+          requester_id = db['requests'][request]
+          if ctx.message.author.id == requester_id or ctx.message.author.id == gl.my_user_id:
             db['requests'].pop(request)
-            await ctx.send("yoink")
+            await ctx.send("yoinked:\n> " + request + " | *Requested by " + db['user_map'][str(requester_id)] + "*")
           else:
             await ctx.send("Not very cash money of you to try and delete someone else's request")
             await ctx.send(gl.finger_wag)
