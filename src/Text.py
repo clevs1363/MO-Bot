@@ -161,6 +161,9 @@ class Text(commands.Cog):
   async def on_reaction_add(reaction, user):
     if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
       await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
+    
+    if reaction.count == 5 and reaction.emoji == "📌":
+      await reaction.message.pin()
 
   #
   # <-- COMMANDS -->
