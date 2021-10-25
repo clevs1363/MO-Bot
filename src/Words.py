@@ -3,6 +3,16 @@ import requests
 import random
 import globals as gl
 from discord.ext import commands
+import nltk
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.tokenize import word_tokenize
+from nltk.probability import FreqDist
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.stem.wordnet import WordNetLemmatizer
 
 class Words(commands.Cog):
   def __init__(self, bot):
@@ -96,3 +106,34 @@ class Words(commands.Cog):
     else:
       return await ctx.send("No definitions found. Go add it yourself, king \n https://www.urbandictionary.com/")
     
+  @commands.command()
+  async def freq_dist(self, ctx, num=3):
+    if ctx.author.id != gl.my_user_id:
+      return await ctx.send("Access denied")
+    if num > 10:
+      return await ctx.send("max of 10 plz, gonna toast my cpu")
+    async with ctx.typing():
+      tokenized_words = []
+      tokenizer = nltk.RegexpTokenizer(r"[a-zA-Z]+") # ignores punctuation
+
+      # get all messages
+      async for msg in ctx.channel.history(limit=100000):
+        removes_punc = tokenizer.tokenize(msg.clean_content)
+        tokenized_words.extend(removes_punc)
+
+      # remove stop words
+      stop_words=set(stopwords.words("english"))
+      filtered_sent=[]
+      for w in tokenized_words:
+        if w not in stop_words:
+          filtered_sent.append(w)
+      # ps = PorterStemmer()
+      # stemmed_words=[]
+      # for w in filtered_sent:
+      #   stemmed_words.append(ps.stem(w))
+
+      fdist = FreqDist(filtered_sent)
+      ret_string = ""
+      for count, word in enumerate(fdist.most_common(num), start=1):
+        ret_string += str(count) + ". **" + word[0] + "**: " + str(word[1]) + "\n"
+      return await ctx.send(ret_string)

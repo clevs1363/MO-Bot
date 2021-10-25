@@ -126,9 +126,8 @@ class Text(commands.Cog):
       return
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
     # add stats 
-    author = before.author.name
     author_id = str(before.author.id)
-    if author_id != "887714761666600960" and author_id != "439205512425504771":
+    if not before.author.bot:
       if author_id in db['edited_stats']:
         db['edited_stats'][author_id] += 1
       else:
@@ -195,5 +194,5 @@ class Text(commands.Cog):
       ret_string += str(counter) + ". **" + stat[1] + "**: " + str(stat[0]) + "\n"
       counter += 1
     return ret_string
-      
+  
   
