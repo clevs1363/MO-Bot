@@ -3,6 +3,10 @@ import requests
 import random
 import globals as gl
 from discord.ext import commands
+import matplotlib.pyplot as plt
+from io import BytesIO
+import numpy as np
+import discord
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -123,9 +127,10 @@ class Words(commands.Cog):
 
       # remove stop words
       stop_words=set(stopwords.words("english"))
+      stop_words.update({'https', 'go', 'get', 'got', 'com'})
       filtered_sent=[]
       for w in tokenized_words:
-        if w not in stop_words:
+        if w.lower() not in stop_words:
           filtered_sent.append(w)
       # ps = PorterStemmer()
       # stemmed_words=[]
@@ -133,6 +138,35 @@ class Words(commands.Cog):
       #   stemmed_words.append(ps.stem(w))
 
       fdist = FreqDist(filtered_sent)
+
+      x = np.arange(num)
+      width = 0.35  # the width of the bars
+
+      word_labels = [word[0] for word in fdist.most_common(num)]
+      word_amounts = [word[1] for word in fdist.most_common(num)]
+
+      fig, ax = plt.subplots()
+      rects1 = ax.bar(x - width/2, word_amounts, width, label='Given')
+
+      ax.set_ylabel('Number')
+      ax.set_title('Word frequency distribution')
+      ax.set_xticks(x)
+      ax.set_xticklabels(word_labels)
+      ax.legend()
+      ax.bar_label(rects1, padding=3)
+
+      fig.tight_layout()
+      
+      file = BytesIO()
+      plt.savefig(file, format='png', bbox_inches="tight", dpi = 80)
+      plt.close()
+      file.seek(0)
+
+      fname = "attachment://freq-dist-stats.png"
+      chart = discord.File(file,filename=fname)
+
+      await ctx.send(file=chart)
+      
       ret_string = ""
       for count, word in enumerate(fdist.most_common(num), start=1):
         ret_string += str(count) + ". **" + word[0] + "**: " + str(word[1]) + "\n"
