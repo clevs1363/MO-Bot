@@ -68,12 +68,12 @@ class Images(commands.Cog):
   
     return await ctx.send(file=discord.File(b, filename='smooshed.png'))
   
-  @commands.command()
-  async def text(self, ctx):
-    b = await ctx.message.attachments[0].read()
-    b = BytesIO(b)
-    img = Image.open(b)
-    txt = pytesseract.image_to_string(img)
-    await ctx.send(txt)
+  # @commands.command()
+  # async def text(self, ctx):
+  #   b = await ctx.message.attachments[0].read()
+  #   b = BytesIO(b)
+  #   img = Image.open(b)
+  #   txt = pytesseract.image_to_string(img)
+  #   await ctx.send(txt)
 
     

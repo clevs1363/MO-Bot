@@ -145,10 +145,6 @@ class Words(commands.Cog):
         for w in tokenized_words:
           if w.lower() not in stop_words:
             filtered_sent.append(w.lower())
-      # ps = PorterStemmer()
-      # stemmed_words=[]
-      # for w in filtered_sent:
-      #   stemmed_words.append(ps.stem(w))
 
       fdist = FreqDist(filtered_sent)
 
@@ -182,5 +178,62 @@ class Words(commands.Cog):
       
       ret_string = ""
       for count, word in enumerate(fdist.most_common(num), start=1):
+        ret_string += str(count) + ". **" + word[0] + "**: " + str(word[1]) + "\n"
+      return await ctx.send(ret_string)
+  
+  @commands.command()
+  async def ses_dist(self, ctx):
+    if ctx.author.id != gl.my_user_id:
+      return await ctx.send("Access denied")
+    async with ctx.typing():
+      tokenized_words = []
+      target_words = ['ses', 'session', 'hangout', 'get-together', 'meeting', 'gathering'] 
+      tokenizer = nltk.RegexpTokenizer(r"[a-zA-Z]+") # ignores punctuation
+
+      # get all messages
+      for channel in ctx.guild.channels:
+        if isinstance(channel, discord.TextChannel):
+          async for msg in channel.history(limit=100000):
+            removes_punc = tokenizer.tokenize(msg.clean_content.lower())
+            tokenized_words.extend(removes_punc)
+      
+      # get ses variants
+      ses_variants = []
+      for w in tokenized_words:
+        if w.lower() in target_words:
+          ses_variants.append(w.lower())
+      
+      fdist = FreqDist(ses_variants)
+      dist_ranking = fdist.most_common(len(target_words))
+
+      # build pie chart
+      # build percentages
+      totals = [word[1] for word in dist_ranking]
+      total_sum = sum(totals)
+      percentages = [round(num/total_sum, 2) for num in totals]
+      print(percentages)
+      
+      # get other data and configurations
+      labels = [word[0] for word in dist_ranking]
+      fig1, ax1 = plt.subplots()
+      ax1.pie(percentages, shadow=True, startangle=90)
+      ax1.axis('equal') 
+
+      plt.legend(percentages,labels, bbox_to_anchor=(0.85,1.025), loc="upper left")
+
+      fig1.tight_layout()
+
+      # get image bytes to send as file
+      file = BytesIO()
+      plt.savefig(file, format='png', dpi = 80)
+      plt.close()
+      file.seek(0)
+
+      chart = discord.File(file,filename="attachment://ses-dist-stats.png")
+
+      await ctx.send(file=chart)
+
+      ret_string = ""
+      for count, word in enumerate(dist_ranking, start=1):
         ret_string += str(count) + ". **" + word[0] + "**: " + str(word[1]) + "\n"
       return await ctx.send(ret_string)

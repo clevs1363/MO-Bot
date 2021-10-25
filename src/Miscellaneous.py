@@ -197,3 +197,10 @@ class Miscellaneous(commands.Cog):
     weekday = cur_day.strftime("%A")
     cur_date = cur_day.strftime("%x")
     return await ctx.send("Today is **" + weekday + "**, " + cur_date)
+  
+  @commands.command()
+  async def secret_send(self, ctx, *text):
+    channel_id = text[0]
+    text_to_send = text[1:]
+    channel = gl.bot.get_channel(int(channel_id))
+    await channel.send(" ".join(text_to_send))
