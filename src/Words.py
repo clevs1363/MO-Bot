@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 from io import BytesIO
 import numpy as np
 import discord
+from better_profanity import profanity
+import pprint
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -111,7 +113,7 @@ class Words(commands.Cog):
       return await ctx.send("No definitions found. Go add it yourself, king \n https://www.urbandictionary.com/")
     
   @commands.command()
-  async def freq_dist(self, ctx, num=3):
+  async def freq_dist(self, ctx, num=3, vulgar=""):
     if ctx.author.id != gl.my_user_id:
       return await ctx.send("Access denied")
     if num > 10:
@@ -125,13 +127,24 @@ class Words(commands.Cog):
         removes_punc = tokenizer.tokenize(msg.clean_content)
         tokenized_words.extend(removes_punc)
 
-      # remove stop words
-      stop_words=set(stopwords.words("english"))
-      stop_words.update({'https', 'go', 'get', 'got', 'com'})
-      filtered_sent=[]
-      for w in tokenized_words:
-        if w.lower() not in stop_words:
-          filtered_sent.append(w)
+      # get top swear words
+      if vulgar == "vulgar":
+        whitelist = ['god', 'kill']
+        profanity.load_censor_words(whitelist_words=whitelist)
+        swears = [str(word) for word in profanity.CENSOR_WORDSET]
+        filtered_sent = []
+        for w in tokenized_words:
+          if w.lower() in swears:
+            filtered_sent.append(w.lower())
+      else:
+        # default behavior
+        # remove stop words
+        stop_words=set(stopwords.words("english"))
+        stop_words.update({'https', 'go', 'get', 'got', 'com', 'youtube', 'v', 'n', 'youtu'})
+        filtered_sent = []
+        for w in tokenized_words:
+          if w.lower() not in stop_words:
+            filtered_sent.append(w.lower())
       # ps = PorterStemmer()
       # stemmed_words=[]
       # for w in filtered_sent:
@@ -146,7 +159,7 @@ class Words(commands.Cog):
       word_amounts = [word[1] for word in fdist.most_common(num)]
 
       fig, ax = plt.subplots()
-      rects1 = ax.bar(x - width/2, word_amounts, width, label='Given')
+      rects1 = ax.bar(x - width/2, word_amounts, width)
 
       ax.set_ylabel('Number')
       ax.set_title('Word frequency distribution')

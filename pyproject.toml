@@ -16,6 +16,7 @@ pytz = "^2021.1"
 opencv-python = "^4.5.3"
 pytesseract = "^0.3.8"
 pyocr = "^0.8"
+better-profanity = "^0.7.0"
 
 [tool.poetry.dev-dependencies]
 
