@@ -38,7 +38,7 @@ class Bartender(commands.Cog):
       drink_name = "%20".join(name[:len(name)-2])
     else:
       drink_name = "%20".join(name)
-    await ctx.send("You asked for a " + " ".join(drink_name))
+    await ctx.send("You asked for a " + drink_name.replace("%20", " "))
     # get drink by name
     r = requests.get("https://www.thecocktaildb.com/api/json/v1/1/search.php?s=%s&a=%s" % (drink_name, alcoholic)).json()
     drink_info = await self.get_drink_info(r['drinks'])

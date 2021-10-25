@@ -34,7 +34,7 @@ class Requests(commands.Cog):
         for request, user in db['requests'].items():
           print(request, user)
           ret_string += str(counter) + '. ' + request
-          ret_string += ' | *Requested by ' + db['user_map'][user] + '*\n'
+          ret_string += ' | *Requested by ' + db['user_map'][str(user)] + '*\n'
           counter += 1
         await ctx.send(ret_string)
       else:
