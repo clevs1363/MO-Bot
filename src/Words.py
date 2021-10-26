@@ -191,10 +191,14 @@ class Words(commands.Cog):
       tokenizer = nltk.RegexpTokenizer(r"[a-zA-Z]+") # ignores punctuation
 
       # get all messages
+      num_messages = 0
+      num_words = 0
       for channel in ctx.guild.channels:
         if isinstance(channel, discord.TextChannel):
           async for msg in channel.history(limit=100000):
+            num_messages += 1
             removes_punc = tokenizer.tokenize(msg.clean_content.lower())
+            num_words += len(removes_punc)
             tokenized_words.extend(removes_punc)
       
       # get ses variants
@@ -210,8 +214,7 @@ class Words(commands.Cog):
       # build percentages
       totals = [word[1] for word in dist_ranking]
       total_sum = sum(totals)
-      percentages = [round(num/total_sum, 2) for num in totals]
-      print(percentages)
+      percentages = [round((num/total_sum)*100, 2) for num in totals]
       
       # get other data and configurations
       labels = [word[0] for word in dist_ranking]
@@ -219,7 +222,13 @@ class Words(commands.Cog):
       ax1.pie(percentages, shadow=True, startangle=90)
       ax1.axis('equal') 
 
-      plt.legend(percentages,labels, bbox_to_anchor=(0.85,1.025), loc="upper left")
+      legend_text = []
+      for index, label in enumerate(labels):
+        lt = label + ": " + str(totals[index]) + " (" + str(percentages[index]) + "%)"
+        legend_text.append(lt)
+
+      plt.legend(legend_text)
+      plt.title("The word 'ses' and its variants (sample size: " + str(num_messages) + " messages, \n" + str(num_words) +  " total words scanned, " + str(total_sum) + " relevant words)")
 
       fig1.tight_layout()
 
