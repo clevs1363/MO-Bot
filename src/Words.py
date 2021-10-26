@@ -40,8 +40,10 @@ class Words(commands.Cog):
         ret_string = word + ": *" + r.get('fl', "") + "*\n" # get label if it exists
         for i, definition in enumerate(definitions):
           ret_string += "**" + str(i+1) + ".** " + definition + "\n"
+        etymology = r.get('et', '')
+        if etymology:
+          ret_string += "**Etymology**: " + etymology[0][1].replace("{it}", "*").replace("{/it}", "*") + "\n"
         examples = r.get('suppl', '')
-        print("examples: " + examples)
         if examples:
           example = r.get(examples['examples'][0]['t'], '')
           ret_string += '*Example*: ' + example
