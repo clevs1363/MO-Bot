@@ -32,7 +32,6 @@ class Requests(commands.Cog):
         ret_string = ""
         counter = 1
         for request, user in db['requests'].items():
-          print(request, user)
           ret_string += str(counter) + '. ' + request
           ret_string += ' | *Requested by ' + db['user_map'][str(user)] + '*\n'
           counter += 1

@@ -56,6 +56,7 @@ class Text(commands.Cog):
         'default': "? I 'ardly knew 'er!"
       }
       msg = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # filters out emoji
+      msg = re.sub("[\[\{\(-].*[\]\}\)-]", "", msg) # filters out [this text fools Obotma]
       add_stat = True
       last = None
       if re.search("[eE3£ᵉε]r[!?.]+$", msg) :
