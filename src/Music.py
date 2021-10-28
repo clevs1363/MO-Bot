@@ -178,5 +178,4 @@ class Music(commands.Cog):
           r = requests.get(video['url'], allow_redirects=True)
           file = BytesIO(r.content)
           file.read()
-          print(file.getbuffer().nbytes)
           return await ctx.send(file=discord.File(BytesIO(r.content), filename='download.mp3'))

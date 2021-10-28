@@ -165,6 +165,9 @@ class Text(commands.Cog):
     
     if reaction.count == 5 and reaction.emoji == "📌":
       await reaction.message.pin()
+    
+    if reaction.emoji.name == "doot":
+      await reaction.message.channel.send('Doot', tts=True)
 
   #
   # <-- COMMANDS -->
