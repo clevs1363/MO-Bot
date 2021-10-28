@@ -59,32 +59,32 @@ class Text(commands.Cog):
       msg = re.sub("[\[\{\(-].*[\]\}\)-]", "", msg) # filters out [this text fools Obotma]
       add_stat = True
       last = None
-      if re.search("[eE3£ᵉε]r[!?.]+$", msg) :
+      if re.search("[eE3£ᵉε][rR][!?.]+$", msg) :
         # matches 1+ punctuation: pogger?, pogger!!!
         punc = msg[-1]
         last = (msg.split()[-1]).replace("?", "").replace('!', '').replace('.', '')
         await message.channel.send(responses[punc])
-      elif re.search('([*]r+)(\W|\d|[_])*$', msg):
+      elif re.search('([*][rR]+)(\W|\d|[_])*$', msg):
         last = msg.split()[-1]
         await message.channel.send("Censor? I 'ardly knew 'er!")
-      elif re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", msg):
+      elif re.search("([eE3£ᵉε]([rR])+)(\W|\d|[_])*$", msg):
         # matches 1+ r's: pogger, poggerrrrr, poggerrrr*891832
         last = msg.split()[-1]
         last = last.replace(" ", "")
-        span = re.search("([eE3£ᵉε](r)+)(\W|\d|[_])*$", last).span()
+        span = re.search("([eE3£ᵉε]([rR])+)(\W|\d|[_])*$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
-      elif re.search("[eE3£ᵉε]r\W+$", msg):
+      elif re.search("[eE3£ᵉε][rR]\W+$", msg):
         # matches non-string characters at the end: pogger---, pogger###
         last = msg.split()[-1]
         last = last.replace(" ", "")
-        span = re.search("[eE3£ᵉε]r\W+$", last).span()
+        span = re.search("[eE3£ᵉε][rR]\W+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
-      elif re.search('[eE3£ᵉε]r\d+$', msg):
+      elif re.search('[eE3£ᵉε][rR]\d+$', msg):
         last = msg.split()[-1]
         last = last.replace(" ", "")
-        span = re.search("[eE3£ᵉε]r\d+$", last).span()
+        span = re.search("[eE3£ᵉε][rR]\d+$", last).span()
         last_stripped = last[:span[0]+2] # removes excess symbols
         await message.channel.send(last_stripped + responses['default'])
       else:
@@ -92,9 +92,9 @@ class Text(commands.Cog):
 
       if last:
         if 'words' in db['hkr_stats']:
-          db['hkr_stats']['words'].append(last)
+          db['hkr_stats']['words'].append(last.lower())
         else:
-          db['hkr_stats']['words'] = [last]
+          db['hkr_stats']['words'] = [last.lower()]
 
       if add_stat:
         author_id = str(message.author.id)

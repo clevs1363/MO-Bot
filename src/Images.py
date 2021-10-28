@@ -5,6 +5,7 @@ from io import BytesIO
 from PIL import Image
 from subprocess import Popen, PIPE
 import re
+import emojis as emj
 
 class Images(commands.Cog):
   # random commands associated with text channels
@@ -68,8 +69,13 @@ class Images(commands.Cog):
   
     return await ctx.send(file=discord.File(b, filename='smooshed.png'))
   
+  @commands.command(aliases=['dei'])
+  async def default_emoji_img(self, ctx, emoji):
+    img = Image.open(BytesIO(emj.encode(emoji)), mode='r')
+    await ctx.send(file=discord.File(BytesIO(img.tobytes()), filename='dei.png'))
+  
   # @commands.command()
-  # async def text(self, ctx):
+  # async def img_to_text(self, ctx):
   #   b = await ctx.message.attachments[0].read()
   #   b = BytesIO(b)
   #   img = Image.open(b)
