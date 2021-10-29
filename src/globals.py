@@ -76,3 +76,10 @@ async def get_role(ctx, name):
     if role.name == name:
       role_id = role.id
   return role_id
+
+# gets custom emoji from guild
+async def get_emoji(guild, emoji_name):
+  for emoji in guild.emojis:
+    if emoji.name == emoji_name:
+      return emoji
+  return None

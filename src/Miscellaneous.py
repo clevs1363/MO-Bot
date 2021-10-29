@@ -9,6 +9,8 @@ import collections
 from io import BytesIO
 from PIL import Image
 from matplotlib.offsetbox import OffsetImage,AnnotationBbox
+import math
+import time
 
 class Miscellaneous(commands.Cog):
   # Miscellaneous commands
@@ -47,6 +49,7 @@ class Miscellaneous(commands.Cog):
   async def scan(self, ctx):
     async with ctx.typing():
       if ctx.message.author.id == gl.my_user_id:
+        timer = time.perf_counter()
         reactions_given = {}
         reactions_received = {}
         authors = []
@@ -60,7 +63,17 @@ class Miscellaneous(commands.Cog):
         #     ses: 50
         #   }
         # }
+        num_msgs_sent = {}
         async for msg in ctx.channel.history(limit=50000):
+          # collect data about messages sent per user 
+          author = str(msg.author.id)
+          if author not in db['user_map']:
+            continue
+          if author in num_msgs_sent:
+            num_msgs_sent[author] += 1
+          else:
+            num_msgs_sent[author] = 1
+
           for reaction in msg.reactions:
             # analyze reactions received
             author = str(msg.author.id)
@@ -105,6 +118,16 @@ class Miscellaneous(commands.Cog):
         for emoji in ctx.guild.emojis:
           emojis[emoji.name] = emoji.id
         
+        # fill emojis with now-lost emotes
+        for r in reactions_given:
+          for e in reactions_given[r]:
+            if e not in emojis:
+              emojis[e] = 0 # placeholder ID of 0
+        for r in reactions_received:
+          for e in reactions_received[r]:
+            if e not in emojis:
+              emojis[e] = 0 # placeholder ID of 0
+        
         # fill maps with default value 0
         for user in reactions_given:
           for emoji in emojis:
@@ -113,7 +136,7 @@ class Miscellaneous(commands.Cog):
         for user in reactions_received:
           for emoji in emojis:
             if emoji not in reactions_received[user]:
-              reactions_received[user][emoji] = 0
+              reactions_received[user][emoji] = 0 
         
         emojis = collections.OrderedDict(sorted(emojis.items())) # sort by emoji name to make alphabetical
 
@@ -124,6 +147,12 @@ class Miscellaneous(commands.Cog):
         user_map['887714761666600960'] = 'Obotoma Dev'
         user_map['887681266068111362'] = 'Obotma'
         user_map['439205512425504771'] = 'NotSoBot'
+
+        # lock channel
+        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        bot_member = ctx.guild.get_member(gl.bot.user.id)
+        bot_role = bot_member.roles[0]
+        await ctx.channel.set_permissions(bot_role, send_messages=True)
 
         for author in authors:
           if author not in reactions_given or author not in reactions_received:
@@ -138,6 +167,14 @@ class Miscellaneous(commands.Cog):
 
           x = np.arange(len(labels))  # the label locations
           width = 0.35  # the width of the bars
+
+          # debugging incompatible size error
+          print(labels)
+          print(len(labels))
+          print(reactions_given)
+          print(len(reactions_given))
+          print(reactions_received)
+          print(len(reactions_received))
 
           fig, ax = plt.subplots(figsize=(27, 15), dpi=100)
           rects1 = ax.bar(x - width/2, emojis_given, width, label='Given', color='#1c7da2')
@@ -167,7 +204,26 @@ class Miscellaneous(commands.Cog):
           fname = "attachment://"+author_name+"stats.png"
           chart = discord.File(file,filename=fname)
 
-          await ctx.send(author_name + ":", file=chart)
+          await ctx.send("<@" + author + "> :", file=chart)
+        
+        # send emojis-per-message stats
+        emote_stats_to_get = ['sens', 'wetawd', 'rocc', 'smurk', 'yes', 'withered', 'edited', 'ses', 'biglaff']
+        for emote_name in emote_stats_to_get:
+          # proportion of emote given 
+          custom_emoji = await gl.get_emoji(ctx.guild, emote_name)
+          rates_given = await self.emojis_per_message(num_msgs_sent, reactions_given, emote_name, custom_emoji, "gave")
+          await ctx.send("**Ratio rankings of " + str(custom_emoji) + "s given per message:**")
+          await ctx.send(rates_given)
+          # proportion of emote given 
+          rates_received = await self.emojis_per_message(num_msgs_sent, reactions_received, emote_name, custom_emoji, "received")
+          await ctx.send("**Ratio rankings of " + str(custom_emoji) + "s received per message:**")
+          await ctx.send(rates_received)
+
+        # unlock channel
+        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
+        
+        final_timer = time.perf_counter() - timer
+        await ctx.send("*Scan time taken: " + str(math.floor(final_timer/60)) + " minutes, " + str(round(timer%60, 2)) + " seconds*")
 
         # create receieved emojis stat embed
         # await self.create_embed(emojis, reactions_received, "received", ctx)
@@ -195,7 +251,9 @@ class Miscellaneous(commands.Cog):
         img = bytes_file.read()
         final_im = plt.imread(BytesIO(img), format='raw')
         return final_im
-    return None
+    # if emoji not found, send a default image
+    default_img = plt.imread('docs/assets/default.png')
+    return default_img
 
   async def offset_image(self, coord, name, ax, emojis):
     img = await self.get_emoji_img(emojis, name)
@@ -205,6 +263,22 @@ class Miscellaneous(commands.Cog):
     ab = AnnotationBbox(im, (coord, 0),  xybox=(0., -16.), frameon=False, xycoords='data',  boxcoords="offset points", pad=0)
 
     ax.add_artist(ab) 
+  
+  async def emojis_per_message(self, msgs_sent, reactions, emoji_name, custom_emoji, given_or_received):
+    rates = []
+    for user_id in msgs_sent:
+      if user_id not in db['user_map'] or user_id not in reactions or user_id not in msgs_sent:
+        continue
+      rate = reactions[user_id][emoji_name] / msgs_sent[user_id]
+      rates.append((db['user_map'][user_id], rate))
+    rates.sort(key=lambda y: y[1]) # sort by second value of tuple (rate)
+    rates.reverse()
+    ret_string = ""
+    for index, user_rate in enumerate(rates, start=1):
+      ret_string += "**" + str(index) + ".** " + user_rate[0] + ": " + given_or_received + " a " + emoji_name + " on " + str(round(user_rate[1]*100, 2)) + "% of messages\n"
+      if user_rate[1] != 0:
+        ret_string += "(" + given_or_received + " a " + str(custom_emoji) + " every " + str(math.ceil(1/user_rate[1])) + " messages)\n"
+    return ret_string
 
   async def create_embed(self, emojis, data, given_or_received, ctx):
     # same code for creating given and received emotes
