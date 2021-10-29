@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import collections
 from io import BytesIO
+from PIL import Image
+from matplotlib.offsetbox import OffsetImage,AnnotationBbox
 
 class Miscellaneous(commands.Cog):
   # Miscellaneous commands
@@ -113,14 +115,19 @@ class Miscellaneous(commands.Cog):
             if emoji not in reactions_received[user]:
               reactions_received[user][emoji] = 0
         
+        emojis = collections.OrderedDict(sorted(emojis.items())) # sort by emoji name to make alphabetical
+
         # --Create MATPLOTS--
 
         # manually add bots
         user_map = db['user_map']
         user_map['887714761666600960'] = 'Obotoma Dev'
         user_map['887681266068111362'] = 'Obotma'
+        user_map['439205512425504771'] = 'NotSoBot'
 
         for author in authors:
+          if author not in reactions_given or author not in reactions_received:
+            continue 
           author_name = db['user_map'][author]
           labels = sorted(emojis.keys())
 
@@ -132,8 +139,7 @@ class Miscellaneous(commands.Cog):
           x = np.arange(len(labels))  # the label locations
           width = 0.35  # the width of the bars
 
-          fig, ax = plt.subplots()
-          print(x, len(emojis_given))
+          fig, ax = plt.subplots(figsize=(27, 15), dpi=100)
           rects1 = ax.bar(x - width/2, emojis_given, width, label='Given', color='#1c7da2')
           rects2 = ax.bar(x + width/2, emojis_received, width, label='Received', color='#f24b83')
 
@@ -141,21 +147,27 @@ class Miscellaneous(commands.Cog):
           ax.set_title('Emoji stats for ' + author_name)
           ax.set_xticks(x)
           ax.set_xticklabels(labels)
+          plt.xticks(rotation=45, ha='right') # rotate labels
+          plt.tick_params(axis='x', which='major', pad=25) # space out x labels
+          fig.subplots_adjust(bottom=0.2)
           ax.legend()
           ax.bar_label(rects1, padding=3)
           ax.bar_label(rects2, padding=3)
 
+          for i, c in enumerate(emojis):
+            await self.offset_image(i, c, ax, ctx.guild.emojis) 
+
           fig.tight_layout()
 
           file = BytesIO()
-          plt.savefig(file, format='png', bbox_inches="tight", dpi = 80)
+          plt.savefig(file, format='png', bbox_inches="tight", dpi = 100)
           plt.close()
           file.seek(0)
 
           fname = "attachment://"+author_name+"stats.png"
           chart = discord.File(file,filename=fname)
 
-          await ctx.send(file=chart)
+          await ctx.send(author_name + ":", file=chart)
 
         # create receieved emojis stat embed
         # await self.create_embed(emojis, reactions_received, "received", ctx)
@@ -166,6 +178,33 @@ class Miscellaneous(commands.Cog):
       else:
         await ctx.send("We know we'd break the damn bot with everyone scanning")
         return await ctx.send(gl.finger_wag)
+
+  async def get_emoji_img(self, emojis, name):
+    for emoji in emojis:
+      if emoji.name == name:
+        emoji_file = await emoji.url.read()
+        # resize image
+        img = Image.open(BytesIO(emoji_file))
+        width, height = img.size
+        size = width/4, height/4
+        img.thumbnail(size, Image.ANTIALIAS)
+        # save into readable bytes file
+        bytes_file = BytesIO()
+        img.save(bytes_file, "PNG")
+        bytes_file.seek(0)
+        img = bytes_file.read()
+        final_im = plt.imread(BytesIO(img), format='raw')
+        return final_im
+    return None
+
+  async def offset_image(self, coord, name, ax, emojis):
+    img = await self.get_emoji_img(emojis, name)
+    im = OffsetImage(img, zoom=0.72)
+    im.image.axes = ax
+
+    ab = AnnotationBbox(im, (coord, 0),  xybox=(0., -16.), frameon=False, xycoords='data',  boxcoords="offset points", pad=0)
+
+    ax.add_artist(ab) 
 
   async def create_embed(self, emojis, data, given_or_received, ctx):
     # same code for creating given and received emotes
