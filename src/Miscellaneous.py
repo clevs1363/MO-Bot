@@ -3,7 +3,16 @@ import datetime
 import globals as gl
 import discord
 from replit import db
+import matplotlib
 import matplotlib.pyplot as plt
+# Customize matplotlib
+matplotlib.rcParams.update(
+  {
+    'text.usetex': False,
+    'font.family': 'stixgeneral',
+    'mathtext.fontset': 'stix',
+  }
+)
 import numpy as np
 import collections
 from io import BytesIO
@@ -46,7 +55,12 @@ class Miscellaneous(commands.Cog):
     await ctx.message.delete()
 
   @commands.command()
-  async def scan(self, ctx):
+  # uses global user map instead of dynamic db['user_map'] cuz I got rate limited by replit
+  async def scan(self, ctx, channel=None):
+    if not channel:
+      scan_channel = ctx.channel
+    else:
+      scan_channel = gl.bot.get_channel(int(channel))
     async with ctx.typing():
       if ctx.message.author.id == gl.my_user_id:
         timer = time.perf_counter()
@@ -64,10 +78,10 @@ class Miscellaneous(commands.Cog):
         #   }
         # }
         num_msgs_sent = {}
-        async for msg in ctx.channel.history(limit=50000):
+        async for msg in scan_channel.history(limit=100000):
           # collect data about messages sent per user 
           author = str(msg.author.id)
-          if author not in db['user_map']:
+          if author not in gl.user_map:
             continue
           if author in num_msgs_sent:
             num_msgs_sent[author] += 1
@@ -143,16 +157,16 @@ class Miscellaneous(commands.Cog):
         # --Create MATPLOTS--
 
         # manually add bots
-        user_map = db['user_map']
-        user_map['887714761666600960'] = 'Obotoma Dev'
-        user_map['887681266068111362'] = 'Obotma'
-        user_map['439205512425504771'] = 'NotSoBot'
+        # user_map = db['user_map']
+        # user_map['887714761666600960'] = 'Obotoma Dev'
+        # user_map['887681266068111362'] = 'Obotma'
+        # user_map['439205512425504771'] = 'NotSoBot'
 
         # lock channel
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
-        bot_member = ctx.guild.get_member(gl.bot.user.id)
-        bot_role = bot_member.roles[0]
-        await ctx.channel.set_permissions(bot_role, send_messages=True)
+        # await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=False)
+        # bot_member = ctx.guild.get_member(gl.bot.user.id)
+        # bot_role = bot_member.roles[0]
+        # await ctx.channel.set_permissions(bot_role, send_messages=True)
 
         for author in authors:
           if author not in reactions_given or author not in reactions_received:
@@ -169,12 +183,12 @@ class Miscellaneous(commands.Cog):
           width = 0.35  # the width of the bars
 
           # debugging incompatible size error
-          print(labels)
-          print(len(labels))
-          print(reactions_given)
-          print(len(reactions_given))
-          print(reactions_received)
-          print(len(reactions_received))
+          # print(labels)
+          # print(len(labels))
+          # print(reactions_given)
+          # print(len(reactions_given))
+          # print(reactions_received)
+          # print(len(reactions_received))
 
           fig, ax = plt.subplots(figsize=(27, 15), dpi=100)
           rects1 = ax.bar(x - width/2, emojis_given, width, label='Given', color='#1c7da2')
@@ -220,7 +234,7 @@ class Miscellaneous(commands.Cog):
           await ctx.send(rates_received)
 
         # unlock channel
-        await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
+        # await ctx.channel.set_permissions(ctx.guild.default_role, send_messages=True)
         
         final_timer = time.perf_counter() - timer
         await ctx.send("*Scan time taken: " + str(math.floor(final_timer/60)) + " minutes, " + str(round(timer%60, 2)) + " seconds*")
@@ -267,10 +281,10 @@ class Miscellaneous(commands.Cog):
   async def emojis_per_message(self, msgs_sent, reactions, emoji_name, custom_emoji, given_or_received):
     rates = []
     for user_id in msgs_sent:
-      if user_id not in db['user_map'] or user_id not in reactions or user_id not in msgs_sent:
+      if user_id not in gl.user_map or user_id not in reactions or user_id not in msgs_sent:
         continue
       rate = reactions[user_id][emoji_name] / msgs_sent[user_id]
-      rates.append((db['user_map'][user_id], rate))
+      rates.append((gl.user_map[user_id], rate))
     rates.sort(key=lambda y: y[1]) # sort by second value of tuple (rate)
     rates.reverse()
     ret_string = ""

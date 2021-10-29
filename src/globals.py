@@ -37,6 +37,8 @@ finger_wag = "https://tenor.com/view/nope-no-shake-finger-shake-finger-gif-41384
 annoyed = "https://tenor.com/view/kabangu-upset-annoyed-gif-14814728"
 nope = "https://tenor.com/view/shannon-sharpe-undisputed-nope-no-smh-gif-12504325"
 
+user_map = {"382364782365376512":"Shroombo","547127905679966209":"CerealGuy69","110537131499225088":"Little_G","516416338579947521":"MarcusAntonious99","594275046982287384":"\u300cO B A G\u300d","247833945956155393":"Maree\u2212p Fall","360945793609236490":"Slongdong69","267467160731779072":"Gnardo","887714761666600960":"Obotoma Dev","887681266068111362":"Obotma","417104202930585614":"looksgoodnshorts","439205512425504771":"NotSoBot"}
+
 # --GLOBAL FUNCTIONS--
 
 async def random_fact(message):

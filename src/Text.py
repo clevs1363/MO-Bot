@@ -163,10 +163,10 @@ class Text(commands.Cog):
     if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
       await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
     
-    if reaction.count == 5 and reaction.emoji == "📌":
+    if reaction.count == 4 and reaction.emoji == "📌":
       await reaction.message.pin()
     
-    if reaction.emoji.name == "doot":
+    if not isinstance(reaction.emoji, str) and reaction.emoji.name == "doot":
       await reaction.message.channel.send('Doot', tts=True)
 
   #
