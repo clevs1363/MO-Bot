@@ -1,6 +1,7 @@
 from discord.ext import commands
 import globals as gl
 import discord
+from discord.abc import PrivateChannel
 import re
 import asyncio
 import random
@@ -97,7 +98,7 @@ class Text(commands.Cog):
           db['hkr_words'][last] = 1
 
       if add_stat:
-        if isinstance(message.channel, discord.DMChannel) or isinstance(message.channel, discord.PrivateChannel):
+        if isinstance(message.channel, discord.DMChannel) or isinstance(message.channel, PrivateChannel):
           return await message.channel.send("What happens in private stays in private :)") 
         author_id = str(message.author.id)
         if str(message.author.id) != "887714761666600960" and str(message.author.id) != "439205512425504771":
@@ -156,10 +157,10 @@ class Text(commands.Cog):
       activity_type = after.activity.type
     except:
       pass
-    if activity_type is discord.ActivityType.streaming:
+    if activity_type is discord.Streaming:
       # Do X if he is streaming
       channel = gl.bot.get_channel(604834176645988354)
-      await channel.send(after.display_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
+      await channel.send(after.activity.twitch_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
     else:
       pass
 
