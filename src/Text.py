@@ -56,7 +56,7 @@ class Text(commands.Cog):
         'default': "? I 'ardly knew 'er!"
       }
       msg = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # filters out emoji
-      msg = re.sub("[\[\{\(-].*[\]\}\)-]", "", msg) # filters out [this text fools Obotma]
+      msg = re.sub(" *[\[\{\(-].*[\]\}\)-]", "", msg) # filters out [this text fools Obotma]
       add_stat = True
       last = None
       if re.search("[eE3£ᵉε][rR][!?.]+$", msg) :
@@ -91,12 +91,14 @@ class Text(commands.Cog):
         add_stat = False
 
       if last:
-        if 'words' in db['hkr_stats']:
-          db['hkr_stats']['words'].append(last.lower())
+        if last in db['hkr_words']:
+          db['hkr_words'][last] += 1 
         else:
-          db['hkr_stats']['words'] = [last.lower()]
+          db['hkr_words'][last] = 1
 
       if add_stat:
+        if isinstance(message.channel, discord.DMChannel) or isinstance(message.channel, discord.PrivateChannel):
+          return await message.channel.send("What happens in private stays in private :)") 
         author_id = str(message.author.id)
         if str(message.author.id) != "887714761666600960" and str(message.author.id) != "439205512425504771":
           if author_id in db['hkr_stats']:
@@ -126,6 +128,9 @@ class Text(commands.Cog):
       # ignore links, pins, etc., only editing message content
       return
     await gl.add_emoji(after, 'edited', gl.bot.emojis)
+    if isinstance(after.channel, discord.DMChannel):
+	    return await before.channel.send("What edits behind closed doors stays behind closed doors :)")
+	  # ignore DMs adding stats 
     # add stats 
     author_id = str(before.author.id)
     if not before.author.bot:

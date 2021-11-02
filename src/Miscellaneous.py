@@ -179,46 +179,46 @@ class Miscellaneous(commands.Cog):
           emojis_given = author_data_given.values()
           emojis_received = author_data_received.values()
 
-          x = np.arange(len(labels))  # the label locations
-          width = 0.35  # the width of the bars
+          # x = np.arange(len(labels))  # the label locations
+          # width = 0.35  # the width of the bars
 
-          # debugging incompatible size error
-          # print(labels)
-          # print(len(labels))
-          # print(reactions_given)
-          # print(len(reactions_given))
-          # print(reactions_received)
-          # print(len(reactions_received))
+          # # debugging incompatible size error
+          # # print(labels)
+          # # print(len(labels))
+          # # print(reactions_given)
+          # # print(len(reactions_given))
+          # # print(reactions_received)
+          # # print(len(reactions_received))
 
-          fig, ax = plt.subplots(figsize=(27, 15), dpi=100)
-          rects1 = ax.bar(x - width/2, emojis_given, width, label='Given', color='#1c7da2')
-          rects2 = ax.bar(x + width/2, emojis_received, width, label='Received', color='#f24b83')
+          # fig, ax = plt.subplots(figsize=(27, 15), dpi=100)
+          # rects1 = ax.bar(x - width/2, emojis_given, width, label='Given', color='#1c7da2')
+          # rects2 = ax.bar(x + width/2, emojis_received, width, label='Received', color='#f24b83')
 
-          ax.set_ylabel('Number')
-          ax.set_title('Emoji stats for ' + author_name)
-          ax.set_xticks(x)
-          ax.set_xticklabels(labels)
-          plt.xticks(rotation=45, ha='right') # rotate labels
-          plt.tick_params(axis='x', which='major', pad=25) # space out x labels
-          fig.subplots_adjust(bottom=0.2)
-          ax.legend()
-          ax.bar_label(rects1, padding=3)
-          ax.bar_label(rects2, padding=3)
+          # ax.set_ylabel('Number')
+          # ax.set_title('Emoji stats for ' + author_name)
+          # ax.set_xticks(x)
+          # ax.set_xticklabels(labels)
+          # plt.xticks(rotation=45, ha='right') # rotate labels
+          # plt.tick_params(axis='x', which='major', pad=25) # space out x labels
+          # fig.subplots_adjust(bottom=0.2)
+          # ax.legend()
+          # ax.bar_label(rects1, padding=3)
+          # ax.bar_label(rects2, padding=3)
 
-          for i, c in enumerate(emojis):
-            await self.offset_image(i, c, ax, ctx.guild.emojis) 
+          # for i, c in enumerate(emojis):
+          #   await self.offset_image(i, c, ax, ctx.guild.emojis) 
 
-          fig.tight_layout()
+          # fig.tight_layout()
 
-          file = BytesIO()
-          plt.savefig(file, format='png', bbox_inches="tight", dpi = 100)
-          plt.close()
-          file.seek(0)
+          # file = BytesIO()
+          # plt.savefig(file, format='png', bbox_inches="tight", dpi = 100)
+          # plt.close()
+          # file.seek(0)
 
-          fname = "attachment://"+author_name+"stats.png"
-          chart = discord.File(file,filename=fname)
+          # fname = "attachment://"+author_name+"stats.png"
+          # chart = discord.File(file,filename=fname)
 
-          await ctx.send("<@" + author + "> :", file=chart)
+          # await ctx.send("<@" + author + "> :", file=chart)
         
         # send emojis-per-message stats
         emote_stats_to_get = ['sens', 'wetawd', 'rocc', 'smurk', 'yes', 'withered', 'edited', 'ses', 'biglaff']
