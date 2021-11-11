@@ -77,7 +77,7 @@ class Bartender(commands.Cog):
   async def bardown(self, ctx):
     tz_ = tz.timezone("EST")
     cur_time = datetime.now(tz=tz_)
-    fivepm = datetime(cur_time.year, cur_time.month, cur_time.day, 16, 0, 0, tzinfo=tz_)
+    fivepm = datetime(cur_time.year, cur_time.month, cur_time.day, 17, 0, 0, tzinfo=tz_)
     countdown = (fivepm - cur_time)
     count_hours, count_minutes = countdown.seconds//3600, (countdown.seconds//60)%60
     count_seconds = countdown.seconds - count_hours*3600 - count_minutes*60
@@ -141,7 +141,7 @@ class Bartender(commands.Cog):
     await gl.bot.wait_until_ready()
     tz_ = tz.timezone("EST")
     cur_time = datetime.now(tz=tz_)
-    fivepm = datetime(cur_time.year, cur_time.month, cur_time.day, 16, 0, 0, tzinfo=tz_)
+    fivepm = datetime(cur_time.year, cur_time.month, cur_time.day, 17, 0, 0, tzinfo=tz_)
     tdelta = (fivepm - cur_time)
     await asyncio.sleep(tdelta.seconds)
   
@@ -158,7 +158,7 @@ class Bartender(commands.Cog):
     tz_ = tz.timezone("EST")
     cur_time = datetime.now(tz=tz_)
     # sleep until 'bar closes' at 4am next day
-    bar_closes = datetime(cur_time.year, cur_time.month, cur_time.day+1, 3, 0, 0, tzinfo=tz_)
+    bar_closes = datetime(cur_time.year, cur_time.month, cur_time.day+1, 4, 0, 0, tzinfo=tz_)
     tdelta = (bar_closes - cur_time)
     await asyncio.sleep(tdelta.seconds)
   

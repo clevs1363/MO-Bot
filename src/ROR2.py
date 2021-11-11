@@ -65,9 +65,7 @@ class ROR2(commands.Cog):
       hour = int(time_data[0])
       if is_standard_time:
         # hours are shifted an hour off because of the nature of tz EST timezone
-        hour += 11
-      else:
-        hour -= 1
+        hour += 12
       # split until index 2 in case it's of the form MMxm
       # Example: 
       # 12:00pm -> time_data = ['12', '00pm']
@@ -75,7 +73,6 @@ class ROR2(commands.Cog):
       minute = int(time_data[1][:2]) # subtract 10 for target notification
       if minute < 10:
         minute += 50 # accounts for time rounding
-        hour -= 1
       else:
         minute -= 10
       print(hour, minute)

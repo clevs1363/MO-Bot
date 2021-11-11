@@ -67,7 +67,6 @@ class Ses(commands.Cog):
         minute = int(ses_time[1][:1])
         if 'pm' in ses_time[1]:
           hour += 12
-        hour -= 1
       else:
         return await ctx.send("The time could not be determined.")
       # format date and time into a datetime object

@@ -26,7 +26,6 @@ class Miscellaneous(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
-    self.inktober_prompts = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
 
   @commands.command(aliases=['h'])
   async def help(self, ctx):
@@ -315,8 +314,7 @@ class Miscellaneous(commands.Cog):
 
   @commands.command()
   async def inktober(self, ctx):
-    today = datetime.date.today().day
-    await ctx.send("Today's Inktober prompt is **" + self.inktober_prompts[int(today) - 1] + "**. Happy drawing!")
+    return await ctx.send("Inktober is over, but see the following for Inktober52 prompts:\nhttps://inktober.com/inktober52")
 
   @commands.command(aliases=['whatday', 'whatdayisit'])
   async def day(self, ctx):

@@ -12,7 +12,6 @@ class Schedule(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self.daily_message.start()
-    self.inktober_prompts = ['Crystal', 'Suit', 'Vessel', 'Knot', 'Raven', 'Spirit', 'Fan', 'Watch', 'Pressure', 'Pick', 'Sour', 'Stuck', 'Roof', 'Tick', 'Helmet', 'Compass', 'Collide', 'Moon', 'Loop', 'Sprout', 'Fuzzy', 'Open', 'Leak', 'Extinct', 'Splat', 'Connect', 'Spark', 'Crispy', 'Patch', 'Slither', 'Risk']
 
   @tasks.loop(hours=24)
   async def daily_message(self):
@@ -66,13 +65,12 @@ class Schedule(commands.Cog):
     # send daily news
     await self.news(channel)
 
-    # get inktober prompt
-    today = date.today().day
-    await channel.send("Today's Inktober prompt is **" + self.inktober_prompts[int(today) - 1] + "**. Happy drawing!")
+    # inktober52 link
+    await channel.send("See the following for Inktober52 prompts:\nhttps://inktober.com/inktober52")
 
   @daily_message.before_loop
   async def before_daily_message(self):
-    hour = 7
+    hour = 8
     minute = random.randrange(15, 45)
     
     await gl.bot.wait_until_ready()
