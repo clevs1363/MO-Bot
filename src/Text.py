@@ -173,7 +173,7 @@ class Text(commands.Cog):
       await reaction.message.pin()
     
     if not isinstance(reaction.emoji, str) and reaction.emoji.name == "doot":
-      await reaction.message.channel.send('Doot', tts=True)
+      await reaction.message.channel.send('Dute', tts=True)
 
   #
   # <-- COMMANDS -->

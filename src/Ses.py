@@ -28,6 +28,11 @@ class Ses(commands.Cog):
       return await ctx.send(db['ses'])
   
   @commands.command()
+  async def presesdown(self, ctx):
+    ses = await gl.get_emoji(ctx.guild, "ses")
+    return await ctx.send("pre" + str(ses) +  " rn")
+  
+  @commands.command()
   async def sesdown(self, ctx):
     await self.sesdown_(ctx, "ses")
   
@@ -144,6 +149,8 @@ class Ses(commands.Cog):
     ses_date.hours -= 8
     tdelta = (ses_date - cur_time)
     await asyncio.sleep(tdelta.seconds)
+  
+
   
   
   

@@ -149,7 +149,7 @@ class Bartender(commands.Cog):
   async def bar_close(self):
     channel = gl.bot.get_channel(604834176645988354) # chats and bants
     # channel = gl.bot.get_channel(887682725375528963) # testing chat
-    await channel.send("Bar's closed, everyone. You don't have to go home, but you can't stay here. Have a good night.")
+    await channel.send("Bar's closed, everyone. You don't have to go home, but you can't stay here. Except for you, Drew. You can stay as long as you want.")
     self.happy_hour = False
   
   @bar_close.before_loop

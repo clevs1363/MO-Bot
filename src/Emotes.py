@@ -52,23 +52,39 @@ class Emotes(commands.Cog):
       # react to message reply
       msg = ctx.message.reference.resolved # the reply itself
       if type(msg) == discord.Message: # only trigger if Message not DeletedReferencedMessage
-        for emoji in ctx.guild.emojis:
-          if emoji.name == emote_name:
-            await msg.add_reaction(emoji)
-        await ctx.message.delete() # delete triggering message
+        for guild in gl.bot.guilds:
+          for emoji in guild.emojis:
+            if emoji.name == emote_name:
+              await msg.add_reaction(emoji)
+          await ctx.message.delete() # delete triggering message
     else:
       # send emoji in chat
-      for emoji in ctx.guild.emojis:
-        if emoji.name == emote_name:
-          if len(str(emoji)) * num > 2000:
-            return await ctx.send("The message would be too long, Drew.")
-          emoji_string = ""
-          for x in range(num):
-            emoji_string += str(emoji)
-          await ctx.send(emoji_string)
-          await ctx.message.delete() # delete triggering message
-          return 
+      for guild in gl.bot.guilds:
+        for emoji in guild.emojis:
+          if emoji.name == emote_name:
+            if len(str(emoji)) * num > 2000:
+              return await ctx.send("The message would be too long, Drew.")
+            emoji_string = ""
+            for x in range(num):
+              emoji_string += str(emoji)
+            await ctx.send(emoji_string)
+            await ctx.message.delete() # delete triggering message
+            return 
       # if not returned by now, emote doesn't exists
       await ctx.send("Emote doesn't exist, try again")
   
+  @commands.command(aliases=['edit'])
+  async def edited(self, ctx):
+    edited = await gl.get_emoji(ctx.guild, "edited")
+    s = """:edited::edited::edited:     :edited::edited:        :edited::edited::edited::edited:     :edited::edited::edited::edited:
+:edited:                 :edited:   :edited:              :edited:                        :edited:
+:edited::edited: :edited:    :edited:     :edited:            :edited:                        :edited:
+:edited:                 :edited:   :edited:              :edited:                        :edited:
+:edited::edited: :edited:    :edited::edited:        :edited::edited::edited::edited:              :edited:"""
+    edited_str = s.replace(":edited:", str(edited))
+    return await ctx.send(edited_str)
   
+  @commands.command()
+  async def big(self, ctx, name):
+    await ctx.invoke(gl.bot.get_command('smoosh'), emoji1=name, emoji2=name)
+    return await ctx.message.delete()

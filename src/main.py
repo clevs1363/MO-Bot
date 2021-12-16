@@ -26,7 +26,7 @@ bot = gl.bot
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
-    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="beepblub's big gay"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with consciousness"))
 
 if 'bot_token' in os.environ:
   keep_alive() 
