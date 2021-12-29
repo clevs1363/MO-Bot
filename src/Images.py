@@ -13,6 +13,27 @@ class Images(commands.Cog):
     self.bot = bot
     self._last_member = None
 
+  @commands.command(aliases = ['pfp', 'profile_picture'])
+  async def profile(self, ctx, *username):
+    if not username:
+      raw = await ctx.author.avatar_url.read()
+      img = Image.open(BytesIO(raw), mode='r')
+      b = BytesIO()
+      img.save(b, "PNG")
+      b.seek(0)
+      return await ctx.send(file=discord.File(b, filename='profile.png'))
+    else:
+      username = " ".join(username)
+      for user in ctx.guild.members:
+        if user.nick == username or user.name == username:
+          raw = await user.avatar_url.read()
+          img = Image.open(BytesIO(raw), mode='r')
+          b = BytesIO()
+          img.save(b, "PNG")
+          b.seek(0)
+          return await ctx.send(file=discord.File(b, filename='profile.png'))
+      return await ctx.send("User not found")
+  
   @commands.command(aliases = ['smooshy'])
   async def smoosh(self, ctx, emoji1, emoji2):
     # get first emoji
@@ -27,7 +48,6 @@ class Images(commands.Cog):
     img = Image.open(BytesIO(e1), mode='r')
     width, height = img.size
     
-
     # get second emoji
     e2 = None
     for emoji in ctx.guild.emojis:
