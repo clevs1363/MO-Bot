@@ -41,7 +41,10 @@ class Text(commands.Cog):
       print('user_map is: ')
       print(db['user_map'])
 
-
+    if message.author.id == 247833945956155393 and message.content == ".deepfry":
+      # tom making pictures funny
+      await message.channel.send("now its funny")
+    
     if isinstance(message.channel, discord.DMChannel):
       if message.author.id != gl.my_user_id:
         m = gl.bot.get_user(gl.my_user_id)
@@ -124,21 +127,25 @@ class Text(commands.Cog):
 
   @gl.bot.event
   async def on_message_edit(before, after):
-    # add edit emoji to edited messages
-    if before.content == after.content:
-      # ignore links, pins, etc., only editing message content
-      return
-    await gl.add_emoji(after, 'edited', gl.bot.emojis)
-    if isinstance(after.channel, discord.DMChannel):
-	    return await before.channel.send("What edits behind closed doors stays behind closed doors :)")
-	  # ignore DMs adding stats 
-    # add stats 
-    author_id = str(before.author.id)
-    if not before.author.bot:
-      if author_id in db['edited_stats']:
-        db['edited_stats'][author_id] += 1
-      else:
-        db['edited_stats'][author_id] = 1
+    if random.randrange(1, 100) <= 37:
+      # add edit emoji to edited messages
+      if before.content == after.content:
+        # ignore links, pins, etc., only editing message content
+        return
+      await gl.add_emoji(after, 'edited', gl.bot.emojis)
+      if isinstance(after.channel, discord.DMChannel):
+        return await before.channel.send("What edits behind closed doors stays behind closed doors :)")
+      # ignore DMs adding stats 
+      # add stats 
+      author_id = str(before.author.id)
+      if not before.author.bot:
+        if author_id in db['edited_stats']:
+          db['edited_stats'][author_id] += 1
+        else:
+          db['edited_stats'][author_id] = 1
+    if random.randrange(1, 100000) < 37:
+      await after.reply("@everyone " + after.author.display_name + " JUST EDITED LMAO")
+      await gl.bot.invoke(gl.bot.get_command('edited'))
     # if before.author.id == gl.drew_id:
     #   # harass drew
     #   messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
@@ -170,6 +177,8 @@ class Text(commands.Cog):
       await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
     
     if reaction.count == 4 and reaction.emoji == "📌":
+      await reaction.message.pin()
+    if reaction.count == 6 and reaction.emoji.name == "biglaff":
       await reaction.message.pin()
     
     if not isinstance(reaction.emoji, str) and reaction.emoji.name == "doot":

@@ -44,7 +44,8 @@ class Miscellaneous(commands.Cog):
   
   @commands.command()
   async def kill(self, ctx):
-    return await ctx.send('https://tenor.com/view/braun-strow-man-you-cant-kill-me-gif-10197798')
+    await ctx.channel.send('KEEYILL', tts=True)
+    return await ctx.send('https://www.youtube.com/watch?v=dyIilW_eBjc')
 
   @commands.command()
   async def update(self, ctx):

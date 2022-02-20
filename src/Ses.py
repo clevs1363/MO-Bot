@@ -60,7 +60,13 @@ class Ses(commands.Cog):
       # get date
       date_match = re.search('([0-1][0-2]|[1-9])/([0-2][0-9]|[3][0-1]|[1-9])[/21]{0,1}', ses)
       if date_match:
-        d = date_match.group(0) + "/21" if len(date_match.group(0)) == 5 else date_match.group(0)
+        d = None
+        if len(date_match.group(0)) == 5:
+          d = date_match.group(0) + "/22"
+        elif len(date_match.group(0)) == 6:
+          d = date_match.group(0) + "22"
+        else:
+          d = date_match.group(0)
         ses_day = datetime.strptime(d,"%m/%d/%y")
       else:
         return await ctx.send("The date could not be determined.")

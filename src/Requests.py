@@ -94,7 +94,7 @@ class Requests(commands.Cog):
         db['bugs'] = []
         return await ctx.send('Bugs smooshed.')
       else:
-        if len(db['bugs']) > index:
+        if len(db['bugs']) >= index:
           index -= 1 # normalize to start counting at 0
           # remove at index
           await gl.add_emoji(ctx.message, "partyparrot", gl.bot.emojis)

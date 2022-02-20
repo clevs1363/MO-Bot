@@ -88,3 +88,45 @@ class Emotes(commands.Cog):
   async def big(self, ctx, name):
     await ctx.invoke(gl.bot.get_command('smoosh'), emoji1=name, emoji2=name)
     return await ctx.message.delete()
+  
+  @commands.command(aliases=['1984'])
+  async def _1984(self, ctx):
+    msg = ctx.message.reference
+    if msg: 
+      msg = msg.resolved
+      await msg.add_reaction("1️⃣")
+      await msg.add_reaction("9️⃣")
+      await msg.add_reaction("8️⃣")
+      await msg.add_reaction("4️⃣")
+      return await ctx.message.delete()
+    else:
+      return await ctx.channel.send("1️⃣ 9️⃣ 8️⃣ 4️⃣")
+
+  @commands.command()
+  async def based(self, ctx):
+    msg = ctx.message.reference
+    if msg: 
+      msg = msg.resolved
+      await msg.add_reaction("🇧")
+      await msg.add_reaction("🇦")
+      await msg.add_reaction("🇸")
+      await msg.add_reaction("🇪")
+      await msg.add_reaction("🇩")
+      return await ctx.message.delete()
+    else:
+      return await ctx.channel.send("🇧 🇦 🇸 🇪 🇩")
+
+  @commands.command()
+  async def cringe(self, ctx):
+    msg = ctx.message.reference
+    if msg: 
+      msg = msg.resolved
+      await msg.add_reaction("🇨")
+      await msg.add_reaction("🇷")
+      await msg.add_reaction("🇮")
+      await msg.add_reaction("🇳")
+      await msg.add_reaction("🇬")
+      await msg.add_reaction("🇪")
+      return await ctx.message.delete()
+    else:
+      return await ctx.channel.send("🇨 🇷 🇮 🇳 🇬 🇪")
