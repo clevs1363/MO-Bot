@@ -127,6 +127,9 @@ class Text(commands.Cog):
 
   @gl.bot.event
   async def on_message_edit(before, after):
+    if before.author.bot:
+      # ignore messages from bots
+      return
     if random.randrange(1, 100) <= 37:
       # add edit emoji to edited messages
       if before.content == after.content:
