@@ -15,7 +15,7 @@ class Requests(commands.Cog):
   @commands.command(aliases=['req', 'requests'])
   async def request(self, ctx, *req):
     if req:
-      if 'requests' in db.keys() and len(db['requests']) > 14:
+      if 'requests' in db.keys() and len(db['requests']) > 37:
         await ctx.send(gl.annoyed)
         return
       # add request to dictionary

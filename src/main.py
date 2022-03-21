@@ -49,6 +49,7 @@ bot.add_cog(Ses(bot))
 bot.add_cog(Math(bot))
 try:
   bot.run(gl.bot_token)
+  
   # for guild in bot.guilds:
   #     for channel in guild.channels:
   #       if guild.name:

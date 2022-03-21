@@ -138,28 +138,33 @@ class Emotes(commands.Cog):
 
   @commands.command(aliases=['re'])
   async def random_emote(self, ctx, num=1):
-    rand_num = random.randrange(1, len(ctx.guild.emojis))
+    rand_len = 0
+    for guild in gl.bot.guilds:
+      rand_len += len(guild.emojis)
+    rand_num = random.randrange(1, rand_len)
     counter = 1
     if ctx.message.reference:
       # react to message reply
       msg = ctx.message.reference.resolved # the reply itself
       if type(msg) == discord.Message: # only trigger if Message not DeletedReferencedMessage
-        for emoji in ctx.guild.emojis:
-          if rand_num == counter:
-            await msg.add_reaction(emoji)
-          counter += 1
+        for guild in gl.bot.guilds:
+          for emoji in guild.emojis:
+            if rand_num == counter:
+              await msg.add_reaction(emoji)
+            counter += 1
         return await ctx.message.delete() # delete triggering message
     else:
       # send emoji in chat
-      for emoji in ctx.guild.emojis:
-        if rand_num == counter:
-          if len(str(emoji)) * num > 2000:
-            return await ctx.send("The message would be too long, Drew.")
-          emoji_string = ""
-          for x in range(num):
-            emoji_string += str(emoji)
-          await ctx.send(emoji_string)
-          return await ctx.message.delete() # delete triggering message
-        counter += 1
-      # if not returned by now, emote doesn't exists
-      await ctx.send("Emote doesn't exist, try again")
+      for guild in gl.bot.guilds:
+        for emoji in guild.emojis:
+          if rand_num == counter:
+            if len(str(emoji)) * num > 2000:
+              return await ctx.send("The message would be too long, Drew.")
+            emoji_string = ""
+            for x in range(num):
+              emoji_string += str(emoji)
+            await ctx.send(emoji_string)
+            return await ctx.message.delete() # delete triggering message
+          counter += 1
+      # if not returned by now, weird error happened
+      return await ctx.send("Something went wrong, please try again")
