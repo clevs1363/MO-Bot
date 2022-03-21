@@ -168,3 +168,33 @@ class Emotes(commands.Cog):
           counter += 1
       # if not returned by now, weird error happened
       return await ctx.send("Something went wrong, please try again")
+
+  @commands.command(aliases=['em_rec'])
+  async def emojis_received(self, ctx, emote_name):
+    # counts and sorts number of emote_names received
+    emojis_received = {}
+    async with ctx.typing():
+      for channel in ctx.guild.text_channels:
+        async for msg in channel.history(limit=100000):
+          for react in msg.reactions:
+            filtered_emote_name = re.sub("[0-9]{18}", "", str(react)).replace(":", "").replace("<", "").replace(">", "") # filters out internal emoji representation
+            if filtered_emote_name == emote_name:
+              if msg.author.name in emojis_received:
+                emojis_received[msg.author.name] += 1
+              else:
+                emojis_received[msg.author.name] = 1
+    if emojis_received:
+      sorted_emojis = {k: v for k, v in sorted(emojis_received.items(), key=lambda item: item[1], reverse=True)}
+      ret_string = ""
+      count = 1
+      biglaff_emote = await gl.get_emoji(ctx.guild, emote_name)
+      for k, v in sorted_emojis.items():
+        ret_string += str(count) + ". " + k + ": " + str(v)
+        if biglaff_emote:
+          ret_string += " " + str(biglaff_emote) + "s\n"
+        else:
+          ret_string += " " + emote_name + "s\n"
+        count += 1
+      await ctx.send(ret_string)
+    else:
+      return await ctx.send("No emojis with that name were found.")
