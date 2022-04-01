@@ -330,3 +330,7 @@ class Miscellaneous(commands.Cog):
     text_to_send = text[1:]
     channel = gl.bot.get_channel(int(channel_id))
     await channel.send(" ".join(text_to_send))
+
+  @commands.command()
+  async def study(self, ctx):
+    return await ctx.send("https://www.youtube.com/watch?v=ZBojGJGJAgQ&ab_channel=ThomasMiller")

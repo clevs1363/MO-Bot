@@ -52,7 +52,7 @@ class Bartender(commands.Cog):
     if not self.happy_hour:
       return await ctx.send("Sorry, friend. Come back at 5pm when we're open.  Feel free to take some complimentary `!coffee`.")
     await self.add_stat(ctx.author.id)
-    r = requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient)
+    r = requests.get("https://www.thecocktaildb.com/api/json/v1/1/filter.php?i=" + ingredient).json()
     drink_info = await self.get_drink_info(r['drinks'])
     await ctx.send("You got it, boss. Let me see what I can make with that.")
     async with ctx.typing():

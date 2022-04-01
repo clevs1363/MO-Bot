@@ -3,6 +3,8 @@ import globals as gl
 import discord
 import re
 import random
+from PIL import Image
+from io import BytesIO
 
 class Emotes(commands.Cog):
   # random commands associated with text channels
@@ -91,8 +93,21 @@ class Emotes(commands.Cog):
   
   @commands.command()
   async def big(self, ctx, name):
-    await ctx.invoke(gl.bot.get_command('smoosh'), emoji1=name, emoji2=name)
-    return await ctx.message.delete()
+    img_bytes = []
+    for guild in gl.bot.guilds:
+      for emoji in guild.emojis:
+        if emoji.name == name:
+          i = await emoji.url.read()
+          img_bytes.append(i)
+    if img_bytes:
+      img = Image.open(BytesIO(random.choice(img_bytes)), mode='r')
+      b = BytesIO()
+      img.save(b, "PNG")
+      b.seek(0)
+      return await ctx.send(file=discord.File(b, filename='big.png'))
+    else:
+      return await ctx.send("Emoji not found :(")
+      
   
   @commands.command(aliases=['1984'])
   async def _1984(self, ctx):
@@ -171,6 +186,8 @@ class Emotes(commands.Cog):
 
   @commands.command(aliases=['em_rec'])
   async def emojis_received(self, ctx, emote_name):
+    if not ctx.message.author.id == gl.my_user_id:
+      return await ctx.send("no")
     # counts and sorts number of emote_names received
     emojis_received = {}
     async with ctx.typing():
