@@ -71,7 +71,6 @@ class Ses(commands.Cog):
           d = date_match.group(0) + "22"
         else:
           d = date_match.group(0)
-        print(d)
         ses_day = datetime.strptime(d,"%m/%d/%y")
       else:
         return await ctx.send("The date could not be determined.")

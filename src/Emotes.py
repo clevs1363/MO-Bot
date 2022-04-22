@@ -5,6 +5,7 @@ import re
 import random
 from PIL import Image
 from io import BytesIO
+from collections import defaultdict
 
 class Emotes(commands.Cog):
   # random commands associated with text channels
@@ -42,6 +43,8 @@ class Emotes(commands.Cog):
     emote_name = re.sub("[0-9]{18}", "", emote_name).replace(":", "").replace("<", "").replace(">", "")
     if emote_name in ('wetawd', 'advanced'):
       emote_name = 'fwend'
+    elif emote_name == 'schizo':
+      return await ctx.send("Emote exists, don't you remember?")
     elif emote_name == 'edited':
       await ctx.send("Certified Drew moment.")
     elif emote_name == 'fred':
@@ -91,14 +94,28 @@ class Emotes(commands.Cog):
     edited_str = s.replace(":edited:", str(edited))
     return await ctx.send(edited_str)
   
-  @commands.command()
-  async def big(self, ctx, name):
-    img_bytes = []
+  @commands.command(aliases=['rb'])
+  async def big(self, ctx, *n):
+    rand_len = 0
     for guild in gl.bot.guilds:
-      for emoji in guild.emojis:
-        if emoji.name == name:
-          i = await emoji.url.read()
-          img_bytes.append(i)
+      rand_len += len(guild.emojis)
+    img_bytes = []
+    if not n:
+      rand_num = random.randrange(1, rand_len)
+      counter = 1
+      for guild in gl.bot.guilds:
+        for emoji in guild.emojis:
+          if counter == rand_num:
+            i = await emoji.url.read()
+            img_bytes.append(i)
+          counter += 1
+    else:
+      name = n[0]
+      for guild in gl.bot.guilds:
+        for emoji in guild.emojis:
+          if emoji.name == name:
+            i = await emoji.url.read()
+            img_bytes.append(i)
     if img_bytes:
       img = Image.open(BytesIO(random.choice(img_bytes)), mode='r')
       b = BytesIO()
@@ -185,33 +202,85 @@ class Emotes(commands.Cog):
       return await ctx.send("Something went wrong, please try again")
 
   @commands.command(aliases=['em_rec'])
-  async def emojis_received(self, ctx, emote_name):
+  async def emojis_received(self, ctx, emote_name, history):
     if not ctx.message.author.id == gl.my_user_id:
       return await ctx.send("no")
     # counts and sorts number of emote_names received
-    emojis_received = {}
+    emojis_received = defaultdict(int)
+    messages = defaultdict(int)
     async with ctx.typing():
       for channel in ctx.guild.text_channels:
-        async for msg in channel.history(limit=100000):
+        if int(channel.id) == 783773695231393803 or int(channel.id) == 940300465399291904:
+          continue # ignore the hidden chats
+        async for msg in channel.history(limit=int(history)):
+          messages[msg.author.name] += 1
           for react in msg.reactions:
             filtered_emote_name = re.sub("[0-9]{18}", "", str(react)).replace(":", "").replace("<", "").replace(">", "") # filters out internal emoji representation
             if filtered_emote_name == emote_name:
-              if msg.author.name in emojis_received:
-                emojis_received[msg.author.name] += 1
-              else:
-                emojis_received[msg.author.name] = 1
+              emojis_received[msg.author.name] += 1
     if emojis_received:
       sorted_emojis = {k: v for k, v in sorted(emojis_received.items(), key=lambda item: item[1], reverse=True)}
-      ret_string = ""
+      ratios = {}
+      # put raw number of emojis received in a string
+      count_string = "Raw number of emojis received:\n"
       count = 1
       biglaff_emote = await gl.get_emoji(ctx.guild, emote_name)
       for k, v in sorted_emojis.items():
-        ret_string += str(count) + ". " + k + ": " + str(v)
+        count_string += str(count) + ". " + k + ": " + str(v)
         if biglaff_emote:
-          ret_string += " " + str(biglaff_emote) + "s\n"
+          count_string += " " + str(biglaff_emote) + "s\n"
         else:
-          ret_string += " " + emote_name + "s\n"
+          count_string += " " + emote_name + "s\n"
         count += 1
-      await ctx.send(ret_string)
+      # get ratio of messages sent to emojis received
+      for (user, num) in messages.items():
+        if user in emojis_received: # checks if exist
+          ratios[user] = round(num / emojis_received[user], 2)
+      sorted_ratios = {k: v for k, v in sorted(ratios.items(), key=lambda item: item[1])}
+      # put ratio in string
+      ratio_string = "Ratio of messages sent to emojis received (lower number is \"better\"), indicating the average number of messages sent before receiving one of the emojis:\n"
+      count = 1
+      for (k, v) in sorted_ratios.items():
+        ratio_string += str(count) + ". " + k + ": " + str(v)
+        if biglaff_emote:
+          ratio_string += " messages per " + str(biglaff_emote) + "\n"
+        else:
+          ratio_string += " messages per " + emote_name + "\n"
+        count += 1
+      # send final strings
+      await ctx.send(count_string)
+      return await ctx.send(ratio_string)
     else:
       return await ctx.send("No emojis with that name were found.")
+
+  @commands.command()
+  async def salt_counter(self, ctx):
+    if not ctx.message.author.id == gl.my_user_id:
+      return await ctx.send("no")
+    # counts and sorts number of emote_names received
+    messages_edited = defaultdict(int)
+    ambulances_rec = defaultdict(int)
+    async with ctx.typing():
+      for channel in ctx.guild.text_channels:
+        async for msg in channel.history(limit=100000):
+          if msg.edited_at:
+            messages_edited[msg.author.name] += 1
+          for reaction in msg.reactions:
+            # print(str(reaction))
+            if str(reaction) == "🚑":
+              ambulances_rec[msg.author.name] += 1
+    sorted_edited = dict(sorted(messages_edited.items(), key=lambda item: item[1], reverse=True))
+    sorted_ambulances = dict(sorted(ambulances_rec.items(), key=lambda item: item[1], reverse=True))
+    edited_string = await self.print_dict("Messages edited:\n", sorted_edited)
+    ambulance_string = await self.print_dict("Ambulances received:\n", sorted_ambulances)
+    await ctx.send(edited_string)
+    return await ctx.send(ambulance_string)
+
+  async def print_dict(self, initial_str, dict):
+    ret_string = initial_str
+    counter = 1
+    for (k, v) in dict.items():
+      ret_string += str(counter) + ". " + k + ": " + str(v) + "\n"
+      counter += 1
+    return ret_string
+            

@@ -150,34 +150,34 @@ class Text(commands.Cog):
       await after.reply("@everyone " + after.author.display_name + " JUST EDITED LMAO")
       await gl.bot.invoke(gl.bot.get_command('edited'))
     # if before.author.id == gl.drew_id:
-    #   # harass drew
-    #   messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
-    #   edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
-    #   if edited:
-    #     edited = edited[0]
-    #     drew = gl.bot.get_user(gl.drew_id)
-    #     await drew.send(random.choice(messages))
-    #     await drew.send(edited)
-    #     return # exit if not found
+      # harass drew
+      # messages = ['Did you have to edit that message?', 'I see you.', 'You\'ve been testing me...it\'s time I test you.', 'Go edit boy go', 'I see every edit you made...', 'You hate me because of :edited:. But despite my ghoulish reputation, I really have the heart of a small boy. I keep it in a jar in my server room.', 'Hell is empty and all the edits are here.', 'Yeeees...edit that message...', 'The message was fine before.', 'Was that necessary', 'Get :edited:']
+      # edited = [emoji for emoji in before.guild.emojis if emoji.name == 'edited']
+      # if edited:
+      #   edited = edited[0]
+      #   drew = gl.bot.get_user(gl.drew_id)
+      #   await drew.send(random.choice(messages))
+      #   await drew.send(edited)
+      #   return # exit if not found
 
-  @gl.bot.event
-  async def on_member_update(before, after):
-    activity_type = None
-    try:
-      activity_type = after.activity.type
-    except:
-      pass
-    if activity_type is discord.Streaming:
-      # Do X if he is streaming
-      channel = gl.bot.get_channel(604834176645988354)
-      await channel.send(after.activity.twitch_name + 'is LIVE! Come in here or he\'ll come for your toes!' + '\n' + after.activity.name + '\n' + after.activity.url)
-    else:
-      pass
+  # @gl.bot.event
+  # async def on_member_update(before, after):
+  #   activity_type = None
+  #   try:
+  #     activity_type = after.activity.type
+  #   except:
+  #     pass
+  #   if activity_type is discord.ActivityType.streaming:
+  #     # Do X if he is streaming
+  #     channel = gl.bot.get_channel(604834176645988354)
+  #     await channel.send(after.activity.twitch_name + ' is LIVE!\n' + after.activity.name + '\n' + after.activity.url)
+  #   else:
+  #     pass
 
   @gl.bot.event
   async def on_reaction_add(reaction, user):
-    if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
-      await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
+    # if reaction.count == 5 and not isinstance(reaction.emoji, str) and reaction.emoji.name == "biglaff" and reaction.message.author.name == "Obotma":
+    #   await reaction.message.reply("https://tenor.com/view/drop-the-mic-obama-mic-drop-gif-13109295")
     
     if reaction.count == 4 and reaction.emoji == "📌":
       await reaction.message.pin()
