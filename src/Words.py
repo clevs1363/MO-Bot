@@ -248,3 +248,25 @@ class Words(commands.Cog):
       for count, word in enumerate(dist_ranking, start=1):
         ret_string += str(count) + ". **" + word[0] + "**: " + str(word[1]) + "\n"
       return await ctx.send(ret_string)
+
+  @commands.command()
+  async def blue(self, ctx, *str):
+    if ctx.message.reference:
+      # react to message reply
+      msg = ctx.message.reference.resolved
+      for s in str:
+        for letter in s:
+          if letter.isalpha():
+            await msg.add_reaction(":regional_indicator_" + letter.lower() + ":")
+      return
+    else:
+      ret_string = ""
+      for s in str:
+        for letter in s:
+          if letter.isalpha():
+            ret_string += ":regional_indicator_" + letter.lower() + ":"
+        ret_string += "  "
+      if len(ret_string) > 2000:
+        return await ctx.send("Message too big :(")
+      else:
+        return await ctx.send(ret_string)

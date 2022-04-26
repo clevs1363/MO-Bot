@@ -44,7 +44,7 @@ class Ses(commands.Cog):
   async def abyses(self, ctx, *msg):
     await gl.add_emoji(ctx.message, 'ses', gl.bot.emojis)
     if msg: # check if arguments passed
-      if ctx.author.name == "Ś̶̨h̸̥͌r̷̬̍ö̷͉o̴̡͐m̶̧̏b̴̳̆o̵̎͜" or ctx.author.id == gl.my_user_id:
+      if ctx.author.id == gl.drew_id or ctx.author.id == gl.my_user_id:
         output = " ".join(msg)
         await ctx.message.channel.edit(topic = output)
         await gl.update_ses('abyses', output)
@@ -60,8 +60,8 @@ class Ses(commands.Cog):
       # get date
       date_match = re.search('([0-1][0-2]|[1-9])/([0-2][0-9]|[3][0-1]|[1-9])[/21]{0,1}', ses)
       if date_match:
-        print(date_match.group(0))
-        print(len(date_match.group(0)))
+        # print(date_match.group(0))
+        # print(len(date_match.group(0)))
         d = None
         if len(date_match.group(0)) == 4:
           d = "0" + date_match.group(0) + "/22"

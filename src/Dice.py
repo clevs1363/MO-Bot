@@ -49,7 +49,6 @@ class Dice(commands.Cog):
         await ctx.send('https://ih1.redbubble.net/image.1047087046.0562/st,small,845x845-pad,1000x1000,f8f8f8.u1.jpg')
       else:
         await ctx.send(result[:-2]) # sliced to remove last ', '
-      if mods != 0:
         await ctx.send("Total = " + str(total))
     except Exception as e:
       print(e)
