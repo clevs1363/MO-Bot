@@ -31,7 +31,7 @@ class Miscellaneous(commands.Cog):
   async def help(self, ctx):
     embed = discord.Embed(
     title = "Obotma Commands",
-    description = "A fun passion project for the boys. It started as a replacement to Groovy and Rhythm, and has evolved into a collection of random commands for the server. \n\n https://clevs1363.github.io/Obotma/",
+    description = "A fun passion project for the boys. It started as a replacement to Groovy and Rhythm, and has evolved into a collection of random commands for the server. \n\n https://clevs1363.github.io/MO-Bot/",
     color = discord.Color.dark_blue()
     )
     embed.set_author(name=gl.bot.user.name, icon_url=gl.bot.user.avatar_url)

@@ -2,6 +2,7 @@ import asyncio
 import requests
 import random
 import globals as gl
+import emoji
 from discord.ext import commands
 import matplotlib.pyplot as plt
 from io import BytesIO
@@ -257,8 +258,13 @@ class Words(commands.Cog):
       for s in str:
         for letter in s:
           if letter.isalpha():
-            await msg.add_reaction(":regional_indicator_" + letter.lower() + ":")
-      return
+            print(letter)
+            s = ":regional_indicator_" + letter.lower() + ":"
+            print(s)
+            regional_em = str(s)
+            print(regional_em)
+            await msg.add_reaction(regional_em)
+      return msg.delete()
     else:
       ret_string = ""
       for s in str:
