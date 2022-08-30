@@ -30,10 +30,10 @@ class Text(commands.Cog):
 
   @gl.bot.event
   async def on_message(message):
-    await gl.bot.process_commands(message)
     if message.author.bot:
       # ignore messages from bots
       return
+    await gl.bot.process_commands(message)
     
     # add user to user_map if unknown
     if str(message.author.id) not in db['user_map']:
@@ -114,7 +114,8 @@ class Text(commands.Cog):
     fact_message = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
     fact_message = re.sub("<@!*[0-9]{18}>", "", fact_message) # ignores user IDs (when @ed) of the form <@123456789123456789>
     fact_message = re.sub("<@&[0-9]{18}>", "", fact_message) # ignores roles (when @ed) of the form <@&123456789123456789>
-    if '37' in fact_message and not message.content.startswith('https://'):
+    fact_message = re.sub("<#[0-9]{18}>", "", fact_message) # ignore channels 
+    if '37' in fact_message and not message.content.startswith('https://') and not message.content.startswith('http://'):
       return await gl.random_fact(message)
 
     # react to being tagged
@@ -181,8 +182,8 @@ class Text(commands.Cog):
     
     if reaction.count == 4 and reaction.emoji == "📌":
       await reaction.message.pin()
-    if reaction.count == 6 and reaction.emoji.name == "biglaff":
-      await reaction.message.pin()
+    # if reaction.count == 6 and reaction.emoji.name == "biglaff":
+    #   await reaction.message.pin()
     
     if not isinstance(reaction.emoji, str) and reaction.emoji.name == "doot":
       await reaction.message.channel.send('Dute', tts=True)

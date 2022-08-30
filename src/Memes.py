@@ -54,3 +54,7 @@ class Memes(commands.Cog):
     r = requests.get("https://meme-api.herokuapp.com/gimme").json()
     await ctx.send(r['title'])
     await ctx.send(r['url'])
+
+  @commands.command()
+  async def ladder(self, ctx):
+    return await ctx.send("https://i.ibb.co/M9rz8r7/ladders.webp")

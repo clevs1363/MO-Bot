@@ -5,6 +5,8 @@ import discord
 from replit import db
 import matplotlib
 import matplotlib.pyplot as plt
+import random
+from datetime import timedelta
 # Customize matplotlib
 matplotlib.rcParams.update(
   {
@@ -26,6 +28,7 @@ class Miscellaneous(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+    self.timer_lock = datetime.datetime.now()
 
   @commands.command(aliases=['h'])
   async def help(self, ctx):
@@ -334,3 +337,26 @@ class Miscellaneous(commands.Cog):
   @commands.command()
   async def study(self, ctx):
     return await ctx.send("https://www.youtube.com/watch?v=ZBojGJGJAgQ&ab_channel=ThomasMiller")
+
+  @commands.command()
+  async def schizo(self, ctx):
+    return await ctx.send("https://youtu.be/F8CJezPcCuc")
+
+  @commands.command()
+  async def random(self, ctx):
+    possible_commands = ["study", "schizo", "inktober", "re", "help", "open_bar", "close_bar", "coffee", "bardown", "r_drink", "edited", "1984", "based", "cringe", "lenny", "pun", "meme", "ladder", "compliment", "thank", "encourage", "hug", "requests", "bugs", "sesdown"]
+    cmd = random.choice(possible_commands)
+    await ctx.send("Chosen command: *!" + cmd + "*")
+    return await ctx.invoke(self.bot.get_command(cmd))
+
+  @commands.command(aliases = ['8ball'])
+  async def _8ball(self, ctx):
+    if self.timer_lock + timedelta(minutes=10) < datetime.datetime.now():
+      return await ctx.send("I need some time to think.")
+    responses = ['It is certain.', 'It is decidedly so.', 'Without a doubt.', 'Yes definitely.', 'You may rely on it.', 'As I see it, yes.', 'Most likely.', 'Outlook good.', 'Yes.', 'Signs point to yes.', 'Reply hazy, try again.', 'Ask again later.', 'Better not tell you now.', 'Cannot predict now.', 'Concentrate and ask again.', 'Don\'t count on it.', 'My reply is no.', 'My sources say no.', 'Outlook not so good.', 'Very doubtful.']
+    answer = random.choice(responses)
+    answer_index = responses.index(answer)
+    if answer_index > 9 and answer_index < 15:
+      # set timer to disable command from a lukewarm answer
+      self.timer_lock = datetime.datetime.now()
+    return await ctx.send(answer)

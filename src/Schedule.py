@@ -66,7 +66,7 @@ class Schedule(commands.Cog):
     await self.news(channel)
 
     # inktober52 link
-    await channel.send("See the following for Inktober52 prompts:\nhttps://inktober.com/inktober52")
+    # await channel.send("See the following for Inktober52 prompts:\nhttps://inktober.com/inktober52")
 
   @daily_message.before_loop
   async def before_daily_message(self):

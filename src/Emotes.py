@@ -169,11 +169,11 @@ class Emotes(commands.Cog):
       return await ctx.channel.send("🇨 🇷 🇮 🇳 🇬 🇪")
 
   @commands.command(aliases=['re'])
-  async def random_emote(self, ctx, num=1):
+  async def random_emote(self, ctx, num=1, uniqueness="dif"):
     rand_len = 0
     for guild in gl.bot.guilds:
       rand_len += len(guild.emojis)
-    rand_num = random.randrange(1, rand_len)
+    rand_nums = random.sample(range(1, rand_len), num)
     counter = 1
     if ctx.message.reference:
       # react to message reply
@@ -181,25 +181,33 @@ class Emotes(commands.Cog):
       if type(msg) == discord.Message: # only trigger if Message not DeletedReferencedMessage
         for guild in gl.bot.guilds:
           for emoji in guild.emojis:
-            if rand_num == counter:
+            if counter in rand_nums:
               await msg.add_reaction(emoji)
             counter += 1
         return await ctx.message.delete() # delete triggering message
     else:
       # send emoji in chat
+      emoji_string = ""
       for guild in gl.bot.guilds:
         for emoji in guild.emojis:
-          if rand_num == counter:
-            if len(str(emoji)) * num > 2000:
-              return await ctx.send("The message would be too long, Drew.")
-            emoji_string = ""
-            for x in range(num):
+          if counter in rand_nums:
+            if uniqueness == "same":
+              if len(str(emoji)) * num > 2000:
+                return await ctx.send("The message would be too long, Drew.")
+              for x in range(num):
+                emoji_string += str(emoji)
+              await ctx.send(emoji_string)
+              return await ctx.message.delete() # delete triggering message
+            else:
+              if len(str(emoji)) + len(emoji_string) > 2000:
+                return await ctx.send("The message would be too long!")
               emoji_string += str(emoji)
-            await ctx.send(emoji_string)
-            return await ctx.message.delete() # delete triggering message
           counter += 1
-      # if not returned by now, weird error happened
-      return await ctx.send("Something went wrong, please try again")
+      if emoji_string:
+        await ctx.send(emoji_string)
+        return await ctx.message.delete() # delete triggering message
+      else:
+        return await ctx.send("Something went wrong, please try again")
 
   @commands.command(aliases=['em_rec'])
   async def emojis_received(self, ctx, emote_name, history):
