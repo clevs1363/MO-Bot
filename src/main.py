@@ -22,31 +22,34 @@ from keep_alive import keep_alive
 
 bot = gl.bot
 
+async def setup(bot):
+  await bot.add_cog(Music(bot))
+  await bot.add_cog(Text(bot))
+  await bot.add_cog(Memes(bot))
+  await bot.add_cog(Requests(bot))
+  await bot.add_cog(Schedule(bot))
+  await bot.add_cog(Dice(bot))
+  await bot.add_cog(Poll(bot))
+  await bot.add_cog(ROR2(bot))
+  await bot.add_cog(Positivity(bot))
+  await bot.add_cog(Emotes(bot))
+  await bot.add_cog(Miscellaneous(bot))
+  await bot.add_cog(Words(bot))
+  await bot.add_cog(Images(bot))
+  await bot.add_cog(Bartender(bot))
+  await bot.add_cog(Ses(bot))
+  await bot.add_cog(Math(bot))
+
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user} (ID: {bot.user.id})')
     print('------')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="with consciousness"))
+    await setup(bot)
 
 if 'bot_token' in os.environ:
   keep_alive() 
-
-bot.add_cog(Music(bot))
-bot.add_cog(Text(bot))
-bot.add_cog(Memes(bot))
-bot.add_cog(Requests(bot))
-bot.add_cog(Schedule(bot))
-bot.add_cog(Dice(bot))
-bot.add_cog(Poll(bot))
-bot.add_cog(ROR2(bot))
-bot.add_cog(Positivity(bot))
-bot.add_cog(Emotes(bot))
-bot.add_cog(Miscellaneous(bot))
-bot.add_cog(Words(bot))
-bot.add_cog(Images(bot))
-bot.add_cog(Bartender(bot))
-bot.add_cog(Ses(bot))
-bot.add_cog(Math(bot))
+  
 try:
   bot.run(gl.bot_token)
   

@@ -11,6 +11,8 @@ class Ses(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
+
+  async def setup_hook(self):
     self.ses_reminder.start()
   
   @commands.command()

@@ -53,7 +53,9 @@ class Music(commands.Cog):
   def __init__(self, bot):
     self.bot = bot
     self._last_member = None
-    bot.loop.create_task(self.audio_player_task())
+
+  async def setup_hook(self):
+    self.bot.loop.create_task(self.audio_player_task())
 
   songs = asyncio.Queue()
   play_next_song = asyncio.Event()

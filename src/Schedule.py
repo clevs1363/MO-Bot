@@ -11,6 +11,8 @@ class Schedule(commands.Cog):
   # commands and functions that occur at scheduled times
   def __init__(self, bot):
     self.bot = bot
+
+  async def setup_hook(self):
     self.daily_message.start()
 
   @tasks.loop(hours=24)

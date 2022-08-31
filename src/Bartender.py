@@ -14,10 +14,12 @@ class Bartender(commands.Cog):
     self._last_member = None
     # set timer to say something at 5:00pm
     self.happy_hour = False
-    self.bar_open.start()
-    self.bar_close.start()
     if 'drink_stats' not in db.keys():
       db['drink_stats'] = {}
+
+  async def setup_hook(self):
+    self.bar_open.start()
+    self.bar_close.start()
   
   @commands.command()
   async def drink(self, ctx, *name):
