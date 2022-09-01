@@ -126,4 +126,5 @@ class Schedule(commands.Cog):
     embed.set_author(name=pop_article['byline'], icon_url=thumbnail)
     await channel.send("Popular news:")
     await channel.send(embed=embed)
+    await channel.send("If the above NYT links are paywalled, paste the link into this site (may try automating this soon): \nhttps://archive.ph/")
     

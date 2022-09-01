@@ -3,9 +3,12 @@ import globals as gl
 import discord
 from io import BytesIO
 from PIL import Image
+from PIL import ImageDraw
+from PIL import ImageFont
 from subprocess import Popen, PIPE
 import re
 import emojis as emj
+import math
 
 class Images(commands.Cog):
   # random commands associated with text channels
@@ -102,4 +105,68 @@ class Images(commands.Cog):
   #   txt = pytesseract.image_to_string(img)
   #   await ctx.send(txt)
 
-    
+  @commands.command(aliases=['fq'])
+  async def farquaad(self, ctx, text):
+    img = Image.open("docs/assets/fq.png")
+    final_img = await self.text_to_image(img, text)
+    return await ctx.send(file=discord.File(final_img, filename='farquaad.png'))
+
+  @commands.command()
+  async def no(self, ctx, text):
+    img = Image.open("docs/assets/no.png")
+    final_img = await self.text_to_image(img, "no " + text)
+    return await ctx.send(file=discord.File(final_img, filename='no.png'))
+
+  @commands.command()
+  async def sens(self, ctx, text):
+    em = None
+    for guild in ctx.guilds:
+      for emoji in ctx.guild.emojis:
+        if emoji.name == "sens":
+          em = await emoji.url.read()
+    if em:
+      img = Image.open(BytesIO(em), mode='r')
+      I1 = ImageDraw.Draw(img)
+      font = ImageFont.truetype('docs/assets/impact.ttf', 30)
+      I1.text((50, 50), text, font=font, fill=(255, 255, 255))
+
+      # copy into new image
+      dst = Image.new('RGBA', (img.width, img.height))
+      dst.paste(img, (0, 0))
+  
+      # convert into sendable object
+      b = BytesIO()
+      dst.save(b, "PNG")
+      b.seek(0)
+      return await ctx.send(file=discord.File(b, filename='sens_' + text + '.png'))
+      
+
+  async def text_to_image(self, img, text):
+    text = text.upper()
+    width, height = img.size
+    I1 = ImageDraw.Draw(img)
+    font_size = math.floor((width * height) / 16000) # guesstimate
+    font = ImageFont.truetype('docs/assets/impact.ttf', font_size)
+    text_width, text_height = I1.textsize(text)
+    # print(text_width)
+    print(width)
+    print(text_width)
+    x = (width-(text_width*len(text)))/2
+    print(x)
+    y = height-(height/5)
+    I1.text((x-4, y-4), text, font=font, fill="black")
+    I1.text((x+4, y-4), text, font=font, fill="black")
+    I1.text((x-4, y-4), text, font=font, fill="black")
+    I1.text((x+4, y+4), text, font=font, fill="black")
+    I1.text((x, y), text, font=font, fill=(255, 255, 255))
+
+    # copy into new image
+    dst = Image.new('RGBA', (img.width, img.height))
+    dst.paste(img, (0, 0))
+
+    # convert into sendable object
+    b = BytesIO()
+    dst.save(b, "PNG")
+    b.seek(0)
+    return b
+  

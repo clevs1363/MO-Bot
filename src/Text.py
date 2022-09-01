@@ -41,9 +41,27 @@ class Text(commands.Cog):
       print('user_map is: ')
       print(db['user_map'])
 
+    # small chance to react with a random emote
+    if random.randint(1, 1000) <= 37:
+      rand_len = 0
+      for guild in gl.bot.guilds:
+        rand_len += len(guild.emojis)
+      rand_num = random.randint(1, rand_len)
+      counter = 1
+      if type(message) == discord.Message: # only trigger if Message not DeletedReferencedMessage
+        for guild in gl.bot.guilds:
+          for emoji in guild.emojis:
+            if counter == rand_num:
+              await message.add_reaction(emoji)
+            counter += 1
+
+    # tom making pictures funny
     if message.author.id == 247833945956155393 and message.content == ".deepfry":
-      # tom making pictures funny
       await message.channel.send("now its funny")
+
+    # pat message
+    if message.author.id == 766831187016286250 and random.randint(1, 1000) == 5:
+      await message.channel.send("You know what? This is nice.")
     
     if isinstance(message.channel, discord.DMChannel):
       if message.author.id != gl.my_user_id:
