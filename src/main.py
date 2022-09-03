@@ -2,6 +2,7 @@ import globals as gl
 import discord
 import sys
 import os
+from replit import db
 from Music import Music
 from Text import Text
 from Memes import Memes
@@ -52,6 +53,8 @@ if 'bot_token' in os.environ:
   
 try:
   bot.run(gl.bot_token)
+  # keys = db.keys()
+  # print(keys)
   
   # for guild in bot.guilds:
   #     for channel in guild.channels:

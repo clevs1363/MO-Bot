@@ -5,7 +5,7 @@ from discord.abc import PrivateChannel
 import re
 import asyncio
 import random
-from replit import db
+# from replit import db
 
 class Text(commands.Cog):
   # commands and events associated with messages and their contents
@@ -15,14 +15,14 @@ class Text(commands.Cog):
     
     # if 'requests' in db.keys():
     #   del db['requests']
-    if 'hkr_stats' not in db.keys():
-      db['hkr_stats'] = {}
-    if 'edited_stats' not in db.keys():
-      db['edited_stats'] = {}
-    if 'user_map' not in db.keys():
-      db['user_map'] = {
-        gl.drew_id: "Shroombo"
-      }
+    # if 'hkr_stats' not in db.keys():
+    #   db['hkr_stats'] = {}
+    # if 'edited_stats' not in db.keys():
+    #   db['edited_stats'] = {}
+    # if 'user_map' not in db.keys():
+    #   db['user_map'] = {
+    #     gl.drew_id: "Shroombo"
+    #   }
 
   #
   # <-- TRIGGERED EVENTS -->
@@ -36,10 +36,11 @@ class Text(commands.Cog):
     await gl.bot.process_commands(message)
     
     # add user to user_map if unknown
-    if str(message.author.id) not in db['user_map']:
-      db['user_map'][message.author.id] = message.author.name
+    if str(message.author.id) not in gl.db['user_map']:
+      gl.db['user_map'][message.author.id] = message.author.name
+      await gl.update_db()
       print('user_map is: ')
-      print(db['user_map'])
+      print(gl.db['user_map'])
 
     # small chance to react with a random emote
     if random.randint(1, 1000) <= 37:
@@ -113,20 +114,22 @@ class Text(commands.Cog):
         add_stat = False
 
       if last:
-        if last in db['hkr_words']:
-          db['hkr_words'][last] += 1 
+        if last in gl.db['hkr_words']:
+          gl.db['hkr_words'][last] += 1 
         else:
-          db['hkr_words'][last] = 1
+          gl.db['hkr_words'][last] = 1
+        await gl.update_db()
 
       if add_stat:
         if isinstance(message.channel, discord.DMChannel) or isinstance(message.channel, PrivateChannel):
           return await message.channel.send("What happens in private stays in private :)") 
         author_id = str(message.author.id)
         if str(message.author.id) != "887714761666600960" and str(message.author.id) != "439205512425504771":
-          if author_id in db['hkr_stats']:
-            db['hkr_stats'][author_id] += 1
+          if author_id in gl.db['hkr_stats']:
+            gl.db['hkr_stats'][author_id] += 1
           else:
-            db['hkr_stats'][author_id] = 1
+            gl.db['hkr_stats'][author_id] = 1
+          await gl.update_db()
 
     # random fact
     fact_message = re.sub("<:[a-z]*:[0-9]{18}>", "", message.content) # ignore emotes of form <:emote:12439824598248> by substituting them with an empty string
@@ -146,6 +149,7 @@ class Text(commands.Cog):
 
   @gl.bot.event
   async def on_message_edit(before, after):
+    Message = Query()
     if before.author.bot:
       # ignore messages from bots
       return
@@ -161,10 +165,11 @@ class Text(commands.Cog):
       # add stats 
       author_id = str(before.author.id)
       if not before.author.bot:
-        if author_id in db['edited_stats']:
-          db['edited_stats'][author_id] += 1
+        if author_id in gl.db['edited_stats']:
+          gl.db['edited_stats'][author_id] += 1
         else:
-          db['edited_stats'][author_id] = 1
+          gl.db['edited_stats'][author_id] = 1
+        await gl.update_db()
     if random.randrange(1, 100000) < 37:
       await after.reply("@everyone " + after.author.display_name + " JUST EDITED LMAO")
       await gl.bot.invoke(gl.bot.get_command('edited'))
@@ -212,21 +217,21 @@ class Text(commands.Cog):
 
   @commands.command()
   async def stats(self, ctx):
-    if not db['hkr_stats']:
+    if not gl.db["hkr_stats"]:
       await ctx.send('No stats yet!')
     else:
-      hkr_string = await self.get_stats(db['hkr_stats'])
+      hkr_string = await self.get_stats(gl.db["hkr_stats"])
       await ctx.send('How many times has everyone been *hardly knew er*-ed?\n' + hkr_string)
-    if not db['edited_stats']:
+    if not gl.db["edited_stats"]:
       await ctx.send('No edited stats yet!')
     else:
-      edited_string = await self.get_stats(db['edited_stats'])
+      edited_string = await self.get_stats(gl.db["hkr_stats"])
       await ctx.send('How many times has everyone edited?\n' + edited_string)
 
   async def get_stats(self, data):
     # data should be a dictionary
     stat_heap = []
-    user_map = db['user_map']
+    user_map = gl.db['user_map']
     for user, num in data.items():
       if user in user_map:
         stat_heap.append((num, user_map[user]))

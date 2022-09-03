@@ -1,7 +1,7 @@
 from discord.ext import commands
 from datetime import datetime
 from pytz import timezone
-from replit import db
+# from replit import db
 import re
 import discord
 import asyncio
@@ -35,11 +35,12 @@ class ROR2(commands.Cog):
       'Vengeance': 'Your relentless doppelganger will invade every 10 minutes.'
     }
     # del db['swag_report'] # need to remove testing stats
-    if 'swag_report' not in db.keys():
-      db['swag_report'] = {
-        "win": 0,
-        "loss": 0
-      }
+    # if 'swag_report' not in gl.db.keys():
+    #   gl.db['swag_report'] = {
+    #     "win": 0,
+    #     "loss": 0
+    #   }
+    #   await gl.update_db()
   
   @commands.command(aliases=['shag'])
   async def swag(self, ctx, *swag_time):
@@ -163,13 +164,14 @@ class ROR2(commands.Cog):
         await ctx.send("Please use [win] or [loss]")
         return
       if self.swaggers:
-        # add result to storage and clear ses
-        db['swag_report'][result] += 1
+        # add result to storage and clear swag
+        gl.db['swag_report'][result] += 1
+        await gl.update_db()
         self.swaggers = []
       else:
         return await ctx.send("No swag ses to report on.")
     # no need for an else statement, this will run regardless
-    await ctx.send("--CURRENT STATS-- \n<:yes:743651437585891407> **The Boys**: " + str(db['swag_report']['win']) + "\n<:autism:743828537601163294> **Mithrix**: " + str(db['swag_report']['loss']))
+    await ctx.send("--CURRENT STATS-- \n<:yes:743651437585891407> **The Boys**: " + str(gl.db['swag_report']['win']) + "\n<:autism:743828537601163294> **Mithrix**: " + str(gl.db['swag_report']['loss']))
   
   @commands.Cog.listener()
   async def on_reaction_add(self, reaction, user):

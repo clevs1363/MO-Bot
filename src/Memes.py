@@ -1,7 +1,6 @@
 import requests
 import globals as gl
 import math
-from replit import db
 from discord.ext import commands
 
 class Memes(commands.Cog):

@@ -2,7 +2,7 @@ from discord.ext import commands
 import datetime
 import globals as gl
 import discord
-from replit import db
+# from replit import db
 import matplotlib
 import matplotlib.pyplot as plt
 import random

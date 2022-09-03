@@ -398,6 +398,14 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
+name = "tinydb"
+version = "4.7.0"
+description = "TinyDB is a tiny, document oriented database optimized for your happiness :)"
+category = "main"
+optional = false
+python-versions = ">=3.6,<4.0"
+
+[[package]]
 name = "typing-extensions"
 version = "3.10.0.2"
 description = "Backported and Experimental Type Hints for Python 3.5+"
@@ -467,7 +475,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "5eb9028ab84ac066af97171897280dfa188ad724dc2f60ef1cee6dbf13a8fe5f"
+content-hash = "3d609e67ce7750bc520fe61984c97295b098d4185796be8b28fb22d4d491add7"
 
 [metadata.files]
 aiohttp = []
@@ -505,6 +513,7 @@ pytz = []
 replit = []
 requests = []
 schedule = []
+tinydb = []
 typing-extensions = []
 urllib3 = []
 werkzeug = []
