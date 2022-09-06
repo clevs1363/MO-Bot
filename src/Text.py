@@ -212,6 +212,9 @@ class Text(commands.Cog):
 
     thumb = re.search("👍: \*\*\d+\*\*  👎: \*\*\d+\*\*  \(\d+\.\d+% upvoted\)", reaction.message.clean_content)
     if thumb:
+      # print(message_map)
+      if reaction.message.id not in gl.message_map:
+        gl.message_map[reaction.message.id] = []
       nums = re.findall("\*\*\d+\*\*", reaction.message.content)
       for i, num in enumerate(nums):
         nums[i] = num.replace("*", "")
@@ -222,8 +225,12 @@ class Text(commands.Cog):
       if int(nums[1]) == 0: 
         new_percent = "100.0"
       else:
-        new_percent = int(nums[0]) / (int(nums[0]) + int(nums[1]))
-      await reaction.message.edit(f"👍: **{nums[0]}** 👎: **{nums[1]}** ({new_percent}% upvoted)")
+        new_percent = round((int(nums[0]) / (int(nums[0]) + int(nums[1]))) * 100, 2)
+      if reaction.message.author.id in gl.message_map[reaction.message.id]:
+        return await reaction.message.channel.send("You only get one thumb per message.\nhttps://en.wikipedia.org/wiki/Seven_deadly_sins#Greed")
+      else:
+        gl.message_map[reaction.message.id].append(reaction.message.author.id)
+        return await reaction.message.edit(content=f"👍: **{nums[0]}**  👎: **{nums[1]}**  ({new_percent}% upvoted)")
         
   #
   # <-- COMMANDS -->

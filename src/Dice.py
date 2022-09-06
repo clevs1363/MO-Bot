@@ -1,4 +1,5 @@
 import random
+import requests
 from discord.ext import commands
 
 class Dice(commands.Cog):
@@ -61,3 +62,28 @@ class Dice(commands.Cog):
       drop_lowest.remove(min(drop_lowest))
       stats.append(sum(drop_lowest))
     return stats
+
+  @commands.command()
+  async def statblock(self, ctx, type, *name):
+    # type is spell, monster, etc; name is name
+    # metadata: name, type, size, etc. top 3rd of the sheet
+    # stats: actual stat numbers
+    # charcts: (characteristics) resistances, immunities, etc. middle 3rd
+    name = "-".join(name)
+    url = "https://www.dnd5eapi.co/api/" + type + name
+    r = requests.get(url).json()
+    if type == "spells":
+      return
+    elif type == "monsters":
+      metadata = f"{r['name']} \n{r['size']} {r['type']}, {r['alignment']}\n"
+      metadata += "---------------------------\n"
+      metadata += f"**AC** {r['ac']}\n**Hit Points** {r['hit_points']} ({r['hit_dice']}\n"
+      for type, num in r['speed'].items():
+        metadata += type + ": " + num
+      metadata += "---------------------------\n"
+    stats = f"[{r['strength']}] | [{r['dexterity']}] | [{r['constitution']}] | [{r['wisdom']}] | [{r['intelligence']}] | [{r['charisma']}]"
+    stats += "---------------------------\n"
+    charcts = ""
+    await ctx.send(metadata)
+    await ctx.send(stats)
+    
