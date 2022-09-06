@@ -31,6 +31,7 @@ nyt_key = os.environ['nyt_key']
 mw_dict_key = os.environ['mw_dict_key']  # merriam-webster dictionary key
 mw_thes_key = os.environ['mw_thes_key']  # merriam-webster thesaurus key
 wordnik_key = os.environ['wordnik_key']
+# pip install google-cloud-translate==2.0.1
 
 os.environ['MPLCONFIGDIR'] = "config/matplotlib"
 

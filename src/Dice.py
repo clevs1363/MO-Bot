@@ -70,20 +70,61 @@ class Dice(commands.Cog):
     # stats: actual stat numbers
     # charcts: (characteristics) resistances, immunities, etc. middle 3rd
     name = "-".join(name)
-    url = "https://www.dnd5eapi.co/api/" + type + name
+    url = "https://www.dnd5eapi.co/api/"+type+"/"+name+"/"
+    print(url)
     r = requests.get(url).json()
+    print(r)
+    if "error" in r:
+      await ctx.send("Something went wrong:")
+      return await ctx.send("*"+r["error"]+"*")
     if type == "spells":
       return
     elif type == "monsters":
       metadata = f"{r['name']} \n{r['size']} {r['type']}, {r['alignment']}\n"
       metadata += "---------------------------\n"
-      metadata += f"**AC** {r['ac']}\n**Hit Points** {r['hit_points']} ({r['hit_dice']}\n"
+      metadata += f"**AC** {r['armor_class']}\n**Hit Points** {r['hit_points']} ({r['hit_dice']}\n"
       for type, num in r['speed'].items():
         metadata += type + ": " + num
       metadata += "---------------------------\n"
     stats = f"[{r['strength']}] | [{r['dexterity']}] | [{r['constitution']}] | [{r['wisdom']}] | [{r['intelligence']}] | [{r['charisma']}]"
     stats += "---------------------------\n"
-    charcts = ""
+    saves = "**Saving Throws** "
+    skills = "**Skills** "
+    for p in r["proficiencies"]:
+      if "saving-throw" in p["proficiency"]["index"]:
+        saves += p["proficiency"]["name"].split(" ")[-1] + " +" + str(p["value"]) + ", "
+      elif "skill" in p["proficiency"]["index"]:
+        skills += p["proficiency"]["name"].split(" ")[-1] + " +" + str(p["value"]) + ", "
+    charcts = saves[:-1] + "\n" + skills[:-2] # remove final ", "
+    for charct in ["damage_vulnerabilities", "damage_resistances", "damage_immunities", "condition_immunities"]:
+      if r[charct]: 
+        charct_text = charct.replace("_", "").capitalize()
+        charct_results = ", ".join(r[charct])
+        charcts += "**" + charct_text + "** " + charct_results + "\n"
+    for type, num in r["senses"].items():
+      charcts += type + ": " + num
+    charcts += f"**Languages** {r['languages']}\n**Challenge** {r['challenge_rating']} ({r['xp']})\n"
+    charcts += "---------------------------\n"
+    abilities = ""
+    for sa in r["special_abilities"]:
+      if "usage" in sa:
+        abilities += f"***{sa['name']}** {sa['usage']['times']}/{sa['usage']['type']}. {sa['desc']}\n"
+      else:
+        abilities += f"**{sa['name']}** {sa['desc']}\n"
+    actions = "__***ACTIONS.***__---------------------------\n"
+    for a in r["actions"]:
+      actions += f"***{a['name']}***. {a['desc']}"
+    bactions = "__***BONUS ACTIONS.***__---------------------------\n"
+    for b in r["bonus_actions"]:
+      bactions += f"***{b['name']}***. {b['desc']}"
+    lactions = "__***LEGENDARY ACTIONS.***__---------------------------\n"
+    for l in r["legendary_actions"]:
+      lactions += f"***{l['name']}***. {l['desc']}"
     await ctx.send(metadata)
     await ctx.send(stats)
-    
+    await ctx.send(charcts)
+    await ctx.send(abilities)
+    await ctx.send(actions)
+    await ctx.send(bactions)
+    await ctx.send(lactions)
+    return
