@@ -149,7 +149,6 @@ class Text(commands.Cog):
 
   @gl.bot.event
   async def on_message_edit(before, after):
-    Message = Query()
     if before.author.bot:
       # ignore messages from bots
       return
@@ -211,6 +210,21 @@ class Text(commands.Cog):
     if not isinstance(reaction.emoji, str) and reaction.emoji.name == "doot":
       await reaction.message.channel.send('Dute', tts=True)
 
+    thumb = re.search("👍: \*\*\d+\*\*  👎: \*\*\d+\*\*  \(\d+\.\d+% upvoted\)", reaction.message.clean_content)
+    if thumb:
+      nums = re.findall("\*\*\d+\*\*", reaction.message.content)
+      for i, num in enumerate(nums):
+        nums[i] = num.replace("*", "")
+      if reaction.emoji == "👍" and nums:
+        nums[0] = str(int(nums[0]) + 1)
+      elif reaction.emoji == "👎" and nums:
+        nums[1] = str(int(nums[1]) + 1)
+      if int(nums[1]) == 0: 
+        new_percent = "100.0"
+      else:
+        new_percent = int(nums[0]) / (int(nums[0]) + int(nums[1]))
+      await reaction.message.edit(f"👍: **{nums[0]}** 👎: **{nums[1]}** ({new_percent}% upvoted)")
+        
   #
   # <-- COMMANDS -->
   #

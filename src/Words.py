@@ -20,6 +20,9 @@ from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.stem.wordnet import WordNetLemmatizer
+import six
+import google.cloud.translate_v2
+from google.cloud import translate_v2 as translate
 
 class Words(commands.Cog):
   def __init__(self, bot):
@@ -276,3 +279,32 @@ class Words(commands.Cog):
         return await ctx.send("Message too big :(")
       else:
         return await ctx.send(ret_string)
+
+  @commands.command()
+  async def translate(self, ctx, target, *text):
+    # return await ctx.send("Translate function coming soon!")
+    """Translates text into the target language.
+
+    Target must be an ISO 639-1 language code.
+    See https://g.co/cloud/translate/v2/translate-reference#supported_languages
+    """
+    str_text = " ".join(text)
+
+    translate_client = translate.Client()
+
+    if isinstance(str_text, six.binary_type):
+        str_text = str_text.decode("utf-8")
+
+    # Text can also be a sequence of strings, in which case this method
+    # will return a sequence of results for each text.
+    result = translate_client.translate(str_text, target_language=target)
+
+    if 'error' in result and result['error']['code'] == '400':
+      return await ctx.send("Bad request. Format is !translate [target] [text]. See the following link for target language codes:\nhttps://cloud.google.com/translate/docs/languages")
+
+    input_text = result["input"]
+    translation = result["translatedText"]
+    source_language = result["detectedSourceLanguage"]
+
+    await ctx.send("*Detected source language:* " + source_language)
+    return await ctx.send(translation) 
