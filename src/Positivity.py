@@ -67,8 +67,9 @@ class Positivity(commands.Cog):
             gl.db['thank_stats'][author_id] += 1
         else:
             gl.db['thank_stats'][author_id] = 1
-        for guild in ctx.guilds:
+            await gl.update_db()
+        for guild in gl.bot.guilds:
             for emoji in guild.emojis:
                 if emoji.name == 'pepepet':
-                    await ctx.send(emoji)
-        await gl.update_db()
+                    return await ctx.send(emoji)
+        

@@ -2,7 +2,6 @@ import youtube_dl
 import discord
 import asyncio
 import requests
-import os
 from io import BytesIO
 from discord.ext import commands
 

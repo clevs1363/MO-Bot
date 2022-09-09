@@ -5,10 +5,11 @@ from io import BytesIO
 from PIL import Image
 from PIL import ImageDraw
 from PIL import ImageFont
-from subprocess import Popen, PIPE
 import re
 import emojis as emj
 import math
+import requests
+from bs4 import BeautifulSoup
 
 class Images(commands.Cog):
   # random commands associated with text channels
@@ -19,22 +20,24 @@ class Images(commands.Cog):
   @commands.command(aliases = ['pfp', 'profile_picture'])
   async def profile(self, ctx, *username):
     if not username:
-      raw = await ctx.author.avatar_url.read()
-      img = Image.open(BytesIO(raw), mode='r')
-      b = BytesIO()
-      img.save(b, "PNG")
-      b.seek(0)
-      return await ctx.send(file=discord.File(b, filename='profile.png'))
+      # raw = await ctx.author.avatar_url.read()
+      # img = Image.open(BytesIO(raw), mode='r')
+      # b = BytesIO()
+      # img.save(b, "PNG")
+      # b.seek(0)
+      # return await ctx.send(file=discord.File(b, filename='profile.png'))
+      return await ctx.send(ctx.author.avatar.url)
     else:
       username = " ".join(username)
       for user in ctx.guild.members:
         if user.nick == username or user.name == username:
-          raw = await user.avatar_url.read()
-          img = Image.open(BytesIO(raw), mode='r')
-          b = BytesIO()
-          img.save(b, "PNG")
-          b.seek(0)
-          return await ctx.send(file=discord.File(b, filename='profile.png'))
+          # raw = await user.avatar_url.read()
+          # img = Image.open(BytesIO(raw), mode='r')
+          # b = BytesIO()
+          # img.save(b, "PNG")
+          # b.seek(0)
+          # return await ctx.send(file=discord.File(b, filename='profile.png'))
+          return await ctx.send(user.avatar.url)
       return await ctx.send("User not found")
   
   @commands.command(aliases = ['smooshy'])
@@ -169,4 +172,12 @@ class Images(commands.Cog):
     dst.save(b, "PNG")
     b.seek(0)
     return b
-  
+  @commands.command()
+  async def google_image(self, ctx, num, *query):
+    url = f"https://www.google.com/search?q={'+'.join(query)}&tbm=isch"
+    content = requests.get(url).content
+    soup = BeautifulSoup(content,'lxml')
+    images = soup.findAll('img')
+
+    for i in range(int(num)):
+      await ctx.send(images[i])

@@ -2,7 +2,6 @@
 from discord.ext import commands
 import globals as gl
 
-
 class Requests(commands.Cog):
     # commands associated with memes
     def __init__(self, bot):
@@ -71,6 +70,7 @@ class Requests(commands.Cog):
                                        " | *Requested by " +
                                        gl.db['user_map'][str(requester_id)] +
                                        "*")
+                        break
                     else:
                         await ctx.send(
                             "Not very cash money of you to try and delete someone else's request"

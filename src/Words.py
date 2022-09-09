@@ -1,15 +1,12 @@
 import asyncio
 import requests
-import random
 import globals as gl
-import emoji
 from discord.ext import commands
 import matplotlib.pyplot as plt
 from io import BytesIO
 import numpy as np
 import discord
 from better_profanity import profanity
-import pprint
 import nltk
 nltk.download('punkt')
 nltk.download('stopwords')

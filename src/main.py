@@ -19,6 +19,7 @@ from Images import Images
 from Bartender import Bartender
 from Ses import Ses
 from Math import Math
+from Democracy import Democracy
 from keep_alive import keep_alive
 
 bot = gl.bot
@@ -40,6 +41,7 @@ async def setup(bot):
   await bot.add_cog(Bartender(bot))
   await bot.add_cog(Ses(bot))
   await bot.add_cog(Math(bot))
+  await bot.add_cog(Democracy(bot))
 
 @bot.event
 async def on_ready():

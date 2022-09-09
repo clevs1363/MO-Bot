@@ -20,6 +20,7 @@ better-profanity = "^0.7.0"
 emojis = "^0.6.0"
 emoji = "^1.7.0"
 tinydb = "^4.7.0"
+requests-html = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
 

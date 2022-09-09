@@ -1,6 +1,5 @@
 from discord.ext import commands, tasks
 # from replit import db
-from tinydb import TinyDB, Query
 from datetime import datetime
 import pytz as tz
 import globals as gl

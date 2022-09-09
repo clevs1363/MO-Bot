@@ -2,11 +2,9 @@ import re
 # from replit import db
 import globals as gl
 import asyncio
-import json
 from datetime import datetime
 from pytz import timezone
 from discord.ext import commands, tasks
-
 
 class Ses(commands.Cog):
     def __init__(self, bot):

@@ -57,6 +57,7 @@ user_map = {
     "439205512425504771": "NotSoBot"
 }
 message_map = {} # session-based map that tracks who's reacted to what messages (dynamic udefine stats in Text.py)
+votes = {}
 
 
 # --GLOBAL FUNCTIONS--

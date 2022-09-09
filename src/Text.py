@@ -231,6 +231,13 @@ class Text(commands.Cog):
       else:
         gl.message_map[reaction.message.id].append(reaction.message.author.id)
         return await reaction.message.edit(content=f"👍: **{nums[0]}**  👎: **{nums[1]}**  ({new_percent}% upvoted)")
+
+    # if reaction.message.id in gl.votes:
+    #   message = reaction.message
+    #   if reaction.emoji == "👍":
+    #     gl.votes[message.id]["yes"].append(message.author.id)
+    #   elif reaction.emoji == "👎":
+    #     gl.votes[message.id]["no"].append(message.author.id)
         
   #
   # <-- COMMANDS -->

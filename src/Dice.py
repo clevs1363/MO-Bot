@@ -1,6 +1,7 @@
 import random
 import requests
 from discord.ext import commands
+import os
 
 class Dice(commands.Cog):
   # commands associated with the built-in dice roller
@@ -70,24 +71,40 @@ class Dice(commands.Cog):
     # stats: actual stat numbers
     # charcts: (characteristics) resistances, immunities, etc. middle 3rd
     name = "-".join(name)
+    
+
+    # print(response.js)
     url = "https://www.dnd5eapi.co/api/"+type+"/"+name+"/"
-    print(url)
     r = requests.get(url).json()
     print(r)
     if "error" in r:
       await ctx.send("Something went wrong:")
       return await ctx.send("*"+r["error"]+"*")
+    img_url = "https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/ImageSearchAPI"
+
+    querystring = {"q": r['name'] + "5e",
+                   "pageNumber":"1",
+                   "pageSize":"1",
+                   "autoCorrect":"false"
+                  }
+
+    headers = {
+        "X-RapidAPI-Key": os.environ['rapidapi_key'],
+        "X-RapidAPI-Host": "contextualwebsearch-websearch-v1.p.rapidapi.com"
+    }
+    img_response = requests.request("GET", img_url, headers=headers, params=querystring)
     if type == "spells":
       return
     elif type == "monsters":
-      metadata = f"{r['name']} \n{r['size']} {r['type']}, {r['alignment']}\n"
-      metadata += "---------------------------\n"
-      metadata += f"**AC** {r['armor_class']}\n**Hit Points** {r['hit_points']} ({r['hit_dice']}\n"
+      metadata = f"{r['name']} \n*{r['size']} {r['type']}, {r['alignment']}*"
+      metadata += "\n---------------------------\n"
+      metadata += f"**AC** {r['armor_class']}\n**Hit Points** {r['hit_points']} ({r['hit_dice']})\n**Speed** "
       for type, num in r['speed'].items():
-        metadata += type + ": " + num
-      metadata += "---------------------------\n"
-    stats = f"[{r['strength']}] | [{r['dexterity']}] | [{r['constitution']}] | [{r['wisdom']}] | [{r['intelligence']}] | [{r['charisma']}]"
-    stats += "---------------------------\n"
+        metadata += type + ": " + num + " "
+      metadata += "\n---------------------------\n"
+    stats = f"**STR** [{r['strength']}] | **DEX** [{r['dexterity']}] | **CON** [{r['constitution']}] | **WIS** [{r['wisdom']}] | **INT** [{r['intelligence']}] | **CHA** [{r['charisma']}]"
+    stats += "\n---------------------------\n"
+    charcts = ""
     saves = "**Saving Throws** "
     skills = "**Skills** "
     for p in r["proficiencies"]:
@@ -95,36 +112,53 @@ class Dice(commands.Cog):
         saves += p["proficiency"]["name"].split(" ")[-1] + " +" + str(p["value"]) + ", "
       elif "skill" in p["proficiency"]["index"]:
         skills += p["proficiency"]["name"].split(" ")[-1] + " +" + str(p["value"]) + ", "
-    charcts = saves[:-1] + "\n" + skills[:-2] # remove final ", "
+    if saves != "**Saving Throws** ":
+      charcts += saves[:-1] + "\n" # remove final ", "
+    if skills != "**Skills** ":
+      charcts += skills[:-2] + "\n"
     for charct in ["damage_vulnerabilities", "damage_resistances", "damage_immunities", "condition_immunities"]:
       if r[charct]: 
-        charct_text = charct.replace("_", "").capitalize()
+        charct_text = charct.replace("_", " ").capitalize()
         charct_results = ", ".join(r[charct])
-        charcts += "**" + charct_text + "** " + charct_results + "\n"
+        charcts += "**" + charct_text + "** " + charct_results 
+    charct += "\n**Senses** "
     for type, num in r["senses"].items():
-      charcts += type + ": " + num
-    charcts += f"**Languages** {r['languages']}\n**Challenge** {r['challenge_rating']} ({r['xp']})\n"
-    charcts += "---------------------------\n"
+      charcts += type.replace("_", " ") + ": " + str(num) + " "
+    charcts += f"\n**Languages** {r['languages']}\n**Challenge** {r['challenge_rating']} ({r['xp']} XP)"
+    charcts += "\n---------------------------\n"
     abilities = ""
-    for sa in r["special_abilities"]:
-      if "usage" in sa:
-        abilities += f"***{sa['name']}** {sa['usage']['times']}/{sa['usage']['type']}. {sa['desc']}\n"
-      else:
-        abilities += f"**{sa['name']}** {sa['desc']}\n"
-    actions = "__***ACTIONS.***__---------------------------\n"
-    for a in r["actions"]:
-      actions += f"***{a['name']}***. {a['desc']}"
-    bactions = "__***BONUS ACTIONS.***__---------------------------\n"
-    for b in r["bonus_actions"]:
-      bactions += f"***{b['name']}***. {b['desc']}"
-    lactions = "__***LEGENDARY ACTIONS.***__---------------------------\n"
-    for l in r["legendary_actions"]:
-      lactions += f"***{l['name']}***. {l['desc']}"
+    if "special_abilities" in r:
+      for sa in r["special_abilities"]:
+        if "usage" in sa:
+          abilities += f"**{sa['name']}** ({sa['usage']['times']}/{sa['usage']['type']}). {sa['desc']}\n"
+        else:
+          abilities += f"**{sa['name']}** {sa['desc']}\n"
+    actions = ""
+    if "actions" in r and r["actions"]:
+      actions = "__***ACTIONS.***\n__---------------------------\n"
+      for a in r["actions"]:
+        actions += f"***{a['name']}***. {a['desc']}\n"
+    bactions = ""
+    if "bonus_actions" in r and r["bonus_actions"]:
+      bactions = "__***BONUS ACTIONS.***\n__---------------------------\n"
+      for b in r["bonus_actions"]:
+        bactions += f"***{b['name']}***. {b['desc']}\n"
+    lactions = ""
+    if "legendary_actions" in r and r["legendary_actions"]:
+      lactions = "__***LEGENDARY ACTIONS.***__\n---------------------------\n"
+      for l in r["legendary_actions"]:
+        lactions += f"***{l['name']}***. {l['desc']}\n"
     await ctx.send(metadata)
     await ctx.send(stats)
-    await ctx.send(charcts)
-    await ctx.send(abilities)
-    await ctx.send(actions)
-    await ctx.send(bactions)
-    await ctx.send(lactions)
+    if charcts:
+      await ctx.send(charcts)
+    if abilities:
+      await ctx.send(abilities)
+    if actions:
+      await ctx.send(actions)
+    if bactions:
+      await ctx.send(bactions)
+    if lactions:
+      await ctx.send(lactions)
+    await ctx.send(img_response.json()["value"][0]["url"])
     return
